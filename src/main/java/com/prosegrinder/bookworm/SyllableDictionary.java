@@ -1,19 +1,15 @@
 package com.prosegrinder.bookworm;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.stream.Stream;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 // A Singleton Class for looking up syllables from a dictionary
 // Current implementation uses cmudict.0.7a
@@ -59,39 +55,43 @@ public final class SyllableDictionary {
 
   // Because String.matches() isn't quite what it seems.
   // This detects stressors in the cmudict (parts that end with a digit).
-  private static final Pattern cmudictSyllablePattern = Pattern.compile( "\\d$" );
+  private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
 
   // private constructor
   private SyllableDictionary() {
     syllableMap = new HashMap<String, Integer>();
     // Will fallback to heuristic method if we can't load cmudict.
     try {
+      // Use cmudict from GitHub
+      // https://github.com/cmusphinx/cmudict
+      // This method was adapted from nltk.cmudict
+      String cmudict = "cmudict/cmudict.dict";
       // http://javarevisited.blogspot.com/2015/09/how-to-read-file-into-string-in-java-7.html
       ClassLoader classLoader = SyllableDictionary.class.getClassLoader();
-      Path cmudictPath = Paths.get(
-        classLoader.getResource("cmudict/cmudict.0.7a").getFile()
-      );
-      try ( Stream<String> stream = Files.lines( cmudictPath ) ) {
-        stream.filter( line -> !line.startsWith( ";;;" ) )
-          .map( String::toLowerCase )
-          .forEach( line -> {
-            String[] parts = line.split( " +" );
+      Path cmudictPath = Paths.get(classLoader.getResource(cmudict).getFile());
+      Stream<String> stream = Files.lines(cmudictPath);
+      stream.filter(line -> !line.startsWith(";;;"))
+          .map(String::toLowerCase)
+          .forEach(line -> {
+            String[] parts = line.split(" +");
             String word = parts[0];
-            if ( !word.endsWith( ")" ) ) {
+            if (!word.endsWith(")")) {
               Integer syllables = 0;
-              for ( int i = 1; i < parts.length; i++ ) {
-                Matcher m = cmudictSyllablePattern.matcher( parts[i] );
-                if ( m.find() ) {
+              for (int i = 1; i < parts.length; i++) {
+                Matcher matcher = cmudictSyllablePattern.matcher(parts[i]);
+                if (matcher.find()) {
                   syllables++;
                 }
               }
-              if ( syllables > 0 )
-                syllableMap.put( word, syllables );
+              if (syllables > 0) {
+                syllableMap.put(word, syllables);
+              }
             }
           });
-      }
-    } catch ( Exception e ) {
+      System.out.println("Map entries: " + syllableMap.size());
+    } catch (Exception e) {
       // Log the fact we're relying solely on the heuristic method
+      System.out.println( e );
     }
   }
 
@@ -104,27 +104,28 @@ public final class SyllableDictionary {
     return INSTANCE;
   }
 
-  public Integer getByLookup( String word ) throws NullPointerException {
-    if ( !syllableMap.containsKey( word ) )
-      throw new NullPointerException( "Dictionary does not contain an entry for " + word + "." );
-    else
-      return syllableMap.get( word );
+  public Integer getByLookup(final String word) throws NullPointerException {
+    if (!syllableMap.containsKey(word)) {
+      throw new NullPointerException("Dictionary does not contain an entry for " + word + ".");
+    } else {
+      return syllableMap.get(word);
+    }
   }
 
-  public Integer getByHeuristics( String word ) {
+  public Integer getByHeuristics(final String word) {
     // Lower case, fold contractions, and strip silent e off the end.
     String strippedWord = word.toLowerCase()
-      .replaceAll("'", "")
-      .replaceAll("e$", "");
+        .replaceAll("'", "")
+        .replaceAll("e$", "");
     int syllableCount = 0;
 
-    if ( strippedWord.equals("") || strippedWord == null ) {
+    if (strippedWord.equals("") || strippedWord == null) {
       syllableCount = 0;
-    } else if ( strippedWord.equals("w") ) {
+    } else if (strippedWord.equals("w")) {
       syllableCount = 2;
-    } else if ( strippedWord.length() == 1 ) {
+    } else if (strippedWord.length() == 1) {
       syllableCount = 1;
-    } else if ( strippedWord.matches( "^\\d{1,3}(?:[,]\\d{3})*$" ) ) {
+    } else if (strippedWord.matches("^\\d{1,3}(?:[,]\\d{3})*$")) {
       // Is word a number?
       // See: https://stackoverflow.com/questions/1359147/regex-for-comma-separated-number#1359152
       // neilb: Syllables for all-digit words (eg, "1998";  some call them "numbers") are
@@ -133,42 +134,47 @@ public final class SyllableDictionary {
       // eight", or...), but that is left as an exercise for the reader.
       // me: In fiction, people don't usually "read" numbers. It's okay
       // to count the number of digits.
-      return strippedWord.replaceAll( "[,.]", "" ).length();
+      return strippedWord.replaceAll("[,.]", "").length();
     } else {
       String[] scrugg = strippedWord.split("[^aeiouy]+"); // neilb: perhaps - should be added?
-      for ( Pattern p: addSyl ) {
-        Matcher m = p.matcher( strippedWord );
-        if ( m.matches() )
+      for (Pattern pattern: addSyl) {
+        Matcher matcher = pattern.matcher(strippedWord);
+        if (matcher.matches()) {
           syllableCount--;
+        }
       }
-      for ( Pattern p: subSyl ) {
-        Matcher m = p.matcher( strippedWord );
-        if ( m.matches() )
+      for (Pattern pattern: subSyl) {
+        Matcher matcher = pattern.matcher(strippedWord);
+        if (matcher.matches()) {
           syllableCount++;
+        }
       }
 
       // Count vowel groupings
-      if ( scrugg.length > 0 && "".equals(scrugg[0]) )
+      if (scrugg.length > 0 && "".equals(scrugg[0])) {
         syllableCount += scrugg.length - 1;
-      else
+      } else {
         syllableCount += scrugg.length;
+      }
 
       // No vowels?
-      if ( syllableCount == 0 )
+      if (syllableCount == 0) {
         syllableCount = 1;
+      }
     }
     return syllableCount;
   }
 
-  public Integer getSyllableCount( String word ) {
-    if ( syllableMap.containsKey( word ) )
-      return syllableMap.get( word );
-    else
-      return getByHeuristics( word );
+  public Integer getSyllableCount(final String word) {
+    if (syllableMap.containsKey(word)) {
+      return syllableMap.get(word);
+    } else {
+      return getByHeuristics(word);
+    }
   }
 
   public Map<String, Integer> getSyllableMap() {
-    return Collections.unmodifiableMap( syllableMap );
+    return Collections.unmodifiableMap(syllableMap);
   }
 
 }
