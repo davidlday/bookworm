@@ -31,7 +31,7 @@ public class SyllableDictionaryTest {
   @Test
   public void testGetByHeuristics() {
     // Frowning is correct by heuristics.
-    assertEquals( "Frowning: ", syllableDictionary.getByLookup( "frowning" ).intValue(), 2 );
+    assertEquals( "Frowning: ", syllableDictionary.getByHeuristics( "frowning" ).intValue(), 2 );
     // Cafe is incorrect by heuristics.
     assertNotEquals( "Cafe: ", syllableDictionary.getByHeuristics( "cafe" ).intValue(), 2 );
     // Numbers are a count of digits by heuristics.
