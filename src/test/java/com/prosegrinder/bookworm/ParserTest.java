@@ -31,7 +31,7 @@ public class ParserTest {
   @Test
   public void testParseWords() throws Exception {
     String prose = this.getProse();
-    List<String> words = Arrays.asList( Parser.parseWords(prose) );
+    List<String> words = Parser.parseWords(prose);
 //     words.stream().forEach(System.out::println);
 //     System.out.println("Word Count: " + words.size());
   }
@@ -39,7 +39,7 @@ public class ParserTest {
   @Test
   public void testParseDialogue() throws Exception {
     String prose = this.getProse();
-    List<String> dialogue = Arrays.asList(Parser.parseDialogue(prose));
+    List<String> dialogue = Parser.parseDialogue(prose);
 //     dialogue.stream().forEach(System.out::println);
   }
 

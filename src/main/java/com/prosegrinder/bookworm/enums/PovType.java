@@ -1,15 +1,15 @@
 package com.prosegrinder.bookworm.enums;
 
 public enum PovType {
-  FIRST(1), SECOND(2), THIRD(3), UNKNOWN(0);
+  FIRST("first"), SECOND("second"), THIRD("third"), UNKNOWN("unknown");
 
-  private final int person;
+  private final String person;
 
-  PovType(final int person) {
+  PovType(final String person) {
     this.person = person;
   }
 
-  private int person() {
+  private String person() {
     return this.person;
   }
 

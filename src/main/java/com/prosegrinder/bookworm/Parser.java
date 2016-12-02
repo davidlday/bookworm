@@ -19,12 +19,14 @@ public final class Parser {
   // on the class variables. Even those are declared final, so probably not even there.
 
   // Regular Expression Strings
-  public static final String RE_SMART_QUOTES = new String("[\u201c\u201d]");
-  public static final String RE_WORDS = new String("[^\\w\u2019\']+");
+  public static final String RE_SMART_QUOTES = new String("[“”]");
+  // public static final String RE_SMART_QUOTES = new String("[\u201c\u201d]");
+  public static final String RE_WORDS = new String("[^\\w’\\']+");
+  // public static final String RE_WORDS = new String("[^\\w\u2019\']+");
   public static final String RE_SENTENCES = new String("(?<=[.?!\"])\\s+(?=[\"A-Z])");
   public static final String RE_PARAGRAPHS = new String("\\n+");
-  // http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes
-  // ((?<![\\])["])((?:.(?!(?<![\\])\1))*.?)\1
+  /** Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes **/
+  /** Only need double quotes when searching out dialogue. **/
   public static final String RE_DIALOGUE =
       new String("((?<![\\\\])[\"])((?:.(?!(?<![\\\\])\\1))*.?)\\1");
 
@@ -136,8 +138,11 @@ public final class Parser {
     return Arrays.asList(paragraphs);
   }
 
-  // Parse a String of text into a List of dialogue.
-  // Anything between double quotation marks is considered dialogue.
+  /***
+   * Parses a String of text into a List of dialogue fragments.
+   *
+   * <p>Anything between double quotation marks (") is considered dialogue.
+   */
   public static final List<String> parseDialogue(final String text) {
     // http://stackoverflow.com/questions/6020384/create-array-of-regex-matches#6020436
     Pattern pattern = Pattern.compile(Parser.RE_DIALOGUE);
@@ -148,6 +153,35 @@ public final class Parser {
     }
     return dialogue;
   }
+
+//   /**
+//    * Parse a String of text into a String of dialogue.
+//    *
+//    * <p>Primarily used to facilitate assembling dialogue fragments
+//    * into a list of complete dialogue sentences.
+//    */
+//   public static final String parseDialogue(final String text) {
+//     List<String> dialogue = Parser.parseDialogue(text);
+//     String dialogueString = new String();
+//     for (String dialogueFragment: dialogue) {
+//       dialogueString.concat(matcher.group().replaceAll("\"", "") + " ");
+//     }
+//     return dialogueString;
+//   }
+//
+//   /**
+//    * Parse a String of text into a List of dialogue sentences.
+//    *
+//    * <p>Primarily used to facilitate eliminating Parts of Speech tags
+//    * found in dialogue from the text in order to figure out overall
+//    * tense of the prose (PAST, PRESENT, FUTURE).
+//    */
+//   // Need to do this differently. Take the list of fragements and only concatenate
+//   // if the current fragment starts with a lower case.
+//   public static final List<String> parseDialogueSentences(final String text) {
+//     String dialogueString = Parser.parseDialogue(text);
+//     return Parser.parseSentences(dialogueString);
+//   }
 
   // Parse out an array of all POV indicators found in text.
   public static final List<String> parsePovIndicators(final String text) {

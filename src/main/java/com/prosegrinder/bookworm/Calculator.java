@@ -5,90 +5,101 @@ import com.prosegrinder.bookworm.enums.PovType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+/**
+ * A Utility class for calculating statics about prose text, specifically fiction.
+ * All rules for parsing are derived from either industry practice or William Shunn's
+ * "Proper Manuscript Formatting" site (//www.shunn.net/format/).
+ */
 
 public final class Calculator {
-  // A Utility class for calculating things in prose text, specifically fiction.
-  // All rules for parsing are derived from either industry practice or William Shunn's
-  // "Proper Manuscript Formatting" site (//www.shunn.net/format/).
 
-  // Prohibit instantiation.
+  /** Prohibit instantiation. **/
   private Calculator() {
     throw new AssertionError();
   }
 
-  // Average syllables per word.
+  /** Calculates the average number of syllables per word in a List of words. **/
   public static final Double averageSyllablesPerWord(final List<String> words) {
     int syllables = Counter.countSyllables(words);
     return (double) syllables / (double) words.size();
   }
 
-  // Average syllables per word.
+  /** Calculates the average number of syllables per word in a String of text. **/
   public static final Double averageSyllablesPerWord(final String text) {
     List<String> words = Parser.parseWords(text);
     return Calculator.averageSyllablesPerWord(words);
   }
 
-  // Average number of syllables per sentence.
+  /** Calculates the average number of syllables per sentence in a List of sentences. **/
   public static final Double averageSyllablesPerSentence(final List<String> sentences) {
     List<String> words = Parser.parseWords(sentences);
     int syllables = Counter.countSyllables(words);
     return (double) syllables / (double) sentences.size();
   }
 
-  // Average number of syllables per sentence.
+  /** Calculates the average number of syllables per sentence in a String of text. **/
   public static final Double averageSyllablesPerSentence(final String text) {
     List<String> sentences = Parser.parseSentences(text);
     return Calculator.averageSyllablesPerSentence(sentences);
   }
 
-  // Average number of words per sentence.
+  /** Calculates the average number of words per sentence in a List of sentences. **/
   public static final Double averageWordsPerSentence(final List<String> sentences) {
     List<String> words = Parser.parseWords(sentences);
     return (double) words.size() / (double) sentences.size();
   }
 
-  // Average number of syllables per paragraph.
+  /** Calculates the average number of syllables per paragraph in a List of paragraphs. **/
   public static final Double averageSyllablesPerParagraph(final List<String> paragraphs) {
     List<String> words = Parser.parseWords(paragraphs);
     int syllables = Counter.countSyllables(words);
     return (double) syllables / (double) paragraphs.size();
   }
 
-  // Average number of syllables per paragraph.
+  /** Calculates the average number of syllables per paragraph in a String of text. **/
   public static final Double averageSyllablesPerParagraph(final String text) {
     List<String> paragraphs = Parser.parseParagraphs(text);
     return Calculator.averageSyllablesPerParagraph(paragraphs);
   }
 
-  // Average number of words per paragraph.
+  /** Calculates the average number of words per paragraph in a List of paragraphs. **/
   public static final Double averageWordsPerParagraph(final List<String> paragraphs) {
     List<String> words = Parser.parseWords(paragraphs);
     return (double) words.size() / (double) paragraphs.size();
   }
 
-  // Average number of words per paragraph.
+  /** Calculates the average number of words per paragraph in a String of text. **/
   public static final Double averageWordsPerParagraph(final String text) {
     List<String> paragraphs = Parser.parseParagraphs(text);
     return Calculator.averageWordsPerParagraph(paragraphs);
   }
 
-  // Average number of sentences per paragraph.
+  /** Calculates the average number of sentences per paragraph in a List of paragraphs. **/
   public static final Double averageSentencesPerParagraph(final List<String> paragraphs) {
     List<String> sentences = Parser.parseSentences(paragraphs);
     return (double) sentences.size() / (double) paragraphs.size();
   }
 
-  // Average number of sentences per paragraph.
+  /** Calculates the average number of sentences per paragraph in a String of text. **/
   public static final Double averageSentencesPerParagraph(final String text) {
     List<String> paragraphs = Parser.parseParagraphs(text);
     return Calculator.averageSentencesPerParagraph(paragraphs);
   }
 
-  // POV isn't a matter of most indicators wins, but a
-  // matter of precedence. First Person can and usually will contain second and
-  // third person indicators. Second Person can and usually will contain third
-  // person indicators.
-  // Estimate POV for a list of indicators.
+  /**
+   * Estimates the most likely Point of View (first, second, or third).
+   *
+   * <p>Point of View (POV) is based on an order of precedence, not a quantity
+   * of indicators. First person POV can and usually will contain second and
+   * third person indicators. Second Person can and usually will contain third
+   * person indicators.
+   *
+   * @params povIndicators  a list of povIndicators parsed from a source text
+   * @returns one of the PovTypes indicating most likely POV
+   *
+   * @see com.prosegrinder.bookworm.enums.PovType
+   *
+   */
   public static final Enum pointOfView(final List<String> povIndicators) {
     if (Counter.countFirstPersonIndicators(povIndicators) > 0) {
       return PovType.FIRST;
@@ -101,11 +112,28 @@ public final class Calculator {
     }
   }
 
-  // Estimate POV for a string of text.
+  /**
+   * Returns the most likely Point of View (first, second, or third).
+   *
+   * <p>Point of View (POV) is based on an order of precedence, not a quantity
+   * of indicators. First person POV can and usually will contain second and
+   * third person indicators. Second Person can and usually will contain third
+   * person indicators.
+   *
+   * <p>Dialogue is stripped out because it is always from the point of view
+   * of the person speaking and doesn't reflect the point of view of the
+   * narrative.
+   *
+   * @params text  source text to analyze
+   * @returns one of the PovTypes indicating most likely POV
+   *
+   * @see com.prosegrinder.bookworm.enums.PovType
+   *
+   */
   public static final Enum pointOfView(final String text) {
-    // Get a list of all POV Indicators found in the text.
+    /** Get a list of all POV Indicators found in the text. **/
     List<String> prosePovIndicators = Parser.parsePovIndicators(text);
-    // Strip out all POV Indicators found in dialogue.
+    /** Strip out all POV Indicators found in dialogue. **/
     List<String> dialoguePovIndicators = Parser.parsePovIndicators(Parser.parseDialogue(text));
     for (String indicator: dialoguePovIndicators) {
       prosePovIndicators.remove(indicator);
@@ -114,11 +142,14 @@ public final class Calculator {
   }
 
   /**
-   *  Readability Calculations
-   */
-
-  // Automated Readability Index (ARI)
-  // See: https://en.wikipedia.org/wiki/Automated_readability_index
+   * Calculates the Automated Readability Index score for the analyzed text.
+   *
+   * @param characterCount  the number of word characters found in the source text
+   * @param wordCount the number of words found in the source text
+   * @param sentenceCount the number of sentences found in the source text
+   * @returns Automated Readability Index score
+   *
+   **/
   public static final Double automatedReadabilityIndex(final Integer characterCount,
                                                         final Integer wordCount,
                                                         final Integer sentenceCount) {
@@ -130,8 +161,15 @@ public final class Calculator {
     return score;
   }
 
-  // Flesch Reading Ease
-  // See: https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests
+  /**
+   * Calculates the Flesch Reading Ease score for the analyzed text.
+   *
+   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
+   * @param syllableCount the number of syllables found in the source text
+   * @param wordCount the number of words found in the source text
+   * @returns Flesch Reading Ease score
+   *
+   **/
   public static final Double fleschReadingEase(final Double averageWordsPerSentence,
                                                 final Integer syllableCount,
                                                 final Integer wordCount) {
@@ -143,8 +181,15 @@ public final class Calculator {
     return score;
   }
 
-  // Flesch Kincaid Grade Level
-  // See: https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests
+  /**
+   * Calculates the Flesch Kincaid Grade Level score for the analyzed text.
+   *
+   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
+   * @param syllableCount the number of syllables found in the source text
+   * @param wordCount the number of words found in the source text
+   * @returns Flesch Kincaid Grade Level score
+   *
+   **/
   public static final Double fleschKincaidGradeLeve(final Double averageWordsPerSentence,
                                                     final Integer syllableCount,
                                                     final Integer wordCount) {
@@ -156,8 +201,15 @@ public final class Calculator {
     return score;
   }
 
-  // Gunning Fog Index
-  // See: https://en.wikipedia.org/wiki/Gunning_fog_index
+  /**
+   * Calculates the Gunning Fog Index score for the analyzed text.
+   *
+   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
+   * @param complexWordCount the number of complex words found in the source text
+   * @param wordCount the number of words found in the source text
+   * @returns Gunning Fog Index score
+   *
+   **/
   public static final Double gunningFogIndex(final Double averageWordsPerSentence,
                                               final Integer complexWordCount,
                                               final Integer wordCount) {
@@ -168,8 +220,14 @@ public final class Calculator {
     return score;
   }
 
-  // SMOG (Simple Measure Of Gobbledygook)
-  // See: https://en.wikipedia.org/wiki/SMOG
+  /**
+   * Calculates the SMOG (Simple Measure Of Gobbledygook) score for the analyzed text.
+   *
+   * @param complexWordCount the number of complex words found in the source text
+   * @param sentenceCount the number of sentences found in the source text
+   * @returns SMOG score
+   *
+   **/
   public static final Double smog(final Integer complexWordCount, final Integer sentenceCount) {
     Double score = 0.0;
     if (sentenceCount > 0) {
@@ -178,9 +236,16 @@ public final class Calculator {
     return score;
   }
 
-  // Coleman-Liau Index
-  // See: https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index
-  public static final Double colmaneLiauIndex(final Integer characterCount,
+  /**
+   * Calculates the Coleman-Liau Index score for the analyzed text.
+   *
+   * @param characterCount  the number of word characters found in the source text
+   * @param wordCount the number of words found in the source text
+   * @param sentenceCount the number of sentences found in the source text
+   * @returns Coleman-Liau Index score
+   *
+   **/
+  public static final Double colemanLiauIndex(final Integer characterCount,
       final Integer wordCount, final Integer sentenceCount) {
     Double score = 0.0;
     if (wordCount > 0) {
@@ -190,18 +255,15 @@ public final class Calculator {
     return score;
   }
 
-  // RIX
-  // See: https://en.wikipedia.org/wiki/Raygor_readability_estimate
-  public static final Double rix(final Integer longWordCount, final Integer sentenceCount) {
-    Double score = 0.0;
-    if (sentenceCount > 0) {
-      score = (double) longWordCount / (double) sentenceCount;
-    }
-    return score;
-  }
-
-  // LIX
-  // See: https://en.wikipedia.org/wiki/LIX
+  /**
+   * Calculates the LIX score for the analyzed text.
+   *
+   * @param wordCount the number of words found in the source text
+   * @param longWordCount  the number of long word found in the source text
+   * @param sentenceCount the number of sentences found in the source text
+   * @returns LIX score
+   *
+   **/
   public static final Double lix(final Integer wordCount,
       final Integer longWordCount, final Integer sentenceCount) {
     Double score = 0.0;
