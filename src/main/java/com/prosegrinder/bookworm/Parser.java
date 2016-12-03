@@ -146,9 +146,15 @@ public final class Parser {
    * <p>Anything between double quotation marks (") is considered dialogue.
    */
   public static final List<String> parseDialogue(final String text) {
+    String closedText = text;
+    /** Determine number of quotation marks in the string. **/
+    int countQuotationMarks = closedText.length() - closedText.replace("\"", "").length();
+    if ((countQuotationMarks % 2) == 0) {
+      closedText.concat("\"");
+    }
     // http://stackoverflow.com/questions/6020384/create-array-of-regex-matches#6020436
     Pattern pattern = Pattern.compile(Parser.RE_DIALOGUE);
-    Matcher matcher = pattern.matcher(text);
+    Matcher matcher = pattern.matcher(closedText);
     List<String> dialogue = new ArrayList<String>();
     while (matcher.find()) {
       dialogue.add(matcher.group().replaceAll("\"", ""));
