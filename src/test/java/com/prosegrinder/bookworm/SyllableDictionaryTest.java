@@ -24,9 +24,9 @@ public class SyllableDictionaryTest {
   @Test
   public void testGetByLookup() {
     // Frowning is correct by lookup.
-    assertEquals( "Frowning: ", syllableDictionary.getByLookup( "frowning" ).intValue(), 2 );
+    assertEquals( "Frowning: ", 2, syllableDictionary.getByLookup( "frowning" ).intValue());
     // Cafe is correct by lookup.
-    assertEquals( "Cafe: ", syllableDictionary.getByLookup( "cafe" ).intValue(), 2 );
+    assertEquals( "Cafe: ", 2, syllableDictionary.getByLookup( "cafe" ).intValue());
     // No numbers are in the dictionary. Throws a NullPointerException.
     String notWord = "1,904";
     thrown.expect( NullPointerException.class );
@@ -37,19 +37,32 @@ public class SyllableDictionaryTest {
   @Test
   public void testGetByHeuristics() {
     // Frowning is correct by heuristics.
-    assertEquals( "Frowning: ", syllableDictionary.getByHeuristics( "frowning" ).intValue(), 2 );
+    assertEquals( "Frowning: ", 2, syllableDictionary.getByHeuristics( "frowning" ).intValue());
     // Cafe is incorrect by heuristics.
-    assertNotEquals( "Cafe: ", syllableDictionary.getByHeuristics( "cafe" ).intValue(), 2 );
+    assertNotEquals( "Cafe: ", 2, syllableDictionary.getByHeuristics( "cafe" ).intValue());
     // Numbers are a count of digits by heuristics.
-    assertEquals( "1,904: ", syllableDictionary.getByHeuristics( "1,904" ).intValue(), 4 );
+    assertEquals( "20,012.12: ", 7, syllableDictionary.getByHeuristics( "20,012.12" ).intValue());
+    // Numbers are a count of digits by heuristics.
+    assertEquals( "1,904: ", 4, syllableDictionary.getByHeuristics( "1,904" ).intValue());
+    // Numbers are a count of digits by heuristics.
+    assertEquals( "0.2315: ", 5, syllableDictionary.getByHeuristics( "0.2315" ).intValue());
+    // Numbers are a count of digits by heuristics. Sign counts as a syllable, too.
+    assertEquals( "-503,012.12: ", 9, syllableDictionary.getByHeuristics( "-503,012.12" ).intValue());
   }
 
   @Test
   public void testGetSyllableCount() {
     // All should come back with correct answers.
-    assertEquals( "Frowning: ", syllableDictionary.getByLookup( "frowning" ).intValue(), 2 );
-    assertEquals( "Cafe: ", syllableDictionary.getSyllableCount( "cafe" ).intValue(), 2 );
-    assertEquals( "1,904: ", syllableDictionary.getSyllableCount( "1,904" ).intValue(), 4 );
+    assertEquals( "Frowning: ", 2, syllableDictionary.getByLookup( "frowning" ).intValue());
+    assertEquals( "Cafe: ", 2, syllableDictionary.getSyllableCount( "cafe" ).intValue());
+    // Numbers are a count of digits by heuristics.
+    assertEquals( "20,012.12: ", 7, syllableDictionary.getByHeuristics( "20,012.12" ).intValue());
+    // Numbers are a count of digits by heuristics.
+    assertEquals( "1,904: ", 4, syllableDictionary.getByHeuristics( "1,904" ).intValue());
+    // Numbers are a count of digits by heuristics.
+    assertEquals( "0.2315: ", 5, syllableDictionary.getByHeuristics( "0.2315" ).intValue());
+    // Numbers are a count of digits by heuristics. Sign counts as a syllable, too.
+    assertEquals( "-503,012.12: ", 9, syllableDictionary.getByHeuristics( "-503,012.12" ).intValue());
   }
 
   @Test
@@ -66,7 +79,6 @@ public class SyllableDictionaryTest {
         hits++;
       } else {
         misses++;
-//         logger.info("Miss for " + word + " cmudict=" + byLookup + " heuristics=" + byHeuristics);
       }
     }
     double ratio = (double) hits / (double) map.size();

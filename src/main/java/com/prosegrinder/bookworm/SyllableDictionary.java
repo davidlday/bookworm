@@ -144,7 +144,8 @@ public final class SyllableDictionary {
    */
   public Integer getByHeuristics(final String word) {
     // Lower case, fold contractions, and strip silent e off the end.
-    String strippedWord = word.toLowerCase()
+    String strippedWord = word.trim()
+        .toLowerCase()
         .replaceAll("'", "")
         .replaceAll("e$", "");
     int syllableCount = 0;
@@ -155,7 +156,7 @@ public final class SyllableDictionary {
       syllableCount = 2;
     } else if (strippedWord.length() == 1) {
       syllableCount = 1;
-    } else if (strippedWord.matches("^\\d{1,3}(?:[,]\\d{3})*$")) {
+    } else if (isNumeric(strippedWord)) {
       /**
        * Is the word a number?
        *
@@ -165,7 +166,7 @@ public final class SyllableDictionary {
        * eight", or...), but that is left as an exercise for the reader.
        *
        * <p>me: In fiction, people don't usually "read" numbers. It's okay
-       * to simply count the number of digits.
+       * to simply count the number of digits and sign.
        */
       return strippedWord.replaceAll("[,.]", "").length();
     } else {
@@ -220,6 +221,11 @@ public final class SyllableDictionary {
   /** Returns the underlying Map of word:syllable pairs used for lookup. **/
   public Map<String, Integer> getSyllableMap() {
     return Collections.unmodifiableMap(syllableMap);
+  }
+
+  /** Test if a String is numberic. **/
+  public static boolean isNumeric(String word) {
+    return word.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
   }
 
 }
