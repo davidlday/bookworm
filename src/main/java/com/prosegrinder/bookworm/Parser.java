@@ -25,10 +25,12 @@ public final class Parser {
   // public static final String RE_WORDS = new String("[^\\w\u2019\']+");
   public static final String RE_SENTENCES = new String("(?<=[.?!\"])\\s+(?=[\"A-Z])");
   public static final String RE_PARAGRAPHS = new String("\\n+");
-  /** Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes **/
-  /** Only need double quotes when searching out dialogue. **/
+  /**
+   * Only need double quotes when searching out dialogue in fiction.
+   * Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes
+   */
   public static final String RE_DIALOGUE =
-      new String("((?<![\\\\])[\"])((?:.(?!(?<![\\\\])\\1))*.?)\\1");
+      new String("((?<![\\\\])[\"])((?:.(?!(?<![\\\\])[\"]))*.?)[\"\\n]");
 
 
   // TODO: Look into moving all these POV strings to an Enum
