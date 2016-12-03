@@ -12,6 +12,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A Singleton Class for looking up syllables from a dictionary.
  *
@@ -61,10 +64,11 @@ public final class SyllableDictionary {
     Pattern.compile("[^gq]ua[^auieo]"), // neilb: i think this fixes more than it breaks
     Pattern.compile("dnt$")             // neilb: couldn't
   };
-
-
   /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
   private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
+
+  /** Log4j Logger. **/
+  private static final Logger logger = LogManager.getLogger(SyllableDictionary.class);
 
   /** Private constructor to enforce Singelton. **/
   private SyllableDictionary() {
@@ -79,7 +83,7 @@ public final class SyllableDictionary {
       stream.filter(line -> !line.startsWith(";;;"))
           .map(String::toLowerCase)
           .forEach(line -> {
-            String[] parts = line.split(" +");
+            String[] parts = line.split("\\s");
             String word = parts[0];
             if (!word.endsWith(")")) {
               Integer syllables = 0;
@@ -96,7 +100,8 @@ public final class SyllableDictionary {
           });
       System.out.println("Map entries: " + syllableMap.size());
     } catch (IOException ioe) {
-      /** TODO: Log caught IOException. Heuristics will still work. **/
+      logger.warn("Could not load dictionary file: " + ioe);
+      logger.warn("Continuing with only lookup by heuristics.");
     }
   }
 
@@ -120,7 +125,9 @@ public final class SyllableDictionary {
    */
   public Integer getByLookup(final String word) throws NullPointerException {
     if (!syllableMap.containsKey(word)) {
-      throw new NullPointerException("Dictionary does not contain an entry for " + word + ".");
+      String msg = "Dictionary does not contain an entry for " + word + ".";
+      logger.error(msg);
+      throw new NullPointerException(msg);
     } else {
       return syllableMap.get(word);
     }

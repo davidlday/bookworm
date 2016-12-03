@@ -6,11 +6,17 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SyllableDictionaryTest {
 
   private static final SyllableDictionary syllableDictionary = SyllableDictionary.getInstance();
+  /** Log4j Logger. **/
+  private static final Logger logger = LogManager.getLogger(SyllableDictionaryTest.class);
 
   @Rule
   public final ExpectedException thrown = ExpectedException.none();
@@ -56,12 +62,15 @@ public class SyllableDictionaryTest {
       String word = e.getKey();
       Integer byLookup = e.getValue();
       Integer byHeuristics = syllableDictionary.getByHeuristics( word );
-      if ( byHeuristics != byLookup )
-        misses++;
-      else
+      if ( byHeuristics == byLookup ) {
         hits++;
+      } else {
+        misses++;
+//         logger.info("Miss for " + word + " cmudict=" + byLookup + " heuristics=" + byHeuristics);
+      }
     }
-    double ratio = hits / ( hits + misses );
+    double ratio = (double) hits / (double) map.size();
+    logger.info("Percent hits comparing lookup and heuristics: " + ratio);
     assertTrue( "Expected at least 0.8 hit ratio on Heuristics. Ratio=", ratio > 0.8 );
   }
 
