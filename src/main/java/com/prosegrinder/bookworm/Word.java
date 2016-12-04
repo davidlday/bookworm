@@ -1,8 +1,11 @@
 package com.prosegrinder.bookworm;
 
-public final class Word {
+import java.util.Arrays;
+import java.util.List;
 
-  private static final String RE_WORD = new String("^[\\w'-]+$");
+public class Word {
+
+  private static final String RE_WORD = new String("^[\\w’'-]+$");
 
   private final Boolean inDictionary;
   private final Boolean isNumeric;
@@ -39,7 +42,12 @@ public final class Word {
     return this.word;
   }
 
-  public Boolean isNumeric() {
+  public static final Boolean isNumericWord(String text) {
+    /** TODO: Validate it's a word first. **/
+    return SyllableDictionary.getInstance().isNumeric(text);
+  }
+
+  public Boolean isNumericWord() {
     return this.isNumeric;
   }
 
@@ -49,6 +57,23 @@ public final class Word {
 
   public Boolean inDictionary() {
     return this.inDictionary;
+  }
+
+  // Parse a String of text into a List of words.
+  public static final List<Word> parseWords(final Sentence sentence, final Boolean lowerCase) {
+    String localtext = sentence;
+    if (lowerCase) {
+      localtext = Parser.normalizeText(sentence);
+    }
+    Word[] words = Arrays.stream(localtext.split(Word.RE_WORD))
+      .filter(word -> word != "")
+      .toArray(Word[]::new);
+    return Arrays.asList(words);
+  }
+
+  // Parse a String of text into a List of words.
+  public static final List<Word> parseWords(final Sentence sentence) {
+    return Word.parseWords(sentence, true);
   }
 
 }
