@@ -228,4 +228,12 @@ public final class SyllableDictionary {
     return word.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
   }
 
+  public static final Boolean inDictionary(String text) {
+    if (syllableMap.containsKey(text)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 }
