@@ -229,11 +229,7 @@ public final class SyllableDictionary {
   }
 
   public static final Boolean inDictionary(String text) {
-    if (syllableMap.containsKey(text)) {
-      return true;
-    } else {
-      return false;
-    }
+    return syllableMap.containsKey(text);
   }
 
 }
