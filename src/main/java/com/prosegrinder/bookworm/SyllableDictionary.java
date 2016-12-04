@@ -223,9 +223,13 @@ public final class SyllableDictionary {
     return Collections.unmodifiableMap(syllableMap);
   }
 
-  /** Test if a String is numberic. **/
+  /** Test if a String is a typical number. **/
   public static boolean isNumeric(String word) {
-    return word.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
+    if (SyllableDictionary.inDictionary(word)) {
+      return false;
+    } else {
+      return word.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
+    }
   }
 
   public static final Boolean inDictionary(String text) {

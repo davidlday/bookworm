@@ -1,24 +1,28 @@
 package com.prosegrinder.bookworm;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public final class Sentence {
+public final class Sentence extends StoryFragment {
 
-  public static final String RE_SENTENCE = new String("(?<=[.?!\"])\\s+(?=[\"A-Z])");
-  private final Boolean isSentence;
-  private final String sentence;
-  private final List<Word> words;
+  private final List<Word> words = new ArrayList<Word>();
 
   public Sentence(String text) {
-    this.sentence = text;
-    this.isSentence = true;
-    this.words = Word.parseWords(text);
+    super(text);
+    Matcher wordMatcher = this.getWordPattern().matcher(text);
+    while (wordMatcher.find()) {
+      this.words.add(new Word(wordMatcher.group()));
+    }
   }
 
-  public List<Word> getWords() {
+  public final List<Word> getWords() {
     return this.words;
   }
 
-
+  public final Integer getWordCount() {
+    return this.words.size();
+  }
 
 }

@@ -1,50 +1,56 @@
 package com.prosegrinder.bookworm;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Word {
+public class Word extends StoryFragment {
 
-  private static final String RE_WORD = new String("^[\\w’'-]+$");
+  public static final int MIN_SYLLABLES_COMPLEX_WORD = 4;
+  public static final int MIN_CHARS_LONG_WORD = 7;
 
-  private final Boolean inDictionary;
+  private final Boolean isComplexWord;
+  private final Boolean isLongWord;
   private final Boolean isNumeric;
-  private final Boolean isWord;
-  private final Integer syllables;
-  private final String word;
+  private final Integer characterCount;
+  private final Integer syllableCount;
 
   public Word(String text) {
-    /** Make sure this is a single word. **/
+    super(text);
     SyllableDictionary sd = SyllableDictionary.getInstance();
-    if (sd.inDictionary(text)) {
-      this.inDictionary = true;
-      this.isNumeric = true;
-      this.isWord = true;
-    } else if (sd.isNumeric(text)) {
-      this.inDictionary = false;
-      this.isNumeric = true;
-      this.isWord = true;
-    } else if (text.matches(this.RE_WORD)) {
-      this.inDictionary = false;
-      this.isNumeric = false;
-      this.isWord = true;
+    this.syllableCount = sd.getSyllableCount(this.getNormalizedText());
+    this.characterCount = this.getNormalizedText().length();
+    if (this.syllableCount >= MIN_SYLLABLES_COMPLEX_WORD) {
+      /**
+       * TODO: Implement full logic.
+       *
+       * <p>Complex words are:
+       * 1) Those with three or more syllables.
+       * 2) Do not include proper nouns, familiar jargon, or compound words.
+       * 3) Do not include common suffixes (such as -es, -ed, or -ing) as a syllable.
+       *
+       * See: https://en.wikipedia.org/wiki/Gunning_fog_index
+       * See: http://www.readabilityformulas.com/gunning-fog-readability-formula.php
+       **/
+      this.isComplexWord = true;
     } else {
-      /** TODO: Throw an exception. **/
-      this.inDictionary = false;
-      this.isNumeric = false;
-      this.isWord = false;
+      this.isComplexWord = false;
     }
-    this.word = text;
-    this.syllables = sd.getSyllableCount(this.word);
+    if (this.characterCount >= MIN_CHARS_LONG_WORD) {
+      this.isLongWord = true;
+    } else {
+      this.isLongWord = false;
+    }
+    this.isNumeric = sd.isNumeric(this.getNormalizedText());
   }
 
-  public String toString() {
-    return this.word;
+  public Boolean isComplexWord() {
+    return this.isComplexWord;
   }
 
-  public static final Boolean isNumericWord(String text) {
-    /** TODO: Validate it's a word first. **/
-    return SyllableDictionary.getInstance().isNumeric(text);
+  public Boolean isLongWord() {
+    return this.isLongWord;
   }
 
   public Boolean isNumericWord() {
@@ -52,28 +58,11 @@ public class Word {
   }
 
   public Integer getSyllableCount() {
-    return this.syllables;
+    return this.syllableCount;
   }
 
-  public Boolean inDictionary() {
-    return this.inDictionary;
-  }
-
-  // Parse a String of text into a List of words.
-  public static final List<Word> parseWords(final Sentence sentence, final Boolean lowerCase) {
-    String localtext = sentence;
-    if (lowerCase) {
-      localtext = Parser.normalizeText(sentence);
-    }
-    Word[] words = Arrays.stream(localtext.split(Word.RE_WORD))
-      .filter(word -> word != "")
-      .toArray(Word[]::new);
-    return Arrays.asList(words);
-  }
-
-  // Parse a String of text into a List of words.
-  public static final List<Word> parseWords(final Sentence sentence) {
-    return Word.parseWords(sentence, true);
+  public Integer getWordCount() {
+    return 1;
   }
 
 }

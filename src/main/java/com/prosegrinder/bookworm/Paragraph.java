@@ -1,46 +1,33 @@
 package com.prosegrinder.bookworm;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public final class Paragraph {
+public final class Paragraph extends StoryFragment {
 
-  public static final String RE_PARAGRAPHS = new String("\\n+");
-
-
-  public static final String RE_SENTENCE = new String("(?<=[.?!\"])\\s+(?=[\"A-Z])");
-  private final Boolean isParagraph;
-  private final String paragraph;
-  private final List<Word> sentences;
+  private final Integer wordCount;
+  private final List<Sentence> sentences = new ArrayList<Sentence>();
 
   public Paragraph(String text) {
-    this.paragraph = text;
-    this.isParagraph = true;
-    this.sentences = Sentence.parseSentences(text);
-  }
-
-  public List<Word> getWords() {
-    return this.words;
-  }
-
-
-  // Parse a String of text into a List of sentences.
-  public static final List<Sentence> parseSentences(final String text) {
-    // Don't normalize. Case sensitive.
-    String[] sentences = text.trim().split(Parser.RE_SENTENCES);
-    return Arrays.asList(sentences);
-  }
-
-  // Parse a List of paragraphs into a List of sentences.
-  public static final List<Sentence> parseSentences(final List<String> paragraphs) {
-    List<Sentence> sentences = new ArrayList<String>();
-    for (String paragraph: paragraphs) {
-      sentences.addAll(Sentence.parseSentences(paragraph));
+    super(text);
+    int wCount = 0;
+    Matcher sentenceMatcher = this.getSentencePattern().matcher(text);
+    while (sentenceMatcher.find()) {
+      Sentence sentence = new Sentence(sentenceMatcher.group());
+      this.sentences.add(sentence);
+      wCount += sentence.getWordCount();
     }
-    return sentences;
+    this.wordCount = wCount;
   }
 
-  public static void List<Sentence> parseSentences(String text) {
+  public List<Sentence> getSentences() {
+    return this.sentences;
+  }
 
+  public final Integer getWordCount() {
+    return this.wordCount;
   }
 
 }
