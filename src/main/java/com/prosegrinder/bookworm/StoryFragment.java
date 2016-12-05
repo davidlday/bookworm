@@ -8,7 +8,14 @@ import java.util.regex.Pattern;
 public abstract class StoryFragment {
 
   /** Patterns used throughout. **/
-  public static final Pattern PARAGRAPH_PATTERN = Pattern.compile(
+  /**
+   * Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes
+   * Only need double quotes when searching out dialogue in fiction.
+   */
+  private static final Pattern DIALOGUE_PATTERN = Pattern.compile(
+      "((?<![\\\\])[\"])((?:.(?!(?<![\\\\])[\"]))*.?)[\"\\n]"
+  );
+  private static final Pattern PARAGRAPH_PATTERN = Pattern.compile(
       ".*(?=\\n|$)"
   );
   // http://stackoverflow.com/questions/5553410/regular-expression-match-a-sentence#5553924
@@ -53,7 +60,11 @@ public abstract class StoryFragment {
     return StoryFragment.PARAGRAPH_PATTERN;
   }
 
-  public final String toString() {
+  public static final Pattern getDialoguePattern() {
+    return StoryFragment.DIALOGUE_PATTERN;
+  }
+
+  public String toString() {
     return this.getInitialText();
   }
 

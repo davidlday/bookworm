@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Word extends StoryFragment {
+public final class Word extends StoryFragment {
 
   public static final int MIN_SYLLABLES_COMPLEX_WORD = 4;
   public static final int MIN_CHARS_LONG_WORD = 7;
