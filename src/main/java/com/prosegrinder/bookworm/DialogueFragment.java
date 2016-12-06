@@ -35,4 +35,22 @@ public final class DialogueFragment extends StoryFragment {
     return complexWordCount;
   }
 
+  public final Integer getLongWordCount() {
+    int longWordCount = 0;
+    for (Word word: this.getWords()) {
+      if (word.isLongWord()) {
+        longWordCount += 1;
+      }
+    }
+    return longWordCount;
+  }
+
+  public final Integer getWordCharacterCount() {
+    int characterCount = 0;
+    for (Word word: this.getWords()) {
+      characterCount += word.getWordCharacterCount();
+    }
+    return characterCount;
+  }
+
 }

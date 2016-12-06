@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 public abstract class StoryFragment {
 
   /** Patterns used throughout. **/
+  /** TODO: Externalize the Scene Separator (#) as a property **/
+  private static final Pattern SCENE_PATTERN = Pattern.compile(
+      "^\\s*#\\s*\\n.*(?=\\n\\s*#\\s*\\n"
+  );
   /**
    * Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes
    * Only need double quotes when searching out dialogue in fiction.
@@ -77,5 +81,11 @@ public abstract class StoryFragment {
   }
 
   public abstract Integer getWordCount();
+
+  public abstract Integer getComplexWordCount();
+
+  public abstract Integer getLongWordCount();
+
+  public abstract Integer getWordCharacterCount();
 
 }

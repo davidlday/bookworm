@@ -34,4 +34,28 @@ public final class Story extends StoryFragment {
     return this.wordCount;
   }
 
+  public final Integer getComplexWordCount() {
+    int complexWordCount = 0;
+    for (Paragraph paragraph: paragraphs) {
+      complexWordCount += paragraph.getComplexWordCount();
+    }
+    return complexWordCount;
+  }
+
+  public final Integer getLongWordCount() {
+    int longWordCount = 0;
+    for (Paragraph paragraph: paragraphs) {
+      longWordCount += paragraph.getLongWordCount();
+    }
+    return longWordCount;
+  }
+
+  public final Integer getWordCharacterCount() {
+    int characterCount = 0;
+    for (Paragraph paragraph: paragraphs) {
+      characterCount += paragraph.getWordCharacterCount();
+    }
+    return characterCount;
+  }
+
 }

@@ -65,4 +65,24 @@ public final class Word extends StoryFragment {
     return 1;
   }
 
+  public Integer getComplexWordCount() {
+    if (this.isComplexWord()) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  public Integer getLongWordCount() {
+    if (this.isLongWord()) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
+  public final Integer getWordCharacterCount() {
+    return this.characterCount;
+  }
+
 }
