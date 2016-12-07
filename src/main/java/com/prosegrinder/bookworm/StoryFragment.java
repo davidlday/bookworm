@@ -8,9 +8,15 @@ import java.util.regex.Pattern;
 public abstract class StoryFragment {
 
   /** Patterns used throughout. **/
-  /** TODO: Externalize the Scene Separator (#) as a property **/
+  /** TODO: Externalize the chapter.delimiter as a property **/
+  private static final String CHAPTER_DELIMITER = "^\\s*Chapter\\s\\d+\\s*\\n";
+  private static final Pattern CHAPTER_PATTERN = Pattern.compile(
+      ".*(?:^\\s*" + CHAPTER_DELIMITER + "\\s*\\n|$)"
+  );
+  /** TODO: Externalize the scene.delimiter as a property **/
+  private static final String SCENE_DELIMITER = "^\\s#\\s*\\n";
   private static final Pattern SCENE_PATTERN = Pattern.compile(
-      "^\\s*#\\s*\\n.*(?=\\n\\s*#\\s*\\n"
+      ".*(?:" + SCENE_DELIMITER + "|$)"
   );
   /**
    * Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes
