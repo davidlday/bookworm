@@ -83,7 +83,7 @@ public final class SyllableDictionary {
       stream.filter(line -> !line.startsWith(";;;"))
           .map(String::toLowerCase)
           .forEach(line -> {
-            String[] parts = line.split("\\s");
+            String[] parts = line.split("\\s+");
             String word = parts[0];
             if (!word.endsWith(")")) {
               Integer syllables = 0;
@@ -98,7 +98,7 @@ public final class SyllableDictionary {
               }
             }
           });
-      System.out.println("Map entries: " + syllableMap.size());
+      logger.info("Map entries: " + syllableMap.size());
     } catch (IOException ioe) {
       logger.warn("Could not load dictionary file: " + ioe);
       logger.warn("Continuing with only lookup by heuristics.");

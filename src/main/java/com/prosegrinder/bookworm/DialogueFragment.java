@@ -17,6 +17,10 @@ public final class DialogueFragment extends StoryFragment {
     }
   }
 
+  public static final Pattern getPattern() {
+    return StoryFragment.getDialoguePattern();
+  }
+
   public final List<Word> getWords() {
     return this.words;
   }

@@ -7,19 +7,39 @@ import java.util.regex.Pattern;
 
 public final class Paragraph extends StoryFragment {
 
-  private final Integer wordCount;
   private final List<Sentence> sentences = new ArrayList<Sentence>();
+  private final Integer wordCharacterCount;
+  private final Integer wordCount;
+  private final Integer complexWordCount;
+  private final Integer longWordCount;
+  private final Integer sentenceCount;
 
   public Paragraph(String text) {
     super(text);
-    int wCount = 0;
-    Matcher sentenceMatcher = this.getSentencePattern().matcher(text);
+    int wordcharcnt = 0;
+    int wordcnt = 0;
+    int cwordcnt = 0;
+    int lwordcnt = 0;
+    int sentcnt = 0;
+    Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
     while (sentenceMatcher.find()) {
       Sentence sentence = new Sentence(sentenceMatcher.group());
       this.sentences.add(sentence);
-      wCount += sentence.getWordCount();
+      wordcharcnt += sentence.getWordCharacterCount();
+      wordcnt += sentence.getWordCount();
+      cwordcnt += sentence.getComplexWordCount();
+      lwordcnt += sentence.getLongWordCount();
+      sentcnt++;
     }
-    this.wordCount = wCount;
+    this.wordCharacterCount = wordcharcnt;
+    this.wordCount = wordcnt;
+    this.complexWordCount = cwordcnt;
+    this.longWordCount = lwordcnt;
+    this.sentenceCount = sentcnt;
+  }
+
+  public static final Pattern getPattern() {
+    return StoryFragment.getParagraphPattern();
   }
 
   public List<Sentence> getSentences() {
@@ -31,27 +51,19 @@ public final class Paragraph extends StoryFragment {
   }
 
   public final Integer getComplexWordCount() {
-    int complexWordCount = 0;
-    for (Sentence sentence: this.getSentences()) {
-      complexWordCount += sentence.getComplexWordCount();
-    }
-    return complexWordCount;
+    return this.complexWordCount;
   }
 
   public final Integer getLongWordCount() {
-    int longWordCount = 0;
-    for (Sentence sentence: this.getSentences()) {
-      longWordCount += sentence.getLongWordCount();
-    }
-    return longWordCount;
+    return this.longWordCount;
   }
 
   public final Integer getWordCharacterCount() {
-    int characterCount = 0;
-    for (Sentence sentence: this.getSentences()) {
-      characterCount += sentence.getWordCharacterCount();
-    }
-    return characterCount;
+    return this.wordCharacterCount;
+  }
+
+  public final Integer getSentenceCount() {
+    return this.sentenceCount;
   }
 
 }

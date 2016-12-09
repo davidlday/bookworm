@@ -7,14 +7,18 @@ import java.util.regex.Pattern;
 
 public final class Sentence extends StoryFragment {
 
+  public static final String RE_SMART_QUOTES = new String("[“”]");
+
   private final List<Word> words = new ArrayList<Word>();
   private final List<DialogueFragment> dialogueFragments
       = new ArrayList<DialogueFragment>();
+  private Pattern wordPattern;
 
   public Sentence(String text) {
     super(text);
+    this.wordPattern = Word.getPattern();
     Matcher dialogueMatcher = this.getDialoguePattern().matcher(
-        this.getInitialText().replaceAll(Parser.RE_SMART_QUOTES, "\"")
+        this.getInitialText().replaceAll(this.RE_SMART_QUOTES, "\"")
     );
     while (dialogueMatcher.find()) {
       this.dialogueFragments.add(
@@ -25,6 +29,10 @@ public final class Sentence extends StoryFragment {
     while (wordMatcher.find()) {
       this.words.add(new Word(wordMatcher.group()));
     }
+  }
+
+  public static final Pattern getPattern() {
+    return StoryFragment.getSentencePattern();
   }
 
   public final List<Word> getWords() {

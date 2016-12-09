@@ -10,14 +10,14 @@ public abstract class StoryFragment {
   /** Patterns used throughout. **/
   /** TODO: Externalize the chapter.delimiter as a property **/
   private static final String CHAPTER_DELIMITER = "^\\s*Chapter\\s\\d+\\s*\\n";
-  private static final Pattern CHAPTER_PATTERN = Pattern.compile(
-      ".*(?:^\\s*" + CHAPTER_DELIMITER + "\\s*\\n|$)"
-  );
+//   private static final Pattern CHAPTER_PATTERN = Pattern.compile(
+//       ".*(?:" + CHAPTER_DELIMITER + "|$)"
+//   );
   /** TODO: Externalize the scene.delimiter as a property **/
   private static final String SCENE_DELIMITER = "^\\s#\\s*\\n";
-  private static final Pattern SCENE_PATTERN = Pattern.compile(
-      ".*(?:" + SCENE_DELIMITER + "|$)"
-  );
+//   private static final Pattern SCENE_PATTERN = Pattern.compile(
+//       ".*(?:" + SCENE_DELIMITER + "|$)"
+//   );
   /**
    * Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes
    * Only need double quotes when searching out dialogue in fiction.
@@ -74,17 +74,56 @@ public abstract class StoryFragment {
     return StoryFragment.DIALOGUE_PATTERN;
   }
 
-  public String toString() {
+  public static final String getSceneDelimiter() {
+    return StoryFragment.SCENE_DELIMITER;
+  }
+
+  public static final Pattern getScenePattern() {
+    return StoryFragment.getScenePattern(
+      StoryFragment.getSceneDelimiter()
+    );
+  }
+
+  public static final Pattern getScenePattern(String delimiter) {
+    /** TODO: Scenes and Chapters are delimited differently. **/
+    return StoryFragment.getDelimitedPattern(delimiter);
+  }
+
+  public static final String getChapterDelimiter() {
+    return StoryFragment.CHAPTER_DELIMITER;
+  }
+
+  public static final Pattern getChapterPattern() {
+    return StoryFragment.getChapterPattern(
+      StoryFragment.getChapterDelimiter()
+    );
+  }
+
+  public static final Pattern getChapterPattern(String delimiter) {
+    /** TODO: Scenes and Chapters are delimited differently. **/
+    return StoryFragment.getDelimitedPattern(delimiter);
+  }
+
+
+  public static final Pattern getDelimitedPattern(String delimiter) {
+    return Pattern.compile(
+        ".*(?:" + delimiter + "|$)"
+    );
+  }
+
+  public final String toString() {
     return this.getInitialText();
   }
 
-  public String getNormalizedText() {
+  public final String getNormalizedText() {
     return this.normalizedText;
   }
 
-  public String getInitialText() {
+  public final String getInitialText() {
     return this.normalizedText;
   }
+
+//   public abstract Pattern getPattern();
 
   public abstract Integer getWordCount();
 
