@@ -12,11 +12,20 @@ public final class Sentence extends StoryFragment {
   private final List<Word> words = new ArrayList<Word>();
   private final List<DialogueFragment> dialogueFragments
       = new ArrayList<DialogueFragment>();
-  private Pattern wordPattern;
+  private final Integer wordCharacterCount;
+  private final Integer wordCount;
+  private final Integer complexWordCount;
+  private final Integer longWordCount;
 
   public Sentence(String text) {
     super(text);
-    this.wordPattern = Word.getPattern();
+    int wordcharcnt = 0;
+    int wordcnt = 0;
+    int cwordcnt = 0;
+    int lwordcnt = 0;
+    int firstpovcnt = 0;
+    int secondpovcnt = 0;
+    int thirdpovcnt = 0;
     Matcher dialogueMatcher = this.getDialoguePattern().matcher(
         this.getInitialText().replaceAll(this.RE_SMART_QUOTES, "\"")
     );
@@ -25,10 +34,23 @@ public final class Sentence extends StoryFragment {
           new DialogueFragment(dialogueMatcher.group())
       );
     }
-    Matcher wordMatcher = this.getWordPattern().matcher(text);
+    Matcher wordMatcher = Word.getWordPattern().matcher(text);
     while (wordMatcher.find()) {
-      this.words.add(new Word(wordMatcher.group()));
+      Word word = new Word(wordMatcher.group());
+      this.words.add(word);
+      wordcharcnt += word.getWordCharacterCount();
+      wordcnt += word.getWordCount();
+      if (word.isComplexWord()) {
+        cwordcnt += 1;
+      }
+      if (word.isLongWord()) {
+        lwordcnt += 1;
+      }
     }
+    this.wordCharacterCount = wordcharcnt;
+    this.wordCount = wordcnt;
+    this.complexWordCount = cwordcnt;
+    this.longWordCount = lwordcnt;
   }
 
   public static final Pattern getPattern() {
@@ -40,7 +62,7 @@ public final class Sentence extends StoryFragment {
   }
 
   public final Integer getWordCount() {
-    return this.words.size();
+    return this.wordCount;
   }
 
   public final List<DialogueFragment> getDialogueFragments() {
@@ -48,31 +70,15 @@ public final class Sentence extends StoryFragment {
   }
 
   public final Integer getComplexWordCount() {
-    int complexWordCount = 0;
-    for (Word word: this.getWords()) {
-      if (word.isComplexWord()) {
-        complexWordCount += 1;
-      }
-    }
-    return complexWordCount;
+    return this.complexWordCount;
   }
 
   public final Integer getLongWordCount() {
-    int longWordCount = 0;
-    for (Word word: this.getWords()) {
-      if (word.isLongWord()) {
-        longWordCount += 1;
-      }
-    }
-    return longWordCount;
+    return this.longWordCount;
   }
 
   public final Integer getWordCharacterCount() {
-    int characterCount = 0;
-    for (Word word: this.getWords()) {
-      characterCount += word.getWordCharacterCount();
-    }
-    return characterCount;
+    return this.wordCharacterCount;
   }
 
 }

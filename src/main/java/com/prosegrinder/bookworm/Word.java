@@ -32,26 +32,20 @@ public final class Word extends StoryFragment {
           "it", "it's", "it'll", "it'd", "itself",
           "they", "they're", "they'll", "they'd", "they've", "them", "theirs", "themselves"
       ));
-  public static final Set<String> POV_ALL =
-      new HashSet<String>(){{
-          addAll(Parser.POV_FIRST);
-          addAll(Parser.POV_SECOND);
-          addAll(Parser.POV_THIRD);
-      }};
 
   /** Private member variables. **/
   private final Boolean isComplexWord;
   private final Boolean isLongWord;
   private final Boolean isPovWord;
-//   private final Boolean isFirstPerson;
-//   private final Boolean isSecondPerson;
-//   private final Boolean isThirdPerson;
+  private final Boolean isFirstPersonWord;
+  private final Boolean isSecondPersonWord;
+  private final Boolean isThirdPersonWord;
   private final Boolean isNumeric;
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
 
   public Word(String text) {
-    super(text);
+    super(text.trim()); /** For words, we don't care about surrounding space ever. **/
     SyllableDictionary sd = SyllableDictionary.getInstance();
     this.syllableCount = sd.getSyllableCount(this.getNormalizedText());
     this.wordCharacterCount = this.getNormalizedText().length();
@@ -77,12 +71,15 @@ public final class Word extends StoryFragment {
       this.isLongWord = false;
     }
     this.isNumeric = sd.isNumeric(this.getNormalizedText());
-    /** Figure out if the word represents point of view. **/
-    if (Word.POV_ALL.contains(this.getNormalizedText())) {
-      this.isPovWord = true;
-    } else {
-      this.isPovWord = false;
-    }
+    /** Figure out if the word indicates a point of view. **/
+    this.isFirstPersonWord = Word.POV_FIRST.contains(this.getNormalizedText());
+    this.isSecondPersonWord = Word.POV_SECOND.contains(this.getNormalizedText());
+    this.isThirdPersonWord = Word.POV_THIRD.contains(this.getNormalizedText());
+    this.isPovWord = (
+      this.isFirstPersonWord ||
+      this.isSecondPersonWord ||
+      this.isThirdPersonWord
+    );
   }
 
   public static final Pattern getPattern() {
@@ -101,6 +98,22 @@ public final class Word extends StoryFragment {
     return this.isNumeric;
   }
 
+  public final Boolean isPovWord() {
+    return this.isPovWord;
+  }
+
+  public final Boolean isFirstPersonWord() {
+    return this.isFirstPersonWord;
+  }
+
+  public final Boolean isSecondPersonWord() {
+    return this.isSecondPersonWord;
+  }
+
+  public final Boolean isThirdPersonWord() {
+    return this.isThirdPersonWord;
+  }
+
   public final Integer getSyllableCount() {
     return this.syllableCount;
   }
@@ -110,19 +123,11 @@ public final class Word extends StoryFragment {
   }
 
   public final Integer getComplexWordCount() {
-    if (this.isComplexWord()) {
-      return 1;
-    } else {
-      return 0;
-    }
+    return (this.isComplexWord()) ? 1 : 0;
   }
 
   public final Integer getLongWordCount() {
-    if (this.isLongWord()) {
-      return 1;
-    } else {
-      return 0;
-    }
+    return (this.isLongWord()) ? 1 : 0;
   }
 
   public final Integer getWordCharacterCount() {

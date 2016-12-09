@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 public final class Paragraph extends StoryFragment {
 
   private final List<Sentence> sentences = new ArrayList<Sentence>();
+  private final List<DialogueFragment> dialogueFragments
+      = new ArrayList<DialogueFragment>();
   private final Integer wordCharacterCount;
   private final Integer wordCount;
   private final Integer complexWordCount;
