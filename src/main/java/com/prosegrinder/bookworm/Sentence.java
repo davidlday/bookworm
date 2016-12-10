@@ -75,38 +75,47 @@ public final class Sentence extends StoryFragment {
     return this.dialogueFragments;
   }
 
+  @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }
 
+  @Override
   public final Integer getSyllableCount() {
     return this.syllableCount;
   }
 
+  @Override
   public final Integer getWordCount() {
     return this.wordCount;
   }
 
+  @Override
   public final Integer getComplexWordCount() {
     return this.complexWordCount;
   }
 
+  @Override
   public final Integer getLongWordCount() {
     return this.longWordCount;
   }
 
+  @Override
   public final Integer getFirstPersonWordCount() {
     return this.firstPersonWordCount;
   }
 
+  @Override
   public final Integer getSecondPersonWordCount() {
     return this.secondPersonWordCount;
   }
 
+  @Override
   public final Integer getThirdPersonWordCount() {
     return this.thirdPersonWordCount;
   }
 
+  @Override
   public final Integer getPovWordCount() {
     return this.povWordCount;
   }

@@ -46,21 +46,10 @@ public abstract class StoryFragment {
 
   private final String initialText;
   private final String normalizedText;
-  private final Integer wordCharacterCount;
-//   private final Integer syllableCount;
-//   private final Integer wordCount;
-//   private final Integer complexWordCount;
-//   private final Integer longWordCount;
-//   private final Integer povWordCount;
-//   private final Integer firstPersonWordCount;
-//   private final Integer secondPersonWordCount;
-//   private final Integer thirdPersonWordCount;
-
 
   public StoryFragment(String text) {
     this.initialText = text;
     this.normalizedText = this.normalizeText(text);
-    this.wordCharacterCount = this.getWordCharacterCount();
   }
 
   public static final String normalizeText(String text) {
