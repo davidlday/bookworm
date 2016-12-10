@@ -21,10 +21,23 @@ public final class Paragraph extends StoryFragment {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
   private final Integer sentenceCount;
+  private final Integer dialogueWordCount;
 
-  public Paragraph(String text) {
+  public Paragraph(final String text) {
     super(text);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
+    Matcher dialogueMatcher = super.getDialoguePattern().matcher(
+        StoryFragment.convertSmartQuotes(this.getInitialText())
+    );
+    while (dialogueMatcher.find()) {
+      this.dialogueFragments.add(
+          new DialogueFragment(dialogueMatcher.group())
+      );
+    }
+    this.dialogueWordCount = dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getWordCharacterCount())
+        .sum();
+
     while (sentenceMatcher.find()) {
       this.sentences.add(new Sentence(sentenceMatcher.group()));
     }
@@ -68,6 +81,10 @@ public final class Paragraph extends StoryFragment {
 
   public final Integer getSentenceCount() {
     return this.sentenceCount;
+  }
+
+  public final List<DialogueFragment> getDialogueFragments() {
+    return this.dialogueFragments;
   }
 
   @Override

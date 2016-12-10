@@ -18,7 +18,7 @@ public final class DialogueFragment extends StoryFragment {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
 
-  public DialogueFragment(String text) {
+  public DialogueFragment(final String text) {
     super(text);
     Matcher wordMatcher = this.getWordPattern().matcher(text);
     while (wordMatcher.find()) {

@@ -44,9 +44,9 @@ public final class Word extends StoryFragment {
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
 
-  public Word(String text) {
+  public Word(final String text) {
     super(text.trim()); /** For words, we don't care about surrounding space ever. **/
-    SyllableDictionary sd = SyllableDictionary.getInstance();
+    final SyllableDictionary sd = SyllableDictionary.getInstance();
     this.syllableCount = sd.getSyllableCount(this.getNormalizedText());
     this.wordCharacterCount = this.getNormalizedText().length();
     if (this.syllableCount >= MIN_SYLLABLES_COMPLEX_WORD) {
@@ -65,11 +65,7 @@ public final class Word extends StoryFragment {
     } else {
       this.isComplexWord = false;
     }
-    if (this.wordCharacterCount >= MIN_CHARS_LONG_WORD) {
-      this.isLongWord = true;
-    } else {
-      this.isLongWord = false;
-    }
+    this.isLongWord = (this.wordCharacterCount >= MIN_CHARS_LONG_WORD) ? true : false;
     this.isNumeric = sd.isNumeric(this.getNormalizedText());
     /** Figure out if the word indicates a point of view. **/
     this.isFirstPersonWord = Word.POV_FIRST.contains(this.getNormalizedText());
@@ -98,6 +94,22 @@ public final class Word extends StoryFragment {
     return this.isNumeric;
   }
 
+  public final Boolean isFirstPersonWord() {
+    return this.isFirstPersonWord;
+  }
+
+  public final Boolean isSecondPersonWord() {
+    return this.isSecondPersonWord;
+  }
+
+  public final Boolean isThirdPersonWord() {
+    return this.isThirdPersonWord;
+  }
+
+  public final Boolean isPovWord() {
+    return this.isPovWord;
+  }
+
   @Override
   public final Integer getSyllableCount() {
     return this.syllableCount;
@@ -121,22 +133,6 @@ public final class Word extends StoryFragment {
   @Override
   public final Integer getLongWordCount() {
     return (this.isLongWord()) ? 1 : 0;
-  }
-
-  public final Boolean isFirstPersonWord() {
-    return this.isFirstPersonWord;
-  }
-
-  public final Boolean isSecondPersonWord() {
-    return this.isSecondPersonWord;
-  }
-
-  public final Boolean isThirdPersonWord() {
-    return this.isThirdPersonWord;
-  }
-
-  public final Boolean isPovWord() {
-    return this.isPovWord;
   }
 
   @Override

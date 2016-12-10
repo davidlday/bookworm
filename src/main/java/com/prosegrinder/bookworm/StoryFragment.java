@@ -44,15 +44,17 @@ public abstract class StoryFragment {
       "[\\w’'-]+"
   );
 
+  public static final String RE_SMART_QUOTES = new String("[“”]");
+
   private final String initialText;
   private final String normalizedText;
 
-  public StoryFragment(String text) {
+  public StoryFragment(final String text) {
     this.initialText = text;
     this.normalizedText = this.normalizeText(text);
   }
 
-  public static final String normalizeText(String text) {
+  public static final String normalizeText(final String text) {
     return text.trim().toLowerCase();
   }
 
@@ -102,11 +104,14 @@ public abstract class StoryFragment {
     return StoryFragment.getDelimitedPattern(delimiter);
   }
 
-
   public static final Pattern getDelimitedPattern(String delimiter) {
     return Pattern.compile(
         ".*(?:" + delimiter + "|$)"
     );
+  }
+
+  public static final String convertSmartQuotes(final String text) {
+    return text.replaceAll(StoryFragment.RE_SMART_QUOTES, "\"");
   }
 
   public final String toString() {

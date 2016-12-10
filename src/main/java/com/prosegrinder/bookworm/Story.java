@@ -21,7 +21,7 @@ public final class Story extends StoryFragment {
   private final Integer sentenceCount;
   private final Integer paragraphCount;
 
-  public Story(String text) {
+  public Story(final String text) {
     super(text);
     Matcher paragraphMatcher = this.getParagraphPattern().matcher(text);
     while (paragraphMatcher.find()) {

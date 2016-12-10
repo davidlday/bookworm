@@ -123,7 +123,7 @@ public final class SyllableDictionary {
    * @throws NullPointerException throws if the word is not in the underlying dictionary
    *
    */
-  public Integer getByLookup(final String word) throws NullPointerException {
+  public final Integer getByLookup(final String word) throws NullPointerException {
     if (!syllableMap.containsKey(word)) {
       String msg = "Dictionary does not contain an entry for " + word + ".";
       logger.error(msg);
@@ -142,7 +142,7 @@ public final class SyllableDictionary {
    * @return  the approximate number of syllables in the word
    *
    */
-  public Integer getByHeuristics(final String word) {
+  public final Integer getByHeuristics(final String word) {
     // Lower case, fold contractions, and strip silent e off the end.
     String strippedWord = word.trim()
         .toLowerCase()
@@ -210,7 +210,7 @@ public final class SyllableDictionary {
    * @return  the approximate number of syllables in the word
    *
    */
-  public Integer getSyllableCount(final String word) {
+  public final Integer getSyllableCount(final String word) {
     if (syllableMap.containsKey(word)) {
       return syllableMap.get(word);
     } else {
@@ -219,12 +219,12 @@ public final class SyllableDictionary {
   }
 
   /** Returns the underlying Map of word:syllable pairs used for lookup. **/
-  public Map<String, Integer> getSyllableMap() {
+  public final Map<String, Integer> getSyllableMap() {
     return Collections.unmodifiableMap(syllableMap);
   }
 
   /** Test if a String is a typical number. **/
-  public static boolean isNumeric(String word) {
+  public static final boolean isNumeric(String word) {
     if (SyllableDictionary.inDictionary(word)) {
       return false;
     } else {
