@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.prosegrinder.bookworm.enums.PovType;
+
 public final class Prose extends ProseFragment {
 
   private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
@@ -24,7 +26,9 @@ public final class Prose extends ProseFragment {
   private final Integer thirdPersonWordCount;
   private final Integer sentenceCount;
   private final Integer paragraphCount;
+  private final Integer dialogueSyllableCount;
   private final Integer dialogueWordCount;
+  private final Integer narrativeSyllableCount;
   private final Integer narrativeWordCount;
 
   public Prose(final String text) {
@@ -49,11 +53,17 @@ public final class Prose extends ProseFragment {
           new NarrativeFragment(narrative)
       );
     }
+    this.dialogueSyllableCount = dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getSyllableCount())
+        .sum();
     this.dialogueWordCount = dialogueFragments.stream()
-        .mapToInt( fragment -> fragment.getWordCharacterCount())
+        .mapToInt( fragment -> fragment.getWordCount())
+        .sum();
+    this.narrativeSyllableCount = narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getSyllableCount())
         .sum();
     this.narrativeWordCount = narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getWordCharacterCount())
+        .mapToInt( fragment -> fragment.getWordCount())
         .sum();
     this.wordCharacterCount = paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getWordCharacterCount())
@@ -73,19 +83,48 @@ public final class Prose extends ProseFragment {
     this.povWordCount = paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getPovWordCount())
         .sum();
-    this.firstPersonWordCount = paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getFirstPersonWordCount())
-        .sum();
-    this.secondPersonWordCount = paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getSecondPersonWordCount())
-        .sum();
-    this.thirdPersonWordCount = paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getThirdPersonWordCount())
-        .sum();
     this.sentenceCount = paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getSentenceCount())
         .sum();
     this.paragraphCount = paragraphs.size();
+    /** We only consider POV words found in narrative since dialogue is always first person. **/
+    this.firstPersonWordCount = narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonWordCount = narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonWordCount = narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
+        .sum();
+  }
+
+  public final List<DialogueFragment> getDialogueFragments() {
+    return this.dialogueFragments;
+  }
+
+  public final Integer getDialogueWordCount() {
+    return this.dialogueWordCount;
+  }
+
+  public final List<NarrativeFragment> getNarrativeFragments() {
+    return this.narrativeFragments;
+  }
+
+  public final Integer getNarrativeWordCount() {
+    return this.narrativeWordCount;
+  }
+
+  public final Enum getPov() {
+    if (this.getFirstPersonWordCount() > 0) {
+      return PovType.FIRST;
+    } else if (this.getSecondPersonWordCount() > 0) {
+      return PovType.SECOND;
+    } else if (this.getThirdPersonWordCount() > 0) {
+      return PovType.THIRD;
+    } else {
+      return PovType.UNKNOWN;
+    }
   }
 
   public final List<Paragraph> getParagraphs() {
