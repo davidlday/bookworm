@@ -23,7 +23,7 @@ public abstract class StoryFragment {
    * Only need double quotes when searching out dialogue in fiction.
    */
   private static final Pattern DIALOGUE_PATTERN = Pattern.compile(
-      "((?<![\\\\])[\"])((?:.(?!(?<![\\\\])[\"]))*.?)[\"\\n]"
+      "[\"]((?:.(?![\"]))*.?)[\"\\n]"
   );
   private static final Pattern PARAGRAPH_PATTERN = Pattern.compile(
       ".*(?=\\n|$)"
@@ -123,14 +123,95 @@ public abstract class StoryFragment {
     return this.normalizedText;
   }
 
-//   public abstract Pattern getPattern();
+  public abstract Integer getWordCharacterCount();
+
+  protected static final Integer getWordCharacterCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getWordCharacterCount();
+    }
+    return count;
+  }
+
+  public abstract Integer getSyllableCount();
+
+  protected static final Integer getSyllableCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getSyllableCount();
+    }
+    return count;
+  }
 
   public abstract Integer getWordCount();
 
+  protected static final Integer getWordCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getWordCount();
+    }
+    return count;
+  }
+
   public abstract Integer getComplexWordCount();
+
+  protected static final Integer getComplexWordCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getComplexWordCount();
+    }
+    return count;
+  }
 
   public abstract Integer getLongWordCount();
 
-  public abstract Integer getWordCharacterCount();
+  protected static final Integer getLongWordCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getLongWordCount();
+    }
+    return count;
+  }
+
+  public abstract Integer getFirstPersonWordCount();
+
+  protected static final Integer getFirstPersonWordCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getFirstPersonWordCount();
+    }
+    return count;
+  }
+
+  public abstract Integer getSecondPersonWordCount();
+
+  protected static final Integer getSecondPersonWordCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getSecondPersonWordCount();
+    }
+    return count;
+  }
+
+  public abstract Integer getThirdPersonWordCount();
+
+  protected static final Integer getThirdPersonWordCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getThirdPersonWordCount();
+    }
+    return count;
+  }
+
+  public abstract Integer getPovWordCount();
+
+  protected static final Integer getPovWordCount(List<StoryFragment> fragments) {
+    int count = 0;
+    for (StoryFragment fragment: fragments) {
+      count += fragment.getPovWordCount();
+    }
+    return count;
+  }
+
 
 }

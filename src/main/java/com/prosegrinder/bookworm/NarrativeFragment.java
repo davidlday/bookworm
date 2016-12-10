@@ -5,13 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Sentence extends StoryFragment {
-
-  public static final String RE_SMART_QUOTES = new String("[“”]");
+public final class NarrativeFragment extends StoryFragment {
 
   private final List<Word> words = new ArrayList<Word>();
-  private final List<DialogueFragment> dialogueFragments
-      = new ArrayList<DialogueFragment>();
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
   private final Integer wordCount;
@@ -22,20 +18,11 @@ public final class Sentence extends StoryFragment {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
 
-  public Sentence(String text) {
+  public NarrativeFragment(String text) {
     super(text);
-    Matcher dialogueMatcher = super.getDialoguePattern().matcher(
-        this.getInitialText().replaceAll(this.RE_SMART_QUOTES, "\"")
-    );
-    while (dialogueMatcher.find()) {
-      this.dialogueFragments.add(
-          new DialogueFragment(dialogueMatcher.group())
-      );
-    }
-    Matcher wordMatcher = Word.getWordPattern().matcher(text);
+    Matcher wordMatcher = this.getWordPattern().matcher(text);
     while (wordMatcher.find()) {
-      Word word = new Word(wordMatcher.group());
-      this.words.add(word);
+      this.words.add(new Word(wordMatcher.group()));
     }
     this.wordCharacterCount = super.getWordCharacterCount(
         (List<StoryFragment>) (Object) words
@@ -66,16 +53,8 @@ public final class Sentence extends StoryFragment {
     );
   }
 
-  public static final Pattern getPattern() {
-    return StoryFragment.getSentencePattern();
-  }
-
   public final List<Word> getWords() {
     return this.words;
-  }
-
-  public final List<DialogueFragment> getDialogueFragments() {
-    return this.dialogueFragments;
   }
 
   public final Integer getWordCharacterCount() {

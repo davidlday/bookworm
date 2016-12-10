@@ -98,24 +98,12 @@ public final class Word extends StoryFragment {
     return this.isNumeric;
   }
 
-  public final Boolean isPovWord() {
-    return this.isPovWord;
-  }
-
-  public final Boolean isFirstPersonWord() {
-    return this.isFirstPersonWord;
-  }
-
-  public final Boolean isSecondPersonWord() {
-    return this.isSecondPersonWord;
-  }
-
-  public final Boolean isThirdPersonWord() {
-    return this.isThirdPersonWord;
-  }
-
   public final Integer getSyllableCount() {
     return this.syllableCount;
+  }
+
+  public final Integer getWordCharacterCount() {
+    return this.wordCharacterCount;
   }
 
   public final Integer getWordCount() {
@@ -130,8 +118,36 @@ public final class Word extends StoryFragment {
     return (this.isLongWord()) ? 1 : 0;
   }
 
-  public final Integer getWordCharacterCount() {
-    return this.wordCharacterCount;
+  public final Boolean isFirstPersonWord() {
+    return this.isFirstPersonWord;
+  }
+
+  public final Boolean isSecondPersonWord() {
+    return this.isSecondPersonWord;
+  }
+
+  public final Boolean isThirdPersonWord() {
+    return this.isThirdPersonWord;
+  }
+
+  public final Boolean isPovWord() {
+    return this.isPovWord;
+  }
+
+  public final Integer getFirstPersonWordCount() {
+    return (this.isFirstPersonWord()) ? 1 : 0;
+  }
+
+  public final Integer getSecondPersonWordCount() {
+    return (this.isSecondPersonWord()) ? 1 : 0;
+  }
+
+  public final Integer getThirdPersonWordCount() {
+    return (this.isThirdPersonWord()) ? 1 : 0;
+  }
+
+  public final Integer getPovWordCount() {
+    return (this.isPovWord()) ? 1 : 0;
   }
 
 }
