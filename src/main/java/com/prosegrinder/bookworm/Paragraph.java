@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
 public final class Paragraph extends ProseFragment {
 
   private final List<Sentence> sentences = new ArrayList<Sentence>();
-  private final List<DialogueFragment> dialogueFragments
-      = new ArrayList<DialogueFragment>();
 
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
@@ -21,23 +19,10 @@ public final class Paragraph extends ProseFragment {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
   private final Integer sentenceCount;
-  private final Integer dialogueWordCount;
 
   public Paragraph(final String text) {
     super(text);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
-    Matcher dialogueMatcher = super.getDialoguePattern().matcher(
-        ProseFragment.convertSmartQuotes(this.getInitialText())
-    );
-    while (dialogueMatcher.find()) {
-      this.dialogueFragments.add(
-          new DialogueFragment(dialogueMatcher.group())
-      );
-    }
-    this.dialogueWordCount = dialogueFragments.stream()
-        .mapToInt( fragment -> fragment.getWordCharacterCount())
-        .sum();
-
     while (sentenceMatcher.find()) {
       this.sentences.add(new Sentence(sentenceMatcher.group()));
     }
@@ -81,10 +66,6 @@ public final class Paragraph extends ProseFragment {
 
   public final Integer getSentenceCount() {
     return this.sentenceCount;
-  }
-
-  public final List<DialogueFragment> getDialogueFragments() {
-    return this.dialogueFragments;
   }
 
   @Override

@@ -8,6 +8,10 @@ import java.util.regex.Pattern;
 public final class Prose extends ProseFragment {
 
   private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
+  private final List<DialogueFragment> dialogueFragments
+      = new ArrayList<DialogueFragment>();
+  private final List<NarrativeFragment> narrativeFragments
+      = new ArrayList<NarrativeFragment>();
 
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
@@ -20,6 +24,7 @@ public final class Prose extends ProseFragment {
   private final Integer thirdPersonWordCount;
   private final Integer sentenceCount;
   private final Integer paragraphCount;
+  private final Integer dialogueWordCount;
 
   public Prose(final String text) {
     super(text);
@@ -28,6 +33,24 @@ public final class Prose extends ProseFragment {
       Paragraph paragraph = new Paragraph(paragraphMatcher.group());
       this.paragraphs.add(paragraph);
     }
+    final Pattern dialoguePattern = this.getDialoguePattern();
+    Matcher dialogueMatcher = dialoguePattern.matcher(
+        ProseFragment.convertSmartQuotes(this.getInitialText())
+    );
+    while (dialogueMatcher.find()) {
+      this.dialogueFragments.add(
+          new DialogueFragment(dialogueMatcher.group())
+      );
+    }
+    for (String narrative: dialoguePattern.split(
+        ProseFragment.convertSmartQuotes(this.getInitialText()))) {
+      this.narrativeFragments.add(
+          new NarrativeFragment(narrative)
+      );
+    }
+    this.dialogueWordCount = dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getWordCharacterCount())
+        .sum();
     this.wordCharacterCount = paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getWordCharacterCount())
         .sum();
