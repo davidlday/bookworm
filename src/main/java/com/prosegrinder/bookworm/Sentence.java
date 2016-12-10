@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Sentence extends StoryFragment {
+public final class Sentence extends ProseFragment {
 
   private final List<Word> words = new ArrayList<Word>();
   private final Integer wordCharacterCount;
@@ -52,7 +52,7 @@ public final class Sentence extends StoryFragment {
   }
 
   public static final Pattern getPattern() {
-    return StoryFragment.getSentencePattern();
+    return ProseFragment.getSentencePattern();
   }
 
   public final List<Word> getWords() {

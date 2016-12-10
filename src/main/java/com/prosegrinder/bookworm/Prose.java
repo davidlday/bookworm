@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Story extends StoryFragment {
+public final class Prose extends ProseFragment {
 
   private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
 
@@ -21,7 +21,7 @@ public final class Story extends StoryFragment {
   private final Integer sentenceCount;
   private final Integer paragraphCount;
 
-  public Story(final String text) {
+  public Prose(final String text) {
     super(text);
     Matcher paragraphMatcher = this.getParagraphPattern().matcher(text);
     while (paragraphMatcher.find()) {
@@ -71,6 +71,30 @@ public final class Story extends StoryFragment {
 
   public final Integer getSentenceCount() {
     return this.sentenceCount;
+  }
+
+  public final Double getAverageSyllablesPerWord() {
+    return (double) this.getSyllableCount() / (double) this.getWordCount();
+  }
+
+  public final Double getAverageSyllablesPerSentence() {
+    return (double) this.getSyllableCount() / (double) this.getSentenceCount();
+  }
+
+  public final Double getAverageSyllablesPerParagraph() {
+    return (double) this.getSyllableCount() / (double) this.getParagraphCount();
+  }
+
+  public final Double getAverageWordsPerSentence() {
+    return (double) this.getWordCount() / (double) this.getSentenceCount();
+  }
+
+  public final Double getAverageWordsPerParagraph() {
+    return (double) this.getWordCount() / (double) this.getParagraphCount();
+  }
+
+  public final Double getAverageSentencesPerParagraph() {
+    return (double) this.getSentenceCount() / (double) this.getParagraphCount();
   }
 
   @Override

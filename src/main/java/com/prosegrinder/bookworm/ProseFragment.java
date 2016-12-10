@@ -5,17 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class StoryFragment {
+public abstract class ProseFragment {
 
   /** Patterns used throughout. Will eventually move to a properties file. **/
-  private static final String CHAPTER_DELIMITER = "^\\s*Chapter\\s\\d+\\s*\\n";
-//   private static final Pattern CHAPTER_PATTERN = Pattern.compile(
-//       ".*(?:" + CHAPTER_DELIMITER + "|$)"
-//   );
-  private static final String SCENE_DELIMITER = "^\\s#\\s*\\n";
-//   private static final Pattern SCENE_PATTERN = Pattern.compile(
-//       ".*(?:" + SCENE_DELIMITER + "|$)"
-//   );
   /**
    * Variation on http://www.metaltoad.com/blog/regex-quoted-string-escapable-quotes
    * Only need double quotes when searching out dialogue in fiction.
@@ -49,7 +41,7 @@ public abstract class StoryFragment {
   private final String initialText;
   private final String normalizedText;
 
-  public StoryFragment(final String text) {
+  public ProseFragment(final String text) {
     this.initialText = text;
     this.normalizedText = this.normalizeText(text);
   }
@@ -59,49 +51,19 @@ public abstract class StoryFragment {
   }
 
   public static final Pattern getWordPattern() {
-    return StoryFragment.WORD_PATTERN;
+    return ProseFragment.WORD_PATTERN;
   }
 
   public static final Pattern getSentencePattern() {
-    return StoryFragment.SENTENCE_PATTERN;
+    return ProseFragment.SENTENCE_PATTERN;
   }
 
   public static final Pattern getParagraphPattern() {
-    return StoryFragment.PARAGRAPH_PATTERN;
+    return ProseFragment.PARAGRAPH_PATTERN;
   }
 
   public static final Pattern getDialoguePattern() {
-    return StoryFragment.DIALOGUE_PATTERN;
-  }
-
-  public static final String getSceneDelimiter() {
-    return StoryFragment.SCENE_DELIMITER;
-  }
-
-  public static final Pattern getScenePattern() {
-    return StoryFragment.getScenePattern(
-      StoryFragment.getSceneDelimiter()
-    );
-  }
-
-  public static final Pattern getScenePattern(String delimiter) {
-    /** TODO: Scenes and Chapters are delimited differently. **/
-    return StoryFragment.getDelimitedPattern(delimiter);
-  }
-
-  public static final String getChapterDelimiter() {
-    return StoryFragment.CHAPTER_DELIMITER;
-  }
-
-  public static final Pattern getChapterPattern() {
-    return StoryFragment.getChapterPattern(
-      StoryFragment.getChapterDelimiter()
-    );
-  }
-
-  public static final Pattern getChapterPattern(String delimiter) {
-    /** TODO: Scenes and Chapters are delimited differently. **/
-    return StoryFragment.getDelimitedPattern(delimiter);
+    return ProseFragment.DIALOGUE_PATTERN;
   }
 
   public static final Pattern getDelimitedPattern(String delimiter) {
@@ -111,7 +73,7 @@ public abstract class StoryFragment {
   }
 
   public static final String convertSmartQuotes(final String text) {
-    return text.replaceAll(StoryFragment.RE_SMART_QUOTES, "\"");
+    return text.replaceAll(ProseFragment.RE_SMART_QUOTES, "\"");
   }
 
   public final String toString() {

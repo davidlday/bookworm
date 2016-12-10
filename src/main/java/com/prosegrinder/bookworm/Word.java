@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Word extends StoryFragment {
+public final class Word extends ProseFragment {
 
   /** Magic numbers for determining complex and long words. **/
   public static final int MIN_SYLLABLES_COMPLEX_WORD = 4;
@@ -79,7 +79,7 @@ public final class Word extends StoryFragment {
   }
 
   public static final Pattern getPattern() {
-    return StoryFragment.getWordPattern();
+    return ProseFragment.getWordPattern();
   }
 
   public final Boolean isComplexWord() {

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Paragraph extends StoryFragment {
+public final class Paragraph extends ProseFragment {
 
   private final List<Sentence> sentences = new ArrayList<Sentence>();
   private final List<DialogueFragment> dialogueFragments
@@ -27,7 +27,7 @@ public final class Paragraph extends StoryFragment {
     super(text);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
     Matcher dialogueMatcher = super.getDialoguePattern().matcher(
-        StoryFragment.convertSmartQuotes(this.getInitialText())
+        ProseFragment.convertSmartQuotes(this.getInitialText())
     );
     while (dialogueMatcher.find()) {
       this.dialogueFragments.add(
@@ -72,7 +72,7 @@ public final class Paragraph extends StoryFragment {
   }
 
   public static final Pattern getPattern() {
-    return StoryFragment.getParagraphPattern();
+    return ProseFragment.getParagraphPattern();
   }
 
   public final List<Sentence> getSentences() {
