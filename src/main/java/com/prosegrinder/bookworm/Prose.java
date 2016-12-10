@@ -25,6 +25,7 @@ public final class Prose extends ProseFragment {
   private final Integer sentenceCount;
   private final Integer paragraphCount;
   private final Integer dialogueWordCount;
+  private final Integer narrativeWordCount;
 
   public Prose(final String text) {
     super(text);
@@ -49,6 +50,9 @@ public final class Prose extends ProseFragment {
       );
     }
     this.dialogueWordCount = dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getWordCharacterCount())
+        .sum();
+    this.narrativeWordCount = narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getWordCharacterCount())
         .sum();
     this.wordCharacterCount = paragraphs.stream()
