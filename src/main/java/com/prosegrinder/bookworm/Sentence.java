@@ -34,36 +34,33 @@ public final class Sentence extends StoryFragment {
     }
     Matcher wordMatcher = Word.getWordPattern().matcher(text);
     while (wordMatcher.find()) {
-      Word word = new Word(wordMatcher.group());
-      this.words.add(word);
+      this.words.add(new Word(wordMatcher.group()));
     }
-    this.wordCharacterCount = super.getWordCharacterCount(
-        (List<StoryFragment>) (Object) words
-    );
-    this.syllableCount = super.getSyllableCount(
-        (List<StoryFragment>) (Object) words
-    );
-    this.wordCount = super.getWordCount(
-        (List<StoryFragment>) (Object) words
-    );
-    this.complexWordCount = super.getComplexWordCount(
-        (List<StoryFragment>) (Object) words
-    );
-    this.longWordCount = super.getLongWordCount(
-          (List<StoryFragment>) (Object) words
-    );
-    this.firstPersonWordCount = super.getFirstPersonWordCount(
-          (List<StoryFragment>) (Object) words
-    );
-    this.secondPersonWordCount = super.getSecondPersonWordCount(
-          (List<StoryFragment>) (Object) words
-    );
-    this.thirdPersonWordCount = super.getThirdPersonWordCount(
-          (List<StoryFragment>) (Object) words
-    );
-    this.povWordCount = this.getPovWordCount(
-          (List<StoryFragment>) (Object) words
-    );
+    this.wordCharacterCount = words.stream()
+        .mapToInt( word -> word.getWordCharacterCount())
+        .sum();
+    this.syllableCount = words.stream()
+        .mapToInt( word -> word.getSyllableCount())
+        .sum();
+    this.wordCount = words.size();
+    this.complexWordCount = words.stream()
+        .mapToInt( word -> word.getComplexWordCount())
+        .sum();
+    this.longWordCount = words.stream()
+        .mapToInt( word -> word.getLongWordCount())
+        .sum();
+    this.povWordCount = words.stream()
+        .mapToInt( word -> word.getPovWordCount())
+        .sum();
+    this.firstPersonWordCount = words.stream()
+        .mapToInt( word -> word.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonWordCount = words.stream()
+        .mapToInt( word -> word.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonWordCount = words.stream()
+        .mapToInt( word -> word.getThirdPersonWordCount())
+        .sum();
   }
 
   public static final Pattern getPattern() {

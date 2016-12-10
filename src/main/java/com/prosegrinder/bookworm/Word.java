@@ -98,22 +98,27 @@ public final class Word extends StoryFragment {
     return this.isNumeric;
   }
 
+  @Override
   public final Integer getSyllableCount() {
     return this.syllableCount;
   }
 
+  @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }
 
+  @Override
   public final Integer getWordCount() {
     return 1;
   }
 
+  @Override
   public final Integer getComplexWordCount() {
     return (this.isComplexWord()) ? 1 : 0;
   }
 
+  @Override
   public final Integer getLongWordCount() {
     return (this.isLongWord()) ? 1 : 0;
   }
@@ -134,18 +139,22 @@ public final class Word extends StoryFragment {
     return this.isPovWord;
   }
 
+  @Override
   public final Integer getFirstPersonWordCount() {
     return (this.isFirstPersonWord()) ? 1 : 0;
   }
 
+  @Override
   public final Integer getSecondPersonWordCount() {
     return (this.isSecondPersonWord()) ? 1 : 0;
   }
 
+  @Override
   public final Integer getThirdPersonWordCount() {
     return (this.isThirdPersonWord()) ? 1 : 0;
   }
 
+  @Override
   public final Integer getPovWordCount() {
     return (this.isPovWord()) ? 1 : 0;
   }

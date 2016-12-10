@@ -20,43 +20,41 @@ public final class Paragraph extends StoryFragment {
   private final Integer firstPersonWordCount;
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
-
   private final Integer sentenceCount;
 
   public Paragraph(String text) {
     super(text);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
     while (sentenceMatcher.find()) {
-      Sentence sentence = new Sentence(sentenceMatcher.group());
-      this.sentences.add(sentence);
+      this.sentences.add(new Sentence(sentenceMatcher.group()));
     }
-    this.wordCharacterCount = super.getWordCharacterCount(
-        (List<StoryFragment>) (Object) sentences
-    );
-    this.syllableCount = super.getSyllableCount(
-        (List<StoryFragment>) (Object) sentences
-    );
-    this.wordCount = super.getWordCount(
-        (List<StoryFragment>) (Object) sentences
-    );
-    this.complexWordCount = super.getComplexWordCount(
-        (List<StoryFragment>) (Object) sentences
-    );
-    this.longWordCount = super.getLongWordCount(
-          (List<StoryFragment>) (Object) sentences
-    );
-    this.firstPersonWordCount = super.getFirstPersonWordCount(
-          (List<StoryFragment>) (Object) sentences
-    );
-    this.secondPersonWordCount = super.getSecondPersonWordCount(
-          (List<StoryFragment>) (Object) sentences
-    );
-    this.thirdPersonWordCount = super.getThirdPersonWordCount(
-          (List<StoryFragment>) (Object) sentences
-    );
-    this.povWordCount = this.getPovWordCount(
-          (List<StoryFragment>) (Object) sentences
-    );
+    this.wordCharacterCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getWordCharacterCount())
+        .sum();
+    this.syllableCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getSyllableCount())
+        .sum();
+    this.wordCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getWordCount())
+        .sum();
+    this.complexWordCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getComplexWordCount())
+        .sum();
+    this.longWordCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getLongWordCount())
+        .sum();
+    this.povWordCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getPovWordCount())
+        .sum();
+    this.firstPersonWordCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonWordCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonWordCount = sentences.stream()
+        .mapToInt( sentence -> sentence.getThirdPersonWordCount())
+        .sum();
     this.sentenceCount = sentences.size();
   }
 
@@ -64,48 +62,57 @@ public final class Paragraph extends StoryFragment {
     return StoryFragment.getParagraphPattern();
   }
 
-  public List<Sentence> getSentences() {
+  public final List<Sentence> getSentences() {
     return this.sentences;
-  }
-
-  public final Integer getWordCharacterCount() {
-    return this.wordCharacterCount;
-  }
-
-  public final Integer getSyllableCount() {
-    return this.syllableCount;
-  }
-
-  public final Integer getWordCount() {
-    return this.wordCount;
-  }
-
-  public final Integer getComplexWordCount() {
-    return this.complexWordCount;
-  }
-
-  public final Integer getLongWordCount() {
-    return this.longWordCount;
-  }
-
-  public final Integer getFirstPersonWordCount() {
-    return this.firstPersonWordCount;
-  }
-
-  public final Integer getSecondPersonWordCount() {
-    return this.secondPersonWordCount;
-  }
-
-  public final Integer getThirdPersonWordCount() {
-    return this.thirdPersonWordCount;
-  }
-
-  public final Integer getPovWordCount() {
-    return this.povWordCount;
   }
 
   public final Integer getSentenceCount() {
     return this.sentenceCount;
+  }
+
+  @Override
+  public final Integer getWordCharacterCount() {
+    return this.wordCharacterCount;
+  }
+
+  @Override
+  public final Integer getSyllableCount() {
+    return this.syllableCount;
+  }
+
+  @Override
+  public final Integer getWordCount() {
+    return this.wordCount;
+  }
+
+  @Override
+  public final Integer getComplexWordCount() {
+    return this.complexWordCount;
+  }
+
+  @Override
+  public final Integer getLongWordCount() {
+    return this.longWordCount;
+  }
+
+  @Override
+  public final Integer getFirstPersonWordCount() {
+    return this.firstPersonWordCount;
+  }
+
+  @Override
+  public final Integer getSecondPersonWordCount() {
+    return this.secondPersonWordCount;
+  }
+
+  @Override
+  public final Integer getThirdPersonWordCount() {
+    return this.thirdPersonWordCount;
+  }
+
+  @Override
+  public final Integer getPovWordCount() {
+    return this.povWordCount;
   }
 
 }

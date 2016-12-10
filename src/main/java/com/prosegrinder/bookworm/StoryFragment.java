@@ -7,13 +7,11 @@ import java.util.regex.Pattern;
 
 public abstract class StoryFragment {
 
-  /** Patterns used throughout. **/
-  /** TODO: Externalize the chapter.delimiter as a property **/
+  /** Patterns used throughout. Will eventually move to a properties file. **/
   private static final String CHAPTER_DELIMITER = "^\\s*Chapter\\s\\d+\\s*\\n";
 //   private static final Pattern CHAPTER_PATTERN = Pattern.compile(
 //       ".*(?:" + CHAPTER_DELIMITER + "|$)"
 //   );
-  /** TODO: Externalize the scene.delimiter as a property **/
   private static final String SCENE_DELIMITER = "^\\s#\\s*\\n";
 //   private static final Pattern SCENE_PATTERN = Pattern.compile(
 //       ".*(?:" + SCENE_DELIMITER + "|$)"
@@ -48,10 +46,21 @@ public abstract class StoryFragment {
 
   private final String initialText;
   private final String normalizedText;
+  private final Integer wordCharacterCount;
+//   private final Integer syllableCount;
+//   private final Integer wordCount;
+//   private final Integer complexWordCount;
+//   private final Integer longWordCount;
+//   private final Integer povWordCount;
+//   private final Integer firstPersonWordCount;
+//   private final Integer secondPersonWordCount;
+//   private final Integer thirdPersonWordCount;
+
 
   public StoryFragment(String text) {
     this.initialText = text;
     this.normalizedText = this.normalizeText(text);
+    this.wordCharacterCount = this.getWordCharacterCount();
   }
 
   public static final String normalizeText(String text) {
@@ -125,93 +134,20 @@ public abstract class StoryFragment {
 
   public abstract Integer getWordCharacterCount();
 
-  protected static final Integer getWordCharacterCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getWordCharacterCount();
-    }
-    return count;
-  }
-
   public abstract Integer getSyllableCount();
-
-  protected static final Integer getSyllableCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getSyllableCount();
-    }
-    return count;
-  }
 
   public abstract Integer getWordCount();
 
-  protected static final Integer getWordCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getWordCount();
-    }
-    return count;
-  }
-
   public abstract Integer getComplexWordCount();
-
-  protected static final Integer getComplexWordCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getComplexWordCount();
-    }
-    return count;
-  }
 
   public abstract Integer getLongWordCount();
 
-  protected static final Integer getLongWordCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getLongWordCount();
-    }
-    return count;
-  }
-
   public abstract Integer getFirstPersonWordCount();
-
-  protected static final Integer getFirstPersonWordCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getFirstPersonWordCount();
-    }
-    return count;
-  }
 
   public abstract Integer getSecondPersonWordCount();
 
-  protected static final Integer getSecondPersonWordCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getSecondPersonWordCount();
-    }
-    return count;
-  }
-
   public abstract Integer getThirdPersonWordCount();
 
-  protected static final Integer getThirdPersonWordCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getThirdPersonWordCount();
-    }
-    return count;
-  }
-
   public abstract Integer getPovWordCount();
-
-  protected static final Integer getPovWordCount(List<StoryFragment> fragments) {
-    int count = 0;
-    for (StoryFragment fragment: fragments) {
-      count += fragment.getPovWordCount();
-    }
-    return count;
-  }
-
 
 }
