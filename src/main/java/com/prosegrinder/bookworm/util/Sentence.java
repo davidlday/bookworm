@@ -1,11 +1,11 @@
-package com.prosegrinder.bookworm;
+package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class NarrativeFragment extends ProseFragment {
+public final class Sentence extends ProseFragment {
 
   private final List<Word> words = new ArrayList<Word>();
   private final Integer wordCharacterCount;
@@ -18,9 +18,9 @@ public final class NarrativeFragment extends ProseFragment {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
 
-  public NarrativeFragment(final String text) {
+  public Sentence(final String text) {
     super(text);
-    Matcher wordMatcher = this.getWordPattern().matcher(text);
+    Matcher wordMatcher = Word.getWordPattern().matcher(text);
     while (wordMatcher.find()) {
       this.words.add(new Word(wordMatcher.group()));
     }
@@ -49,6 +49,10 @@ public final class NarrativeFragment extends ProseFragment {
     this.thirdPersonWordCount = words.stream()
         .mapToInt( word -> word.getThirdPersonWordCount())
         .sum();
+  }
+
+  public static final Pattern getPattern() {
+    return ProseFragment.getSentencePattern();
   }
 
   public final List<Word> getWords() {

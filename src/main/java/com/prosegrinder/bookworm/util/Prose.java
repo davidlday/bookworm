@@ -1,11 +1,11 @@
-package com.prosegrinder.bookworm;
+package com.prosegrinder.bookworm.util;
+
+import com.prosegrinder.bookworm.enums.PovType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.prosegrinder.bookworm.enums.PovType;
 
 public final class Prose extends ProseFragment {
 

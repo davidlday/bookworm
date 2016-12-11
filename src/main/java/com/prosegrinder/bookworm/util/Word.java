@@ -1,7 +1,7 @@
-package com.prosegrinder.bookworm;
+package com.prosegrinder.bookworm.util;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,21 +10,24 @@ import java.util.regex.Pattern;
 
 public final class Word extends ProseFragment {
 
-  /** Magic numbers for determining complex and long words. **/
+  /** Magic number for determining complex words. **/
   public static final int MIN_SYLLABLES_COMPLEX_WORD = 4;
+  /** Magic number for determining long words. **/
   public static final int MIN_CHARS_LONG_WORD = 7;
 
-  /** Words indicating point of view. **/
+  /** Words indicating first person point of view. **/
   public static final Set<String> POV_FIRST =
       new HashSet<String>(Arrays.asList(
           "I", "I'm", "I'll", "I'd", "I've", "me", "mine", "myself",
           "we", "we're", "we'll", "we'd", "we've",
           "us", "ours", "ourselves"
       ));
+  /** Words indicating second person point of view. **/
   public static final Set<String> POV_SECOND =
       new HashSet<String>(Arrays.asList(
           "you", "you're", "you'll", "you'd", "you've", "yours", "yourself", "yourselves"
       ));
+  /** Words indicating third person point of view. **/
   public static final Set<String> POV_THIRD =
       new HashSet<String>(Arrays.asList(
           "he", "he's", "he'll", "he'd", "him", "his", "himself",
@@ -58,8 +61,9 @@ public final class Word extends ProseFragment {
        * 2) Do not include proper nouns, familiar jargon, or compound words.
        * 3) Do not include common suffixes (such as -es, -ed, or -ing) as a syllable.
        *
-       * See: https://en.wikipedia.org/wiki/Gunning_fog_index
-       * See: http://www.readabilityformulas.com/gunning-fog-readability-formula.php
+       * <p>See:
+       * - https://en.wikipedia.org/wiki/Gunning_fog_index
+       * - http://www.readabilityformulas.com/gunning-fog-readability-formula.php
        **/
       this.isComplexWord = true;
     } else {
@@ -72,10 +76,10 @@ public final class Word extends ProseFragment {
     this.isSecondPersonWord = Word.POV_SECOND.contains(this.getNormalizedText());
     this.isThirdPersonWord = Word.POV_THIRD.contains(this.getNormalizedText());
     this.isPovWord = (
-      this.isFirstPersonWord ||
-      this.isSecondPersonWord ||
-      this.isThirdPersonWord
-    );
+        this.isFirstPersonWord
+        || this.isSecondPersonWord
+        || this.isThirdPersonWord
+      );
   }
 
   public static final Pattern getPattern() {

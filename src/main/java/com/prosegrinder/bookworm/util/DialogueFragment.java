@@ -1,4 +1,4 @@
-package com.prosegrinder.bookworm;
+package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
 import java.util.List;

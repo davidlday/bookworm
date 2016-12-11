@@ -1,4 +1,4 @@
-package com.prosegrinder.bookworm;
+package com.prosegrinder.bookworm.util;
 
 import org.junit.Test;
 import org.junit.Rule;

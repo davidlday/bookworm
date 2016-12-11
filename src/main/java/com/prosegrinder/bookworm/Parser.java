@@ -11,12 +11,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * A Utility class for calculating statics about prose text, specifically fiction.
+ * All rules for parsing are derived from either industry practice or William Shunn's
+ * "Proper Manuscript Formatting" site (//www.shunn.net/format/).
+ *
+ * @deprecated use native objects instead
+ *
+ */
+
+@Deprecated
 public final class Parser {
   // A Utility class for parsing prose text, specifically fiction.
   // All rules for parsing are derived from either industry practice or William Shunn's
   // "Proper Manuscript Formatting" site (//www.shunn.net/format/).
-  // TODO: I don't need to use unmodifiable things everywhere, probably just
-  // on the class variables. Even those are declared final, so probably not even there.
 
   // Regular Expression Strings
   public static final String RE_SMART_QUOTES = new String("[“”]");

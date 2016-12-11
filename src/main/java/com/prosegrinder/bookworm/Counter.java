@@ -1,5 +1,7 @@
 package com.prosegrinder.bookworm;
 
+import com.prosegrinder.bookworm.util.SyllableDictionary;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -8,7 +10,12 @@ import java.util.Set;
  * A Utility class for counting things in prose text, specifically fiction.
  * All rules for parsing are derived from either industry practice or William Shunn's
  * "Proper Manuscript Formatting" site (//www.shunn.net/format/).
+ *
+ * @deprecated use native objects instead
+ *
  */
+
+@Deprecated
 public final class Counter {
 
   private static final int MIN_SYLLABLES_COMPLEX_WORD = 4;

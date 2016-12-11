@@ -1,6 +1,7 @@
 package com.prosegrinder.bookworm;
 
 import com.prosegrinder.bookworm.enums.PovType;
+import com.prosegrinder.bookworm.util.SyllableDictionary;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +10,12 @@ import java.util.Map;
  * A Utility class for calculating statics about prose text, specifically fiction.
  * All rules for parsing are derived from either industry practice or William Shunn's
  * "Proper Manuscript Formatting" site (//www.shunn.net/format/).
+ *
+ * @deprecated use native objects instead
+ *
  */
 
+@Deprecated
 public final class Calculator {
 
   /** Prohibit instantiation. **/
@@ -141,137 +146,5 @@ public final class Calculator {
     return pointOfView(prosePovIndicators);
   }
 
-  /**
-   * Calculates the Automated Readability Index score for the analyzed text.
-   *
-   * @param characterCount  the number of word characters found in the source text
-   * @param wordCount the number of words found in the source text
-   * @param sentenceCount the number of sentences found in the source text
-   * @returns Automated Readability Index score
-   *
-   **/
-  public static final Double automatedReadabilityIndex(final Integer characterCount,
-                                                        final Integer wordCount,
-                                                        final Integer sentenceCount) {
-    Double score = 0.0;
-    if (wordCount > 0) {
-      score = 4.71 * (characterCount / wordCount) + 0.5
-              * (wordCount / sentenceCount) - 21.43;
-    }
-    return score;
-  }
-
-  /**
-   * Calculates the Flesch Reading Ease score for the analyzed text.
-   *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param syllableCount the number of syllables found in the source text
-   * @param wordCount the number of words found in the source text
-   * @returns Flesch Reading Ease score
-   *
-   **/
-  public static final Double fleschReadingEase(final Double averageWordsPerSentence,
-                                                final Integer syllableCount,
-                                                final Integer wordCount) {
-    Double score = 0.0;
-    if (wordCount > 0) {
-      score = 206.835 - (1.015 * (averageWordsPerSentence))
-              - (84.6 * (syllableCount / wordCount));
-    }
-    return score;
-  }
-
-  /**
-   * Calculates the Flesch Kincaid Grade Level score for the analyzed text.
-   *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param syllableCount the number of syllables found in the source text
-   * @param wordCount the number of words found in the source text
-   * @returns Flesch Kincaid Grade Level score
-   *
-   **/
-  public static final Double fleschKincaidGradeLeve(final Double averageWordsPerSentence,
-                                                    final Integer syllableCount,
-                                                    final Integer wordCount) {
-    Double score = 0.0;
-    if (wordCount > 0) {
-      score = 0.39 * (averageWordsPerSentence) + 11.8
-              * (syllableCount / wordCount) - 15.59;
-    }
-    return score;
-  }
-
-  /**
-   * Calculates the Gunning Fog Index score for the analyzed text.
-   *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param complexWordCount the number of complex words found in the source text
-   * @param wordCount the number of words found in the source text
-   * @returns Gunning Fog Index score
-   *
-   **/
-  public static final Double gunningFogIndex(final Double averageWordsPerSentence,
-                                              final Integer complexWordCount,
-                                              final Integer wordCount) {
-    Double score = 0.0;
-    if (wordCount > 0) {
-      score = 0.4 * ((averageWordsPerSentence) + (100 * (complexWordCount / wordCount)));
-    }
-    return score;
-  }
-
-  /**
-   * Calculates the SMOG (Simple Measure Of Gobbledygook) score for the analyzed text.
-   *
-   * @param complexWordCount the number of complex words found in the source text
-   * @param sentenceCount the number of sentences found in the source text
-   * @returns SMOG score
-   *
-   **/
-  public static final Double smog(final Integer complexWordCount, final Integer sentenceCount) {
-    Double score = 0.0;
-    if (sentenceCount > 0) {
-      score = (Math.sqrt((double) complexWordCount * (30 / (double) sentenceCount)) + 3);
-    }
-    return score;
-  }
-
-  /**
-   * Calculates the Coleman-Liau Index score for the analyzed text.
-   *
-   * @param characterCount  the number of word characters found in the source text
-   * @param wordCount the number of words found in the source text
-   * @param sentenceCount the number of sentences found in the source text
-   * @returns Coleman-Liau Index score
-   *
-   **/
-  public static final Double colemanLiauIndex(final Integer characterCount,
-      final Integer wordCount, final Integer sentenceCount) {
-    Double score = 0.0;
-    if (wordCount > 0) {
-      score = (5.89 * ((double) characterCount / (double) wordCount))
-          - (30 * ((double) sentenceCount / (double) wordCount)) - 15.8;
-    }
-    return score;
-  }
-
-  /**
-   * Calculates the LIX score for the analyzed text.
-   *
-   * @param wordCount the number of words found in the source text
-   * @param longWordCount  the number of long word found in the source text
-   * @param sentenceCount the number of sentences found in the source text
-   * @returns LIX score
-   *
-   **/
-  public static final Double lix(final Integer wordCount,
-      final Integer longWordCount, final Integer sentenceCount) {
-    Double score = 0.0;
-    if (wordCount > 0) {
-      score = (double) wordCount / (double) sentenceCount
-          + (100 * (double) longWordCount) / (double) wordCount;
-    }
-    return score;
-  }
 
 }
