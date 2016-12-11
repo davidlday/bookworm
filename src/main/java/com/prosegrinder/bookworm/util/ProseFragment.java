@@ -157,7 +157,7 @@ public abstract class ProseFragment {
    *
    */
   public final String getInitialText() {
-    return this.normalizedText;
+    return this.initialText;
   }
 
   /**

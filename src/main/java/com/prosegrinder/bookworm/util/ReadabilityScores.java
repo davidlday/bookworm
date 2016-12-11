@@ -82,6 +82,24 @@ public final class ReadabilityScores {
         sentenceCount, syllableCount, wordCount);
   }
 
+  /**
+   * Efficient constructor for ReadabilityScores.
+   *
+   * <p>This constructor is used in larger processes where the basic
+   * underlying inputs have already been calculated. All inputs must come from
+   * the same source text or the resulting scores have no meaning.
+   *
+   * <p>All necessary inputs can be calculated by corresponding methods
+   * found in the Calculator utility class.
+   *
+   * @param prose  prose to score.
+   *
+   */
+  public ReadabilityScores(Prose prose) {
+    this.calculateScores(prose.getWordCharacterCount(), prose.getComplexWordCount(), prose.getLongWordCount(),
+        prose.getSentenceCount(), prose.getSyllableCount(), prose.getWordCount());
+  }
+
   /** Calculates all scores for the source text. **/
   private void calculateScores(final Integer characterCount, final Integer complexWordCount,
       final Integer longWordCount, final Integer sentenceCount,
@@ -94,18 +112,16 @@ public final class ReadabilityScores {
     this.syllableCount = syllableCount;
     this.wordCount = wordCount;
 
-    Double averageWordsPerSentence = (double) wordCount / (double) sentenceCount;
-
     this.automatedReadabilityIndex =
         this.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);
     this.colemanLiauIndex =
         this.colemanLiauIndex(characterCount, wordCount, sentenceCount);
     this.fleschKincaidGradeLevel =
-        this.fleschKincaidGradeLeve(averageWordsPerSentence, syllableCount, wordCount);
+        this.fleschKincaidGradeLevel(sentenceCount, wordCount, syllableCount);
     this.fleschReadingEase =
-        this.fleschReadingEase(averageWordsPerSentence, syllableCount, wordCount);
+        this.fleschReadingEase(sentenceCount, wordCount, syllableCount);
     this.gunningFogIndex =
-        this.gunningFogIndex(averageWordsPerSentence, complexWordCount, wordCount);
+        this.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
     this.lix =
         this.lix(wordCount, longWordCount, sentenceCount);
     this.smog =
@@ -162,8 +178,10 @@ public final class ReadabilityScores {
                                                         final Integer sentenceCount) {
     Double score = 0.0;
     if (wordCount > 0) {
-      score = 4.71 * (characterCount / wordCount) + 0.5
-              * (wordCount / sentenceCount) - 21.43;
+      Double averageCharactersPerWord = (double) characterCount / (double) wordCount;
+      Double averageWordsPerSentence = (double) wordCount / (double) sentenceCount;
+      score = (4.71 * averageCharactersPerWord)
+              + (0.5 * averageWordsPerSentence) - 21.43;
     }
     return score;
   }
@@ -177,13 +195,14 @@ public final class ReadabilityScores {
    * @return Flesch Reading Ease score
    *
    **/
-  public static final Double fleschReadingEase(final Double averageWordsPerSentence,
-                                                final Integer syllableCount,
-                                                final Integer wordCount) {
+  public static final Double fleschReadingEase(final Integer sentenceCount,
+                                                final Integer wordCount,
+                                                final Integer syllableCount) {
     Double score = 0.0;
     if (wordCount > 0) {
-      score = 206.835 - (1.015 * (averageWordsPerSentence))
-              - (84.6 * (syllableCount / wordCount));
+      Double averageSentenceLength = (double) wordCount / (double) sentenceCount;
+      Double averageSyllablesPerWord = (double) syllableCount / (double) wordCount;
+      score = 206.835 - (1.015 * averageSentenceLength) - (84.6 * averageSyllablesPerWord);
     }
     return score;
   }
@@ -197,13 +216,14 @@ public final class ReadabilityScores {
    * @return Flesch Kincaid Grade Level score
    *
    **/
-  public static final Double fleschKincaidGradeLeve(final Double averageWordsPerSentence,
-                                                    final Integer syllableCount,
-                                                    final Integer wordCount) {
+  public static final Double fleschKincaidGradeLevel(final Integer sentenceCount,
+                                                final Integer wordCount,
+                                                final Integer syllableCount) {
     Double score = 0.0;
     if (wordCount > 0) {
-      score = 0.39 * (averageWordsPerSentence) + 11.8
-              * (syllableCount / wordCount) - 15.59;
+      Double averageSentenceLength = (double) wordCount / (double) sentenceCount;
+      Double averageSyllablesPerWord = (double) syllableCount / (double) wordCount;
+      score = (0.39 * averageSentenceLength) + (11.8 * averageSyllablesPerWord) - 15.59;
     }
     return score;
   }
@@ -217,12 +237,14 @@ public final class ReadabilityScores {
    * @return Gunning Fog Index score
    *
    **/
-  public static final Double gunningFogIndex(final Double averageWordsPerSentence,
-                                              final Integer complexWordCount,
-                                              final Integer wordCount) {
+  public static final Double gunningFogIndex(final Integer sentenceCount,
+                                              final Integer wordCount,
+                                              final Integer complexWordCount) {
     Double score = 0.0;
     if (wordCount > 0) {
-      score = 0.4 * ((averageWordsPerSentence) + (100 * (complexWordCount / wordCount)));
+      Double averageSentenceLength = (double) wordCount / (double) sentenceCount;
+      Double percentageHardWords = (double) complexWordCount / (double) wordCount * 100;
+      score = 0.4 * (averageSentenceLength + percentageHardWords);
     }
     return score;
   }
@@ -238,7 +260,7 @@ public final class ReadabilityScores {
   public static final Double smog(final Integer complexWordCount, final Integer sentenceCount) {
     Double score = 0.0;
     if (sentenceCount > 0) {
-      score = (Math.sqrt((double) complexWordCount * (30 / (double) sentenceCount)) + 3);
+      score = (1.0430 * Math.sqrt((double) complexWordCount * (30 / (double) sentenceCount))) + 3.1291;
     }
     return score;
   }
@@ -253,11 +275,13 @@ public final class ReadabilityScores {
    *
    **/
   public static final Double colemanLiauIndex(final Integer characterCount,
-      final Integer wordCount, final Integer sentenceCount) {
+                                              final Integer wordCount,
+                                              final Integer sentenceCount) {
     Double score = 0.0;
     if (wordCount > 0) {
-      score = (5.89 * ((double) characterCount / (double) wordCount))
-          - (30 * ((double) sentenceCount / (double) wordCount)) - 15.8;
+      Double L = (double) characterCount / (double) wordCount * 100;
+      Double S = (double) sentenceCount / (double) wordCount * 100;
+      score = (0.0588 * L) - (0.296 * S) - 15.8;
     }
     return score;
   }

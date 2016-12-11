@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public final class Word extends ProseFragment {
 
   /** Magic number for determining complex words. **/
-  public static final int MIN_SYLLABLES_COMPLEX_WORD = 4;
+  public static final int MIN_SYLLABLES_COMPLEX_WORD = 3;
   /** Magic number for determining long words. **/
   public static final int MIN_CHARS_LONG_WORD = 7;
 
