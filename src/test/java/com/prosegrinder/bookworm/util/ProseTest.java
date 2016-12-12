@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,10 +24,10 @@ public class ProseTest {
   private String text;
 
   @Before
-  public void loadProse() throws IOException {
-    String cmudict = "shunn/shortstory.txt";
+  public void loadProse() throws IOException, URISyntaxException {
+    String prose = "shunn/shortstory.txt";
     ClassLoader classLoader = ProseTest.class.getClassLoader();
-    Path prosePath = Paths.get(classLoader.getResource(cmudict).getFile());
+    Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
     this.text = String.join("\n",lines);
   }
