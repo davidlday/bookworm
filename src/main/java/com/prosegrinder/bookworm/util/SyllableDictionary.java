@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,7 +79,7 @@ public final class SyllableDictionary {
       /** TODO: Externalize in a properties file. **/
       String cmudict = "cmudict/cmudict.dict";
       ClassLoader classLoader = SyllableDictionary.class.getClassLoader();
-      Path cmudictPath = Paths.get(classLoader.getResource(cmudict).getFile());
+      Path cmudictPath = Paths.get(classLoader.getResource(cmudict).toURI());
       Stream<String> stream = Files.lines(cmudictPath);
       stream.filter(line -> !line.startsWith(";;;"))
           .map(String::toLowerCase)
@@ -101,6 +102,9 @@ public final class SyllableDictionary {
       logger.info("Map entries: " + syllableMap.size());
     } catch (IOException ioe) {
       logger.warn("Could not load dictionary file: " + ioe);
+      logger.warn("Continuing with only lookup by heuristics.");
+    } catch (URISyntaxException use) {
+      logger.warn("Could not load dictionary file: " + use);
       logger.warn("Continuing with only lookup by heuristics.");
     }
   }
