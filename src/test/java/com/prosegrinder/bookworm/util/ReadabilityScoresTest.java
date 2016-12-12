@@ -33,18 +33,27 @@ public class ReadabilityScoresTest {
 
   @Test
   public void testReadabilityScores() {
-  Integer characterCount = 6965;
-  Integer complexWordCount = 188;
-  Integer longWordCount = 284;
-  Integer sentenceCount = 90;
-  Integer syllableCount = 2301;
-  Integer wordCount = 1535;
+//     Integer characterCount = 6965;
+//     Integer complexWordCount = 188;
+//     Integer longWordCount = 284;
+//     Integer sentenceCount = 90;
+//     Integer syllableCount = 2301;
+//     Integer wordCount = 1535;
 
-  ReadabilityScores scores = new ReadabilityScores(characterCount, complexWordCount,
-      longWordCount, sentenceCount, syllableCount, wordCount);
+    /** https://www.online-utility.org/english/readability_test_and_improve.jsp **/
+    Integer characterCount = 7009;
+    Integer complexWordCount = 188;
+    Integer longWordCount = 284;
+    Integer sentenceCount = 90;
+    Integer syllableCount = 2370;
+    Integer wordCount = 1529;
+
+    ReadabilityScores scores = new ReadabilityScores(characterCount, complexWordCount,
+        longWordCount, sentenceCount, syllableCount, wordCount);
 
 //     Prose prose = new Prose(this.text);
 //     ReadabilityScores scores = new ReadabilityScores(prose);
+
     logger.info("Automated Readability Index: " + scores.getAutomatedReadabilityIndex());
     logger.info("Coleman Liau Index: " + scores.getColemanLiauIndex());
     logger.info("Flesch Reading Ease: " + scores.getFleschReadingEase());
