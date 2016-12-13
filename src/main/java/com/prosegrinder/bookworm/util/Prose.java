@@ -3,13 +3,18 @@ package com.prosegrinder.bookworm.util;
 import com.prosegrinder.bookworm.enums.PovType;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Prose extends ProseFragment {
+public final class Prose extends WordContainer {
 
   private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
+  private final Map<Word, Integer> wordFrequency;
   private final List<DialogueFragment> dialogueFragments
       = new ArrayList<DialogueFragment>();
   private final List<NarrativeFragment> narrativeFragments
@@ -40,7 +45,7 @@ public final class Prose extends ProseFragment {
     }
     final Pattern dialoguePattern = this.getDialoguePattern();
     Matcher dialogueMatcher = dialoguePattern.matcher(
-        ProseFragment.convertSmartQuotes(this.getInitialText())
+        WordContainer.convertSmartQuotes(this.getInitialText())
     );
     while (dialogueMatcher.find()) {
       this.dialogueFragments.add(
@@ -48,7 +53,7 @@ public final class Prose extends ProseFragment {
       );
     }
     for (String narrative: dialoguePattern.split(
-        ProseFragment.convertSmartQuotes(this.getInitialText()))) {
+        WordContainer.convertSmartQuotes(this.getInitialText()))) {
       this.narrativeFragments.add(
           new NarrativeFragment(narrative)
       );
@@ -97,6 +102,7 @@ public final class Prose extends ProseFragment {
     this.thirdPersonWordCount = narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
+    this.wordFrequency = WordContainer.getWordFrequency((List<WordContainer>)(List<?>) this.paragraphs);
   }
 
   public final List<DialogueFragment> getDialogueFragments() {
@@ -137,6 +143,29 @@ public final class Prose extends ProseFragment {
 
   public final Integer getSentenceCount() {
     return this.sentenceCount;
+  }
+
+  @Override
+  public final Set<Word> getUniqueWords() {
+    return this.wordFrequency.keySet();
+  }
+
+  public final Integer getUniqueWordCount() {
+    return this.wordFrequency.keySet().size();
+  }
+
+  @Override
+  public final Map<Word, Integer> getWordFrequency() {
+    return this.wordFrequency;
+  }
+
+  @Override
+  public final Integer getWordFrequency(Word word) {
+    if (this.wordFrequency.containsKey(word)) {
+      return this.wordFrequency.get(word);
+    } else {
+      return 0;
+    }
   }
 
   public final Double getAverageSyllablesPerWord() {

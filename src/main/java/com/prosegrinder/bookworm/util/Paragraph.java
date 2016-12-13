@@ -12,10 +12,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class Paragraph extends ProseFragment {
+public final class Paragraph extends WordContainer {
 
   private final List<Sentence> sentences = new ArrayList<Sentence>();
-  private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
+  private final Map<Word, Integer> wordFrequency;
 
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
@@ -62,19 +62,11 @@ public final class Paragraph extends ProseFragment {
         .mapToInt( sentence -> sentence.getThirdPersonWordCount())
         .sum();
     this.sentenceCount = this.sentences.size();
-    this.sentences.stream().forEach( sentence -> {
-      Set<Word> uniqueWords = sentence.getUniqueWords();
-      uniqueWords.stream().forEach( word -> {
-        int count = (this.wordFrequency.containsKey(word)) ?
-            this.wordFrequency.get(word) : 0;
-        count += sentence.getWordFrequency(word);
-        this.wordFrequency.put(word, count);
-      });
-    });
+    this.wordFrequency = WordContainer.getWordFrequency((List<WordContainer>)(List<?>) this.sentences);
   }
 
   public static final Pattern getPattern() {
-    return ProseFragment.getParagraphPattern();
+    return WordContainer.getParagraphPattern();
   }
 
   public final List<Sentence> getSentences() {

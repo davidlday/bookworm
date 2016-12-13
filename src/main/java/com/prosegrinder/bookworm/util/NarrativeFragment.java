@@ -1,13 +1,20 @@
 package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class NarrativeFragment extends ProseFragment {
+public final class NarrativeFragment extends WordContainer {
 
   private final List<Word> words = new ArrayList<Word>();
+  private final Map<Word, Integer> wordFrequency;
+
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
   private final Integer wordCount;
@@ -49,10 +56,34 @@ public final class NarrativeFragment extends ProseFragment {
     this.thirdPersonWordCount = words.stream()
         .mapToInt( word -> word.getThirdPersonWordCount())
         .sum();
+    this.wordFrequency = Word.getWordFrequency(this.words);
   }
 
   public final List<Word> getWords() {
     return this.words;
+  }
+
+  @Override
+  public final Set<Word> getUniqueWords() {
+    return this.wordFrequency.keySet();
+  }
+
+  public final Integer getUniqueWordCount() {
+    return this.wordFrequency.keySet().size();
+  }
+
+  @Override
+  public final Map<Word, Integer> getWordFrequency() {
+    return this.wordFrequency;
+  }
+
+  @Override
+  public final Integer getWordFrequency(Word word) {
+    if (this.wordFrequency.containsKey(word)) {
+      return this.wordFrequency.get(word);
+    } else {
+      return 0;
+    }
   }
 
   @Override

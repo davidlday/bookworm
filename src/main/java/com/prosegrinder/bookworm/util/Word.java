@@ -2,6 +2,7 @@ package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Word extends ProseFragment {
+public final class Word {
 
   /** Magic number for determining complex words. **/
   public static final int MIN_SYLLABLES_COMPLEX_WORD = 3;
@@ -39,6 +40,8 @@ public final class Word extends ProseFragment {
       ));
 
   /** Private member variables. **/
+  private final String initialWord;
+  private final String normalizedWord;
   private final Boolean isComplexWord;
   private final Boolean isLongWord;
   private final Boolean isPovWord;
@@ -50,7 +53,8 @@ public final class Word extends ProseFragment {
   private final Integer syllableCount;
 
   public Word(final String text) {
-    super(text.trim()); /** For words, we don't care about surrounding space ever. **/
+    this.initialWord = text.trim();
+    this.normalizedWord = this.initialWord.toLowerCase();
     final SyllableDictionary sd = SyllableDictionary.getInstance();
     this.syllableCount = sd.getSyllableCount(this.getNormalizedText());
     this.wordCharacterCount = this.getNormalizedText().length();
@@ -84,8 +88,56 @@ public final class Word extends ProseFragment {
       );
   }
 
+  /**
+   * Static method for building word frequency from a list of fragments.
+   *
+   * @param a list of WordContainers.
+   * @return a map of Word with counts.
+   *
+   */
+  public static final Map<Word, Integer> getWordFrequency(List<Word> words) {
+    Set<Word> uniqueWords = new HashSet<Word>(words);
+    Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
+    uniqueWords.stream().forEach(word -> {
+        wordFrequency.put(word, Collections.frequency(words, word));
+    });
+    return wordFrequency;
+  }
+
+
+
+  /**
+   * Returns a String representation of the Word.
+   *
+   * @return a String representation of the Word.
+   *
+   */
+  public final String toString() {
+    return this.getInitialText();
+  }
+
+  /**
+   * Returns the normalized version of the text used to create the Word.
+   *
+   * @return a normalized version the String representation of the Word.
+   *
+   */
+  public final String getNormalizedText() {
+    return this.normalizedWord;
+  }
+
+  /**
+   * Returns the initial text used to create the Word.
+   *
+   * @return the String used to create the Word.
+   *
+   */
+  public final String getInitialText() {
+    return this.initialWord;
+  }
+
   public static final Pattern getPattern() {
-    return ProseFragment.getWordPattern();
+    return WordContainer.getWordPattern();
   }
 
   public final Boolean isComplexWord() {
@@ -116,68 +168,40 @@ public final class Word extends ProseFragment {
     return this.isPovWord;
   }
 
-  @Override
   public final Integer getSyllableCount() {
     return this.syllableCount;
   }
 
-  @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }
 
-  @Override
   public final Integer getWordCount() {
     return 1;
   }
 
-  @Override
   public final Integer getComplexWordCount() {
     return (this.isComplexWord()) ? 1 : 0;
   }
 
-  @Override
   public final Integer getLongWordCount() {
     return (this.isLongWord()) ? 1 : 0;
   }
 
-  @Override
   public final Integer getFirstPersonWordCount() {
     return (this.isFirstPersonWord()) ? 1 : 0;
   }
 
-  @Override
   public final Integer getSecondPersonWordCount() {
     return (this.isSecondPersonWord()) ? 1 : 0;
   }
 
-  @Override
   public final Integer getThirdPersonWordCount() {
     return (this.isThirdPersonWord()) ? 1 : 0;
   }
 
-  @Override
   public final Integer getPovWordCount() {
     return (this.isPovWord()) ? 1 : 0;
-  }
-
-  @Override
-  public final Set<Word> getUniqueWords() {
-    Set<Word> uniqueWords = new HashSet<Word>();
-    uniqueWords.add(this);
-    return uniqueWords;
-  }
-
-  @Override
-  public final Map<Word, Integer> getWordFrequency() {
-    Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
-    wordFrequency.put(this, 1);
-    return wordFrequency;
-  }
-
-  @Override
-  public final Integer getWordFrequency(Word word) {
-    return (word.getNormalizedText() == this.getNormalizedText()) ? 1 : 0;
   }
 
 }

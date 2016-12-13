@@ -1,6 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,12 +11,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The ProseFragment abstract class represents some fragment of text found in a piece of
+ * The WordContainer abstract class represents some fragment of text found in a piece of
  * prose fiction. It also provides a central point for managing all common text analysis
  * patterns and processes and enforcing all subclasses implement a standard set of methods.
  *
  */
-public abstract class ProseFragment {
+public abstract class WordContainer {
 
   /** Patterns used throughout. Will eventually move to a properties file. **/
   /**
@@ -52,13 +53,13 @@ public abstract class ProseFragment {
   private final String normalizedText;
 
   /**
-   * Constructs a new ProseFragment, ensuring copies of the text in initial and normalized
+   * Constructs a new WordContainer, ensuring copies of the text in initial and normalized
    * form are available for subsequent processing.
    *
    * @param text  String representing the fragment.
    *
    */
-  public ProseFragment(final String text) {
+  public WordContainer(final String text) {
     this.initialText = text;
     this.normalizedText = this.normalizeText(text);
   }
@@ -81,7 +82,7 @@ public abstract class ProseFragment {
    *
    */
   public static final Pattern getWordPattern() {
-    return ProseFragment.WORD_PATTERN;
+    return WordContainer.WORD_PATTERN;
   }
 
   /**
@@ -91,7 +92,7 @@ public abstract class ProseFragment {
    *
    */
   public static final Pattern getSentencePattern() {
-    return ProseFragment.SENTENCE_PATTERN;
+    return WordContainer.SENTENCE_PATTERN;
   }
 
   /**
@@ -101,7 +102,7 @@ public abstract class ProseFragment {
    *
    */
   public static final Pattern getParagraphPattern() {
-    return ProseFragment.PARAGRAPH_PATTERN;
+    return WordContainer.PARAGRAPH_PATTERN;
   }
 
   /**
@@ -111,7 +112,7 @@ public abstract class ProseFragment {
    *
    */
   public static final Pattern getDialoguePattern() {
-    return ProseFragment.DIALOGUE_PATTERN;
+    return WordContainer.DIALOGUE_PATTERN;
   }
 
 //   public static final Pattern getDelimitedPattern(String delimiter) {
@@ -131,17 +132,17 @@ public abstract class ProseFragment {
    *
    */
   public static final String convertSmartQuotes(final String text) {
-    return text.replaceAll(ProseFragment.RE_SMART_QUOTES, "\"");
+    return text.replaceAll(WordContainer.RE_SMART_QUOTES, "\"");
   }
 
   /**
    * Static method for building word frequency from a list of fragments.
    *
-   * @param a list of ProseFragments.
+   * @param a list of WordContainers.
    * @return a map of Word with counts.
    *
    */
-  public static final Map<Word, Integer> getWordFrequency(List<ProseFragment> fragments) {
+  public static final Map<Word, Integer> getWordFrequency(List<WordContainer> fragments) {
     Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
     fragments.stream().forEach( fragment -> {
       Set<Word> uniqueWords = fragment.getUniqueWords();
@@ -158,7 +159,7 @@ public abstract class ProseFragment {
   /**
    * Returns a String representation of the ProseFragement.
    *
-   * @return a String representation of the ProseFragment.
+   * @return a String representation of the WordContainer.
    *
    */
   public final String toString() {
@@ -166,9 +167,9 @@ public abstract class ProseFragment {
   }
 
   /**
-   * Returns the normalized version of the text used to create the ProseFragment.
+   * Returns the normalized version of the text used to create the WordContainer.
    *
-   * @return a normalized version the String representation of the ProseFragment.
+   * @return a normalized version the String representation of the WordContainer.
    *
    */
   public final String getNormalizedText() {
@@ -176,9 +177,9 @@ public abstract class ProseFragment {
   }
 
   /**
-   * Returns the initial text used to create the ProseFragment.
+   * Returns the initial text used to create the WordContainer.
    *
-   * @return the String used to create the ProseFragment.
+   * @return the String used to create the WordContainer.
    *
    */
   public final String getInitialText() {
@@ -186,78 +187,78 @@ public abstract class ProseFragment {
   }
 
   /**
-   * Returns the number of word characters found in the ProseFragment.
+   * Returns the number of word characters found in the WordContainer.
    *
-   * @return the number of work characters in the ProseFragment.
+   * @return the number of work characters in the WordContainer.
    *
    */
   public abstract Integer getWordCharacterCount();
 
   /**
-   * Returns the number of syllables found in the ProseFragment.
+   * Returns the number of syllables found in the WordContainer.
    *
-   * @return the number of syllables in the ProseFragment.
+   * @return the number of syllables in the WordContainer.
    *
    */
   public abstract Integer getSyllableCount();
 
   /**
-   * Returns the number of Words found in the ProseFragment.
+   * Returns the number of Words found in the WordContainer.
    *
-   * @return the number of Words in the ProseFragment.
+   * @return the number of Words in the WordContainer.
    * @see Word
    *
    */
   public abstract Integer getWordCount();
 
   /**
-   * Returns the number of complex Words found in the ProseFragment.
+   * Returns the number of complex Words found in the WordContainer.
    *
-   * @return the number of complex Words in the ProseFragment.
+   * @return the number of complex Words in the WordContainer.
    *
    */
   public abstract Integer getComplexWordCount();
 
   /**
-   * Returns the number of long Words found in the ProseFragment.
+   * Returns the number of long Words found in the WordContainer.
    *
-   * @return the number of long Words in the ProseFragment.
+   * @return the number of long Words in the WordContainer.
    *
    */
   public abstract Integer getLongWordCount();
 
   /**
    * Returns the number of Words representing first person point of view (POV)
-   * found in the ProseFragment.
+   * found in the WordContainer.
    *
-   * @return the number of Words representing first person POV in the ProseFragment.
+   * @return the number of Words representing first person POV in the WordContainer.
    *
    */
   public abstract Integer getFirstPersonWordCount();
 
   /**
    * Returns the number of Words representing second person point of view (POV)
-   * found in the ProseFragment.
+   * found in the WordContainer.
    *
-   * @return the number of Words representing second person POV in the ProseFragment.
+   * @return the number of Words representing second person POV in the WordContainer.
    *
    */
   public abstract Integer getSecondPersonWordCount();
 
   /**
    * Returns the number of Words representing third person point of view (POV)
-   * found in the ProseFragment.
+   * found in the WordContainer.
    *
-   * @return the number of Words representing third person POV in the ProseFragment.
+   * @return the number of Words representing third person POV in the WordContainer.
    *
    */
   public abstract Integer getThirdPersonWordCount();
 
   /**
    * Returns the number of Words representing any point of view (POV)
-   * found in the ProseFragment.
+   * found in the WordContainer.
    *
-   * @return the number of Words representing any POV in the ProseFragment.
+   * @return the number of Words representing any POV in the WordContainer.
    *
    */
   public abstract Integer getPovWordCount();

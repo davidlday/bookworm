@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class Sentence extends ProseFragment {
+public final class Sentence extends WordContainer {
 
   private final List<Word> words = new ArrayList<Word>();
   private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
@@ -27,7 +27,7 @@ public final class Sentence extends ProseFragment {
 
   public Sentence(final String text) {
     super(text);
-    Matcher wordMatcher = Word.getWordPattern().matcher(text);
+    Matcher wordMatcher = WordContainer.getWordPattern().matcher(text);
     while (wordMatcher.find()) {
       this.words.add(new Word(wordMatcher.group()));
     }
@@ -56,6 +56,7 @@ public final class Sentence extends ProseFragment {
     this.thirdPersonWordCount = this.words.stream()
         .mapToInt( word -> word.getThirdPersonWordCount())
         .sum();
+//     this.wordFrequency.addAll(WordContainer.getWordFreqency(this.words));
     Set<Word> uniqueWords = new HashSet<Word>(this.words);
     uniqueWords.stream().forEach(word -> {
         wordFrequency.put(word, Collections.frequency(this.words, word));
@@ -63,7 +64,7 @@ public final class Sentence extends ProseFragment {
   }
 
   public static final Pattern getPattern() {
-    return ProseFragment.getSentencePattern();
+    return WordContainer.getSentencePattern();
   }
 
   public final List<Word> getWords() {
