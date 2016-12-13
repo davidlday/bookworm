@@ -9,11 +9,12 @@ import java.util.Set;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class Paragraph extends ProseFragment {
 
   private final List<Sentence> sentences = new ArrayList<Sentence>();
-  private final Set<Word> uniqueWords = new HashSet<Word>();
   private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
 
   private final Integer wordCharacterCount;
@@ -33,34 +34,43 @@ public final class Paragraph extends ProseFragment {
     while (sentenceMatcher.find()) {
       this.sentences.add(new Sentence(sentenceMatcher.group()));
     }
-    this.wordCharacterCount = sentences.stream()
+    this.wordCharacterCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getWordCharacterCount())
         .sum();
-    this.syllableCount = sentences.stream()
+    this.syllableCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getSyllableCount())
         .sum();
-    this.wordCount = sentences.stream()
+    this.wordCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getWordCount())
         .sum();
-    this.complexWordCount = sentences.stream()
+    this.complexWordCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getComplexWordCount())
         .sum();
-    this.longWordCount = sentences.stream()
+    this.longWordCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getLongWordCount())
         .sum();
-    this.povWordCount = sentences.stream()
+    this.povWordCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getPovWordCount())
         .sum();
-    this.firstPersonWordCount = sentences.stream()
+    this.firstPersonWordCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getFirstPersonWordCount())
         .sum();
-    this.secondPersonWordCount = sentences.stream()
+    this.secondPersonWordCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getSecondPersonWordCount())
         .sum();
-    this.thirdPersonWordCount = sentences.stream()
+    this.thirdPersonWordCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getThirdPersonWordCount())
         .sum();
-    this.sentenceCount = sentences.size();
+    this.sentenceCount = this.sentences.size();
+    this.sentences.stream().forEach( sentence -> {
+      Set<Word> uniqueWords = sentence.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (this.wordFrequency.containsKey(word)) ?
+            this.wordFrequency.get(word) : 0;
+        count += sentence.getWordFrequency(word);
+        this.wordFrequency.put(word, count);
+      });
+    });
   }
 
   public static final Pattern getPattern() {
@@ -75,12 +85,27 @@ public final class Paragraph extends ProseFragment {
     return this.sentenceCount;
   }
 
+  @Override
   public final Set<Word> getUniqueWords() {
-    Set<Word> uniqueWords = new HashSet<Word>();
-    sentences.stream().forEach(sentence -> {
-      uniqueWords.addAll(sentence.getUniqueWords());
-    });
-    return uniqueWords;
+    return this.wordFrequency.keySet();
+  }
+
+  public final Integer getUniqueWordCount() {
+    return this.wordFrequency.keySet().size();
+  }
+
+  @Override
+  public final Map<Word, Integer> getWordFrequency() {
+    return this.wordFrequency;
+  }
+
+  @Override
+  public final Integer getWordFrequency(Word word) {
+    if (this.wordFrequency.containsKey(word)) {
+      return this.wordFrequency.get(word);
+    } else {
+      return 0;
+    }
   }
 
   public final List<Word> getWords() {

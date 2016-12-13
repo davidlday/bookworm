@@ -1,7 +1,11 @@
 package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -131,6 +135,27 @@ public abstract class ProseFragment {
   }
 
   /**
+   * Static method for building word frequency from a list of fragments.
+   *
+   * @param a list of ProseFragments.
+   * @return a map of Word with counts.
+   *
+   */
+  public static final Map<Word, Integer> getWordFrequency(List<ProseFragment> fragments) {
+    Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
+    fragments.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (wordFrequency.containsKey(word)) ?
+            wordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        wordFrequency.put(word, count);
+      });
+    });
+    return wordFrequency;
+  }
+
+  /**
    * Returns a String representation of the ProseFragement.
    *
    * @return a String representation of the ProseFragment.
@@ -236,5 +261,12 @@ public abstract class ProseFragment {
    *
    */
   public abstract Integer getPovWordCount();
+
+
+  public abstract Set<Word> getUniqueWords();
+
+  public abstract Map<Word, Integer> getWordFrequency();
+
+  public abstract Integer getWordFrequency(Word word);
 
 }

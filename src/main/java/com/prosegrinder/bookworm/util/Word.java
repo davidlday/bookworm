@@ -2,8 +2,10 @@ package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -157,6 +159,25 @@ public final class Word extends ProseFragment {
   @Override
   public final Integer getPovWordCount() {
     return (this.isPovWord()) ? 1 : 0;
+  }
+
+  @Override
+  public final Set<Word> getUniqueWords() {
+    Set<Word> uniqueWords = new HashSet<Word>();
+    uniqueWords.add(this);
+    return uniqueWords;
+  }
+
+  @Override
+  public final Map<Word, Integer> getWordFrequency() {
+    Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
+    wordFrequency.put(this, 1);
+    return wordFrequency;
+  }
+
+  @Override
+  public final Integer getWordFrequency(Word word) {
+    return (word.getNormalizedText() == this.getNormalizedText()) ? 1 : 0;
   }
 
 }

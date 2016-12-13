@@ -31,29 +31,29 @@ public final class Sentence extends ProseFragment {
     while (wordMatcher.find()) {
       this.words.add(new Word(wordMatcher.group()));
     }
-    this.wordCharacterCount = words.stream()
+    this.wordCharacterCount = this.words.stream()
         .mapToInt( word -> word.getWordCharacterCount())
         .sum();
-    this.syllableCount = words.stream()
+    this.syllableCount = this.words.stream()
         .mapToInt( word -> word.getSyllableCount())
         .sum();
     this.wordCount = words.size();
-    this.complexWordCount = words.stream()
+    this.complexWordCount = this.words.stream()
         .mapToInt( word -> word.getComplexWordCount())
         .sum();
-    this.longWordCount = words.stream()
+    this.longWordCount = this.words.stream()
         .mapToInt( word -> word.getLongWordCount())
         .sum();
-    this.povWordCount = words.stream()
+    this.povWordCount = this.words.stream()
         .mapToInt( word -> word.getPovWordCount())
         .sum();
-    this.firstPersonWordCount = words.stream()
+    this.firstPersonWordCount = this.words.stream()
         .mapToInt( word -> word.getFirstPersonWordCount())
         .sum();
-    this.secondPersonWordCount = words.stream()
+    this.secondPersonWordCount = this.words.stream()
         .mapToInt( word -> word.getSecondPersonWordCount())
         .sum();
-    this.thirdPersonWordCount = words.stream()
+    this.thirdPersonWordCount = this.words.stream()
         .mapToInt( word -> word.getThirdPersonWordCount())
         .sum();
     Set<Word> uniqueWords = new HashSet<Word>(this.words);
@@ -70,6 +70,7 @@ public final class Sentence extends ProseFragment {
     return this.words;
   }
 
+  @Override
   public final Set<Word> getUniqueWords() {
     return this.wordFrequency.keySet();
   }
@@ -78,10 +79,12 @@ public final class Sentence extends ProseFragment {
     return this.wordFrequency.keySet().size();
   }
 
+  @Override
   public final Map<Word, Integer> getWordFrequency() {
     return this.wordFrequency;
   }
 
+  @Override
   public final Integer getWordFrequency(Word word) {
     if (this.wordFrequency.containsKey(word)) {
       return this.wordFrequency.get(word);
