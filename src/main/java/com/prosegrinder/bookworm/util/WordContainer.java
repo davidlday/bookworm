@@ -136,27 +136,6 @@ public abstract class WordContainer {
   }
 
   /**
-   * Static method for building word frequency from a list of fragments.
-   *
-   * @param a list of WordContainers.
-   * @return a map of Word with counts.
-   *
-   */
-  public static final Map<Word, Integer> getWordFrequency(List<WordContainer> fragments) {
-    Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
-    fragments.stream().forEach( fragment -> {
-      Set<Word> uniqueWords = fragment.getUniqueWords();
-      uniqueWords.stream().forEach( word -> {
-        int count = (wordFrequency.containsKey(word)) ?
-            wordFrequency.get(word) : 0;
-        count += fragment.getWordFrequency(word);
-        wordFrequency.put(word, count);
-      });
-    });
-    return wordFrequency;
-  }
-
-  /**
    * Returns a String representation of the ProseFragement.
    *
    * @return a String representation of the WordContainer.

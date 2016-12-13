@@ -204,4 +204,21 @@ public final class Word {
     return (this.isPovWord()) ? 1 : 0;
   }
 
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof Word)) {
+      return false;
+    }
+    if (object == this) {
+      return true;
+    }
+    Word rhs = (Word) object;
+    return this.normalizedWord.equals(rhs.getNormalizedText());
+  }
+
+  @Override
+  public int hashCode() {
+    return this.normalizedWord.hashCode();
+  }
+
 }

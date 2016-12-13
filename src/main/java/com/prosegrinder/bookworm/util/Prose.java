@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public final class Prose extends WordContainer {
 
   private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
-  private final Map<Word, Integer> wordFrequency;
+  private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
   private final List<DialogueFragment> dialogueFragments
       = new ArrayList<DialogueFragment>();
   private final List<NarrativeFragment> narrativeFragments
@@ -58,51 +58,61 @@ public final class Prose extends WordContainer {
           new NarrativeFragment(narrative)
       );
     }
-    this.dialogueSyllableCount = dialogueFragments.stream()
+    this.dialogueSyllableCount = this.dialogueFragments.stream()
         .mapToInt( fragment -> fragment.getSyllableCount())
         .sum();
-    this.dialogueWordCount = dialogueFragments.stream()
+    this.dialogueWordCount = this.dialogueFragments.stream()
         .mapToInt( fragment -> fragment.getWordCount())
         .sum();
-    this.narrativeSyllableCount = narrativeFragments.stream()
+    this.narrativeSyllableCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getSyllableCount())
         .sum();
-    this.narrativeWordCount = narrativeFragments.stream()
+    this.narrativeWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getWordCount())
         .sum();
-    this.wordCharacterCount = paragraphs.stream()
+    this.wordCharacterCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getWordCharacterCount())
         .sum();
-    this.syllableCount = paragraphs.stream()
+    this.syllableCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getSyllableCount())
         .sum();
-    this.wordCount = paragraphs.stream()
+    this.wordCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getWordCount())
         .sum();
-    this.complexWordCount = paragraphs.stream()
+    this.complexWordCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getComplexWordCount())
         .sum();
-    this.longWordCount = paragraphs.stream()
+    this.longWordCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getLongWordCount())
         .sum();
-    this.povWordCount = paragraphs.stream()
+    this.povWordCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getPovWordCount())
         .sum();
-    this.sentenceCount = paragraphs.stream()
+    this.sentenceCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getSentenceCount())
         .sum();
-    this.paragraphCount = paragraphs.size();
+    this.paragraphCount = this.paragraphs.size();
     /** We only consider POV words found in narrative since dialogue is always first person. **/
-    this.firstPersonWordCount = narrativeFragments.stream()
+    this.firstPersonWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getFirstPersonWordCount())
         .sum();
-    this.secondPersonWordCount = narrativeFragments.stream()
+    this.secondPersonWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getSecondPersonWordCount())
         .sum();
-    this.thirdPersonWordCount = narrativeFragments.stream()
+    this.thirdPersonWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
-    this.wordFrequency = WordContainer.getWordFrequency((List<WordContainer>)(List<?>) this.paragraphs);
+
+    this.paragraphs.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (wordFrequency.containsKey(word)) ?
+            wordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        wordFrequency.put(word, count);
+      });
+    });
+
   }
 
   public final List<DialogueFragment> getDialogueFragments() {

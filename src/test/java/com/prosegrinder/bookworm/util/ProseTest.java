@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
 public class ProseTest {
@@ -48,6 +49,7 @@ public class ProseTest {
     logger.info("Dialogue Fragment Word Count: " + prose.getDialogueWordCount());
     logger.info("Narrative Fragment Word Count: " + prose.getNarrativeWordCount());
     logger.info("Point of View: " + prose.getPov());
+    logger.info("Unique Words: " + prose.getUniqueWords().size());
   }
 
 }

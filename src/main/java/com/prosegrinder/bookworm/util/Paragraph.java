@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public final class Paragraph extends WordContainer {
 
   private final List<Sentence> sentences = new ArrayList<Sentence>();
-  private final Map<Word, Integer> wordFrequency;
+  private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
 
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
@@ -62,7 +62,17 @@ public final class Paragraph extends WordContainer {
         .mapToInt( sentence -> sentence.getThirdPersonWordCount())
         .sum();
     this.sentenceCount = this.sentences.size();
-    this.wordFrequency = WordContainer.getWordFrequency((List<WordContainer>)(List<?>) this.sentences);
+
+    this.sentences.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (wordFrequency.containsKey(word)) ?
+            wordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        wordFrequency.put(word, count);
+      });
+    });
+
   }
 
   public static final Pattern getPattern() {
