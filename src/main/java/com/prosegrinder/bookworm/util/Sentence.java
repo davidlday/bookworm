@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 public final class Sentence extends ProseFragment {
 
   private final List<Word> words = new ArrayList<Word>();
-  private final Set<Word> uniqueWords = new HashSet<Word>();
   private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
 
   private final Integer wordCharacterCount;
@@ -57,7 +56,7 @@ public final class Sentence extends ProseFragment {
     this.thirdPersonWordCount = words.stream()
         .mapToInt( word -> word.getThirdPersonWordCount())
         .sum();
-    this.uniqueWords.addAll(this.words);
+    Set<Word> uniqueWords = new HashSet<Word>(this.words);
     uniqueWords.stream().forEach(word -> {
         wordFrequency.put(word, Collections.frequency(this.words, word));
     });
@@ -72,15 +71,23 @@ public final class Sentence extends ProseFragment {
   }
 
   public final Set<Word> getUniqueWords() {
-    return this.uniqueWords;
+    return this.wordFrequency.keySet();
   }
 
   public final Integer getUniqueWordCount() {
-    return this.uniqueWords.size();
+    return this.wordFrequency.keySet().size();
   }
 
   public final Map<Word, Integer> getWordFrequency() {
     return this.wordFrequency;
+  }
+
+  public final Integer getWordFrequency(Word word) {
+    if (this.wordFrequency.containsKey(word)) {
+      return this.wordFrequency.get(word);
+    } else {
+      return 0;
+    }
   }
 
   @Override
