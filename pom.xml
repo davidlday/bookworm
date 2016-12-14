@@ -19,13 +19,20 @@
         <checkstyle.version>2.17</checkstyle.version>
         <junit.version>4.12</junit.version>
         <log4j.version>2.7</log4j.version>
+        <stanfordnlp.version>3.6.0</stanfordnlp.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>3.6.0</version>
+            <version>${stanfordnlp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>${stanfordnlp.version}</version>
+            <classifier>models-english</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
