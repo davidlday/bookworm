@@ -1,8 +1,5 @@
 package com.prosegrinder.bookworm.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;

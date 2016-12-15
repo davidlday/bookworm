@@ -1,7 +1,5 @@
 package com.prosegrinder.bookworm.util;
 
-import edu.stanford.nlp.tagger.maxent.MaxentTagger;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -79,12 +77,6 @@ public final class Sentence extends WordContainer {
 
   public final Integer getUniqueWordCount() {
     return this.wordFrequency.keySet().size();
-  }
-
-  public final String getTaggedText() {
-    MaxentTagger tagger = new MaxentTagger("models/left3words-wsj-0-18.tagger");
-    String taggedString = tagger.tagString(this.getInitialText());
-    return taggedString;
   }
 
   @Override

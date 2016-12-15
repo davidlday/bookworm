@@ -37,10 +37,8 @@ public class ProseTest {
 
   @Test
   public void testProse() {
-//     Prose prose = new Prose(this.text);
     assertEquals( "Dialogue word count + narrative word count = total word count: ", prose.getWordCount().intValue(),
         prose.getDialogueWordCount().intValue() + prose.getNarrativeWordCount().intValue());
-//     logger.info(prose.toString());
     logger.info("Syllable Count: " + prose.getSyllableCount());
     logger.info("Word Count: " + prose.getWordCount());
     logger.info("Sentence Count: " + prose.getSentenceCount());
@@ -52,11 +50,6 @@ public class ProseTest {
     logger.info("Narrative Fragment Word Count: " + prose.getNarrativeWordCount());
     logger.info("Point of View: " + prose.getPov());
     logger.info("Unique Words: " + prose.getUniqueWords().size());
-  }
-
-  @Test
-  public void testProseTagging() {
-    logger.info(prose.getTaggedText());
   }
 
 }

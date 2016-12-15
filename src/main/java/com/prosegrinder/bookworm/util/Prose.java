@@ -1,6 +1,5 @@
 package com.prosegrinder.bookworm.util;
 
-import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import com.prosegrinder.bookworm.enums.PovType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +25,6 @@ public final class Prose extends WordContainer {
       = new ArrayList<DialogueFragment>();
   private final List<NarrativeFragment> narrativeFragments
       = new ArrayList<NarrativeFragment>();
-  private final MaxentTagger tagger;
 
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
@@ -113,7 +111,6 @@ public final class Prose extends WordContainer {
     this.thirdPersonWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
-
     this.paragraphs.stream().forEach( fragment -> {
       Set<Word> uniqueWords = fragment.getUniqueWords();
       uniqueWords.stream().forEach( word -> {
@@ -123,23 +120,6 @@ public final class Prose extends WordContainer {
         wordFrequency.put(word, count);
       });
     });
-
-//     this.tagger = new MaxentTagger();
-//     try {
-//       String model = "models/stanfordnlp/english-left3words-distsim.tagger";
-      String model = "edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger";
-      ClassLoader classLoader = Prose.class.getClassLoader();
-      logger.info(model);
-      logger.info(classLoader.getResource(model).toString());
-//       Path modelPath = Paths.get(classLoader.getResource(model).toURI());
-//       logger.info("Loading model from: " + modelPath.toString());
-//       this.tagger = new MaxentTagger(classLoader.getResourceAsStream(model));
-      this.tagger = new MaxentTagger(model);
-//     } catch (URISyntaxException use) {
-//       this.tagger = new MaxentTagger();
-//       logger.warn("Could not load model: " + use);
-//     }
-
   }
 
   public final List<DialogueFragment> getDialogueFragments() {
@@ -273,12 +253,5 @@ public final class Prose extends WordContainer {
   public final Integer getPovWordCount() {
     return this.povWordCount;
   }
-
-  public final String getTaggedText() {
-    String taggedString = tagger.tagString(this.getInitialText());
-    return taggedString;
-  }
-
-
 
 }
