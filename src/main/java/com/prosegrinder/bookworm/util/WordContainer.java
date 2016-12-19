@@ -33,19 +33,19 @@ public abstract class WordContainer {
   // http://stackoverflow.com/questions/5553410/regular-expression-match-a-sentence#5553924
   private static final Pattern SENTENCE_PATTERN = Pattern.compile(
       "# Match a sentence ending in punctuation or EOS.\n"
-      + "[^.!?\\s]    # First char is non-punct, non-ws\n"
-      + "[^.!?]*      # Greedily consume up to punctuation.\n"
+      + "[^.!?…\\s]    # First char is non-punct, non-ws\n"
+      + "[^.!?…]*      # Greedily consume up to punctuation.\n"
       + "(?:          # Group for unrolling the loop.\n"
-      + "  [.!?]      # (special) inner punctuation ok if\n"
-      + "  (?!['\"]?\\s|$)  # not followed by ws or EOS.\n"
-      + "  [^.!?]*    # Greedily consume up to punctuation.\n"
+      + "  [.!?…]      # (special) inner punctuation ok if\n"
+      + "  (?!['\")]?\\s|$)  # not followed by ws or EOS.\n"
+      + "  [^.!?…]*    # Greedily consume up to punctuation.\n"
       + ")*           # Zero or more (special normal*)\n"
-      + "[.!?]?       # Optional ending punctuation.\n"
-      + "['\"]?       # Optional closing quote.\n"
+      + "[.!?…]       # Ending punctuation.\n"
+      + "['\")]?       # Optional closing quote.\n"
       + "(?=\\s|$)",
       Pattern.MULTILINE | Pattern.COMMENTS);
   private static final Pattern WORD_PATTERN = Pattern.compile(
-      "[\\w’'-]+"
+      "[\\w’']+"
   );
 
   private static final String RE_SMART_QUOTES = new String("[“”]");
