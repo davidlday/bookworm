@@ -160,9 +160,9 @@ public final class Prose extends WordContainer {
 
   public final List<Sentence> getSentences() {
     List<Sentence> sentences = new ArrayList<Sentence>();
-    for (Paragraph paragraph: this.getParagraphs()) {
+    this.getParagraphs().stream().forEach( paragraph -> {
       sentences.addAll(paragraph.getSentences());
-    }
+    });
     return sentences;
   }
 
@@ -172,9 +172,9 @@ public final class Prose extends WordContainer {
 
   public final List<Word> getWords() {
     List<Word> words = new ArrayList<Word>();
-    for (Sentence sentence: this.getSentences()) {
+    this.getSentences().stream().forEach( sentence -> {
       words.addAll(sentence.getWords());
-    }
+    });
     return words;
   }
 
