@@ -158,8 +158,24 @@ public final class Prose extends WordContainer {
     return this.paragraphCount;
   }
 
+  public final List<Sentence> getSentences() {
+    List<Sentence> sentences = new ArrayList<Sentence>();
+    for (Paragraph paragraph: this.getParagraphs()) {
+      sentences.addAll(paragraph.getSentences());
+    }
+    return sentences;
+  }
+
   public final Integer getSentenceCount() {
     return this.sentenceCount;
+  }
+
+  public final List<Word> getWords() {
+    List<Word> words = new ArrayList<Word>();
+    for (Sentence sentence: this.getSentences()) {
+      words.addAll(sentence.getWords());
+    }
+    return words;
   }
 
   @Override
