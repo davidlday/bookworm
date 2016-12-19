@@ -38,6 +38,7 @@ public class ProseTest {
   @Test
   public void testProse() {
     assertEquals("Word Count: ", 1528, prose.getWordCount().intValue());
+    assertEquals("Long Word Count: ", 275, prose.getLongWordCount().intValue());
     assertEquals("Sentence Count: ", 90, prose.getSentenceCount().intValue());
 
     assertEquals("Dialogue word count + narrative word count = total word count: ", 1528,
@@ -47,7 +48,7 @@ public class ProseTest {
 //     logger.info("Word Count: " + prose.getWordCount());
 //     logger.info("Sentence Count: " + prose.getSentenceCount());
     logger.info("Complex Word Count: " + prose.getComplexWordCount());
-    logger.info("Long Word Count: " + prose.getLongWordCount());
+//     logger.info("Long Word Count: " + prose.getLongWordCount());
     logger.info("Average Syllables per Word: " + prose.getAverageSyllablesPerWord());
     logger.info("Average Words per Sentence: " + prose.getAverageWordsPerSentence());
     logger.info("Dialogue Fragment Word Count: " + prose.getDialogueWordCount());
