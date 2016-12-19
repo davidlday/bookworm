@@ -37,11 +37,15 @@ public class ProseTest {
 
   @Test
   public void testProse() {
-    assertEquals( "Dialogue word count + narrative word count = total word count: ", prose.getWordCount().intValue(),
+    assertEquals("Word Count: ", 1528, prose.getWordCount().intValue());
+    assertEquals("Sentence Count: ", 90, prose.getSentenceCount().intValue());
+
+    assertEquals("Dialogue word count + narrative word count = total word count: ", 1528,
         prose.getDialogueWordCount().intValue() + prose.getNarrativeWordCount().intValue());
+
     logger.info("Syllable Count: " + prose.getSyllableCount());
-    logger.info("Word Count: " + prose.getWordCount());
-    logger.info("Sentence Count: " + prose.getSentenceCount());
+//     logger.info("Word Count: " + prose.getWordCount());
+//     logger.info("Sentence Count: " + prose.getSentenceCount());
     logger.info("Complex Word Count: " + prose.getComplexWordCount());
     logger.info("Long Word Count: " + prose.getLongWordCount());
     logger.info("Average Syllables per Word: " + prose.getAverageSyllablesPerWord());
@@ -50,6 +54,13 @@ public class ProseTest {
     logger.info("Narrative Fragment Word Count: " + prose.getNarrativeWordCount());
     logger.info("Point of View: " + prose.getPov());
     logger.info("Unique Words: " + prose.getUniqueWords().size());
+//     int scount = 1;
+//     for (Paragraph paragraph: prose.getParagraphs()) {
+//       for (Sentence sentence: paragraph.getSentences()) {
+//         logger.info(scount + ":\t" + sentence);
+//         scount++;
+//       }
+//     }
   }
 
 }
