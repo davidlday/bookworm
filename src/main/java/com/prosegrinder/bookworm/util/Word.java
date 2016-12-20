@@ -60,6 +60,8 @@ public final class Word {
    *
    * <p>String is not currently validates since Words should
    * only be created by a Sentence using WordContainer.WORD_PATTERN.
+   *
+   * @param text  a single word
    */
   public Word(final String text) {
     this.initialWord = text.trim();
