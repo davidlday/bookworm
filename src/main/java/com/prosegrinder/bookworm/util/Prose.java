@@ -45,6 +45,12 @@ public final class Prose extends WordContainer {
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(SyllableDictionary.class);
 
+  /**
+   * Returns a new Prose object from a string.
+   *
+   * <p>Prose is currently considered the top level WordContainer. The String is not validated
+   * as it is assumed to be an arbitrary block of text representing some kind of story.
+   */
   public Prose(final String text) {
     super(text);
     Matcher paragraphMatcher = this.getParagraphPattern().matcher(text);
@@ -138,6 +144,13 @@ public final class Prose extends WordContainer {
     return this.narrativeWordCount;
   }
 
+  /**
+   * Returns the Point of View of the prose as an PovType.
+   *
+   * @return the Point of View of the prose as an PovType.
+   * @see com.progringer.bookworm.enums.PovType
+   *
+   */
   public final Enum getPov() {
     if (this.getFirstPersonWordCount() > 0) {
       return PovType.FIRST;
@@ -158,6 +171,12 @@ public final class Prose extends WordContainer {
     return this.paragraphCount;
   }
 
+  /**
+   * Returns a list of all Sentences found in the Paragraph.
+   *
+   * @return a list of all Sentences found in the Paragraph.
+   *
+   */
   public final List<Sentence> getSentences() {
     List<Sentence> sentences = new ArrayList<Sentence>();
     this.getParagraphs().stream().forEach( paragraph -> {
