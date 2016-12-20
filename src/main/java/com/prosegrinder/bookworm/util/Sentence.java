@@ -10,6 +10,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A Sentence.
+ */
 public final class Sentence extends WordContainer {
 
   private final List<Word> words = new ArrayList<Word>();
@@ -25,6 +28,12 @@ public final class Sentence extends WordContainer {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
 
+  /**
+   * Returns a new Sentence from a string.
+   *
+   * <p>String is not currently validates since Sentences should
+   * only be created by a Paragraph using WordContainer.SENTENCE_PATTERN.
+   */
   public Sentence(final String text) {
     super(text);
     Matcher wordMatcher = WordContainer.getWordPattern().matcher(text);
