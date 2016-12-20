@@ -75,6 +75,7 @@ public final class Sentence extends WordContainer {
     return WordContainer.getSentencePattern();
   }
 
+  @Override
   public final List<Word> getWords() {
     return this.words;
   }

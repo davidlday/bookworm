@@ -110,6 +110,7 @@ public final class Paragraph extends WordContainer {
     }
   }
 
+  @Override
   public final List<Word> getWords() {
     List<Word> words = new ArrayList<Word>();
     this.getSentences().stream().forEach( sentence -> {

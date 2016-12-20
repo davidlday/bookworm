@@ -74,6 +74,7 @@ public final class DialogueFragment extends WordContainer {
     return WordContainer.getDialoguePattern();
   }
 
+  @Override
   public final List<Word> getWords() {
     return this.words;
   }

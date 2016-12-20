@@ -170,6 +170,7 @@ public final class Prose extends WordContainer {
     return this.sentenceCount;
   }
 
+  @Override
   public final List<Word> getWords() {
     List<Word> words = new ArrayList<Word>();
     this.getSentences().stream().forEach( sentence -> {

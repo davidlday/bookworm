@@ -71,6 +71,7 @@ public final class NarrativeFragment extends WordContainer {
     this.wordFrequency = Word.getWordFrequency(this.words);
   }
 
+  @Override
   public final List<Word> getWords() {
     return this.words;
   }
