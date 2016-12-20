@@ -1,6 +1,8 @@
 ﻿language: java
 jdk:
   - oraclejdk8
+script:
+  - jdk_switcher use oraclejdk8
 #
 sudo: false
 addons:
