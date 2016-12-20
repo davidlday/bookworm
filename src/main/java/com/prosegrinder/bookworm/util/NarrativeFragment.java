@@ -25,6 +25,18 @@ public final class NarrativeFragment extends WordContainer {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
 
+  /**
+   * Returns a new NarrativeFragment from a string.
+   *
+   * <p>As with Dialogue, Narrative slices out independently of sentences and paragraphs. A
+   * single sentence may contain a mix of dialogue and narrative, or a chunk of dialogue
+   * may span multiple paragraphs. The only place narrative can effectively be parsed out
+   * is from the entirety of the original Prose.
+   *
+   * <p>String is not currently validated since NarrativeFragment should
+   * only be created by a Prose object splitting its underlying text
+   * using WordContainer.DIALOGUE_PATTERN.
+   */
   public NarrativeFragment(final String text) {
     super(text);
     Matcher wordMatcher = this.getWordPattern().matcher(text);
