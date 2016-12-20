@@ -1,12 +1,12 @@
 ﻿language: java
 jdk:
   - oraclejdk8
-script:
-  - jdk_switcher use oraclejdk8
-#
 sudo: false
 addons:
   apt:
     packages:
       - oracle-java8-installer
+#
+script:
+  - jdk_switcher use oraclejdk8
 #
