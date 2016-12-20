@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A Word, the base unit for measuring fiction prose.
+ */
 public final class Word {
 
   /** Magic number for determining complex words. **/
@@ -52,6 +55,12 @@ public final class Word {
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
 
+  /**
+   * Returns a new Word from a string.
+   *
+   * <p>String is not currently validates since Words should
+   * only be created by a Sentence using WordContainer.WORD_PATTERN.
+   */
   public Word(final String text) {
     this.initialWord = text.trim();
     this.normalizedWord = this.initialWord.toLowerCase();
