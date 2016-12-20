@@ -66,9 +66,9 @@ public abstract class WordContainer {
   }
 
   /**
-   * Normalizes text for processing by trimming and converting to lower case.
+   * Normalize text for processing by trimming and converting to lower case.
    *
-   * @params text  source text to analyze
+   * @param text  source text to analyze
    * @return a normalized representation of text
    *
    */
