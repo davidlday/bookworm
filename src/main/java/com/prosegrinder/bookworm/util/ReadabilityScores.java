@@ -96,8 +96,9 @@ public final class ReadabilityScores {
    *
    */
   public ReadabilityScores(Prose prose) {
-    this.calculateScores(prose.getWordCharacterCount(), prose.getComplexWordCount(), prose.getLongWordCount(),
-        prose.getSentenceCount(), prose.getSyllableCount(), prose.getWordCount());
+    this.calculateScores(prose.getWordCharacterCount(), prose.getComplexWordCount(),
+        prose.getLongWordCount(), prose.getSentenceCount(),
+        prose.getSyllableCount(), prose.getWordCount());
   }
 
   /** Calculates all scores for the source text. **/
@@ -189,9 +190,9 @@ public final class ReadabilityScores {
   /**
    * Calculates the Flesch Reading Ease score for the analyzed text.
    *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param syllableCount the number of syllables found in the source text
+   * @param sentenceCount the number of sentences found in the source text
    * @param wordCount the number of words found in the source text
+   * @param syllableCount the number of syllables found in the source text
    * @return Flesch Reading Ease score
    *
    **/
@@ -210,9 +211,9 @@ public final class ReadabilityScores {
   /**
    * Calculates the Flesch Kincaid Grade Level score for the analyzed text.
    *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param syllableCount the number of syllables found in the source text
+   * @param sentenceCount the number of sentences found in the source text
    * @param wordCount the number of words found in the source text
+   * @param syllableCount the number of syllables found in the source text
    * @return Flesch Kincaid Grade Level score
    *
    **/
@@ -231,9 +232,9 @@ public final class ReadabilityScores {
   /**
    * Calculates the Gunning Fog Index score for the analyzed text.
    *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param complexWordCount the number of complex words found in the source text
+   * @param sentenceCount the number of sentences found in the source text
    * @param wordCount the number of words found in the source text
+   * @param complexWordCount the number of complex words found in the source text
    * @return Gunning Fog Index score
    *
    **/
@@ -260,7 +261,8 @@ public final class ReadabilityScores {
   public static final Double smog(final Integer complexWordCount, final Integer sentenceCount) {
     Double score = 0.0;
     if (sentenceCount > 0) {
-      score = (1.0430 * Math.sqrt((double) complexWordCount * (30 / (double) sentenceCount))) + 3.1291;
+      score = (1.0430 * Math.sqrt((double) complexWordCount
+          * (30 / (double) sentenceCount))) + 3.1291;
     }
     return score;
   }
@@ -279,9 +281,9 @@ public final class ReadabilityScores {
                                               final Integer sentenceCount) {
     Double score = 0.0;
     if (wordCount > 0) {
-      Double L = (double) characterCount / (double) wordCount * 100;
-      Double S = (double) sentenceCount / (double) wordCount * 100;
-      score = (0.0588 * L) - (0.296 * S) - 15.8;
+      Double lettersPerWord = (double) characterCount / (double) wordCount * 100;
+      Double sentencesPerWord = (double) sentenceCount / (double) wordCount * 100;
+      score = (0.0588 * lettersPerWord) - (0.296 * sentencesPerWord) - 15.8;
     }
     return score;
   }

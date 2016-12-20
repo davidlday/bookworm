@@ -91,7 +91,7 @@ public final class Word {
   /**
    * Static method for building word frequency from a list of fragments.
    *
-   * @param a list of WordContainers.
+   * @param words a list of WordContainers.
    * @return a map of Word with counts.
    *
    */
@@ -99,7 +99,7 @@ public final class Word {
     Set<Word> uniqueWords = new HashSet<Word>(words);
     Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
     uniqueWords.stream().forEach(word -> {
-        wordFrequency.put(word, Collections.frequency(words, word));
+      wordFrequency.put(word, Collections.frequency(words, word));
     });
     return wordFrequency;
   }

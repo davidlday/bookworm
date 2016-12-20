@@ -116,12 +116,6 @@ public abstract class WordContainer {
     return WordContainer.DIALOGUE_PATTERN;
   }
 
-//   public static final Pattern getDelimitedPattern(String delimiter) {
-//     return Pattern.compile(
-//         ".*(?:" + delimiter + "|$)"
-//     );
-//   }
-
   /**
    * Converts left and right double quotation marks (“”) to
    * neutral quotation marks ("). These smart quotation marks

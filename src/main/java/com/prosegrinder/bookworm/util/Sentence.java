@@ -2,11 +2,11 @@ package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +58,7 @@ public final class Sentence extends WordContainer {
         .sum();
     Set<Word> uniqueWords = new HashSet<Word>(this.words);
     uniqueWords.stream().forEach(word -> {
-        wordFrequency.put(word, Collections.frequency(this.words, word));
+      wordFrequency.put(word, Collections.frequency(this.words, word));
     });
   }
 
