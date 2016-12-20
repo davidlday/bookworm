@@ -237,11 +237,37 @@ public abstract class WordContainer {
    */
   public abstract Integer getPovWordCount();
 
-
+  /**
+   * Returns a set of unique Words found in the WordContainer
+   *
+   * @return a set of unique Words found in the WordContainer.
+   *
+   */
   public abstract Set<Word> getUniqueWords();
 
+  /**
+   * Returns a map of unique Words found in the WordContainer
+   * with a value of how many times that Word occurs in the underlying text.
+   *
+   * @return a map with Word as key and the number of times Word appears as value.
+   *
+   */
   public abstract Map<Word, Integer> getWordFrequency();
 
+  /**
+   * Returns the number of times a Word appears in the Wordcontainer.
+   *
+   * @return the number of times a Word appears in the Wordcontainer.
+   *
+   */
   public abstract Integer getWordFrequency(Word word);
 
+  /**
+   * Returns a list of all Words found in the WordContainer.
+   *
+   * @return a list of all Words found in the WordContainer.
+   *
+   */
+  public abstract List<Word> getWords();
+  
 }
