@@ -28,6 +28,12 @@ public final class Paragraph extends WordContainer {
   private final Integer thirdPersonWordCount;
   private final Integer sentenceCount;
 
+  /**
+   * Returns a new Paragraph from a string.
+   *
+   * <p>String is not currently validated since Paragraphs should
+   * only be created by a Prose object using WordContainer.PARAGRAPH_PATTERN.
+   */
   public Paragraph(final String text) {
     super(text);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
