@@ -99,7 +99,7 @@ public final class SyllableDictionary {
               }
             }
           });
-      logger.info("Map entries: " + syllableMap.size());
+      logger.info("SyllableDictionary entries: " + syllableMap.size());
     } catch (IOException ioe) {
       logger.warn("Could not load dictionary file: " + ioe);
       logger.warn("Continuing with only lookup by heuristics.");
