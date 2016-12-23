@@ -78,33 +78,6 @@ public final class ReadabilityScores {
   public ReadabilityScores(final Integer characterCount, final Integer complexWordCount,
       final Integer longWordCount, final Integer sentenceCount,
       final Integer syllableCount, final Integer wordCount) {
-    this.calculateScores(characterCount, complexWordCount, longWordCount,
-        sentenceCount, syllableCount, wordCount);
-  }
-
-  /**
-   * Efficient constructor for ReadabilityScores.
-   *
-   * <p>This constructor is used in larger processes where the basic
-   * underlying inputs have already been calculated. All inputs must come from
-   * the same source text or the resulting scores have no meaning.
-   *
-   * <p>All necessary inputs can be calculated by corresponding methods
-   * found in the Calculator utility class.
-   *
-   * @param prose  prose to score.
-   *
-   */
-  public ReadabilityScores(Prose prose) {
-    this.calculateScores(prose.getWordCharacterCount(), prose.getComplexWordCount(),
-        prose.getLongWordCount(), prose.getSentenceCount(),
-        prose.getSyllableCount(), prose.getWordCount());
-  }
-
-  /** Calculates all scores for the source text. **/
-  private void calculateScores(final Integer characterCount, final Integer complexWordCount,
-      final Integer longWordCount, final Integer sentenceCount,
-      final Integer syllableCount, final Integer wordCount) {
 
     this.characterCount = characterCount;
     this.complexWordCount = complexWordCount;
@@ -127,8 +100,51 @@ public final class ReadabilityScores {
         this.lix(wordCount, longWordCount, sentenceCount);
     this.smog =
         this.smog(complexWordCount, sentenceCount);
-
   }
+
+  /**
+   * Convenience constructor for ReadabilityScores.
+   *
+   * <p>This constructor is used when only interested in readability scores
+   * and not any of the other prose metrics.
+   *
+   * @param prose  prose to score.
+   *
+   */
+  public ReadabilityScores(Prose prose) {
+    this(prose.getWordCharacterCount(), prose.getComplexWordCount(),
+        prose.getLongWordCount(), prose.getSentenceCount(),
+        prose.getSyllableCount(), prose.getWordCount());
+  }
+
+  /** Calculates all scores for the source text. **/
+//   private void calculateScores(final Integer characterCount, final Integer complexWordCount,
+//       final Integer longWordCount, final Integer sentenceCount,
+//       final Integer syllableCount, final Integer wordCount) {
+//
+//     this.characterCount = characterCount;
+//     this.complexWordCount = complexWordCount;
+//     this.longWordCount = longWordCount;
+//     this.sentenceCount = sentenceCount;
+//     this.syllableCount = syllableCount;
+//     this.wordCount = wordCount;
+//
+//     this.automatedReadabilityIndex =
+//         this.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);
+//     this.colemanLiauIndex =
+//         this.colemanLiauIndex(characterCount, wordCount, sentenceCount);
+//     this.fleschKincaidGradeLevel =
+//         this.fleschKincaidGradeLevel(sentenceCount, wordCount, syllableCount);
+//     this.fleschReadingEase =
+//         this.fleschReadingEase(sentenceCount, wordCount, syllableCount);
+//     this.gunningFogIndex =
+//         this.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
+//     this.lix =
+//         this.lix(wordCount, longWordCount, sentenceCount);
+//     this.smog =
+//         this.smog(complexWordCount, sentenceCount);
+//
+//   }
 
   /** Returns the Automated Readability Index score for the analyzed text. **/
   public final Double getAutomatedReadabilityIndex() {
