@@ -54,6 +54,7 @@ public final class Word {
   private final Boolean isNumeric;
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
+  private final Boolean isDictionaryWord;
 
   /**
    * Returns a new Word from a string.
@@ -68,6 +69,7 @@ public final class Word {
     this.normalizedWord = this.initialWord.toLowerCase();
     final SyllableDictionary sd = SyllableDictionary.getInstance();
     this.syllableCount = sd.getSyllableCount(this.getNormalizedText());
+    this.isDictionaryWord = sd.inDictionary(this.getNormalizedText());
     this.wordCharacterCount = this.getNormalizedText().length();
     if (this.syllableCount >= MIN_SYLLABLES_COMPLEX_WORD) {
       /**
@@ -153,6 +155,10 @@ public final class Word {
 
   public final Boolean isComplexWord() {
     return this.isComplexWord;
+  }
+
+  public final Boolean isDictionaryWord() {
+    return this.isDictionaryWord;
   }
 
   public final Boolean isLongWord() {
