@@ -28,7 +28,7 @@ public class SyllableDictionaryTest {
     // Cafe is correct by lookup.
     assertEquals( "Cafe: ", 2, syllableDictionary.getByLookup( "cafe" ).intValue());
     // No numbers are in the dictionary. Throws a NullPointerException.
-    logger.info("Expecting an exception.");
+    logger.info("Expecting NullPointerException...");
     String notWord = "1,904";
     thrown.expect( NullPointerException.class );
     thrown.expectMessage( "Dictionary does not contain an entry for " + notWord + "." );
@@ -83,7 +83,6 @@ public class SyllableDictionaryTest {
       }
     }
     double ratio = (double) hits / (double) map.size();
-    logger.info("Percent hits comparing lookup and heuristics: " + ratio);
     assertTrue( "Expected at least 0.8 hit ratio on Heuristics. Ratio=", ratio > 0.8 );
   }
 

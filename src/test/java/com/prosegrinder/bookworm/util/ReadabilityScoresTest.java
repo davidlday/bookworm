@@ -15,6 +15,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 public class ReadabilityScoresTest {
@@ -22,6 +24,8 @@ public class ReadabilityScoresTest {
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(SyllableDictionaryTest.class);
   private String text;
+  private Prose prose;
+  private static final NumberFormat formatter = new DecimalFormat("#0.000");
 
   @Before
   public void loadProse() throws IOException, URISyntaxException {
@@ -30,6 +34,7 @@ public class ReadabilityScoresTest {
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
     this.text = String.join("\n",lines);
+    this.prose = new Prose(this.text);
   }
 
   @Test
@@ -42,26 +47,25 @@ public class ReadabilityScoresTest {
 //     Integer wordCount = 1535;
 
     /** https://www.online-utility.org/english/readability_test_and_improve.jsp **/
-    Integer characterCount = 7009;
-    Integer complexWordCount = 188;
-    Integer longWordCount = 284;
-    Integer sentenceCount = 90;
-    Integer syllableCount = 2370;
-    Integer wordCount = 1529;
+//     Integer characterCount = 7009;
+//     Integer complexWordCount = 188;
+//     Integer longWordCount = 284;
+//     Integer sentenceCount = 90;
+//     Integer syllableCount = 2370;
+//     Integer wordCount = 1529;
+//
+//     ReadabilityScores scores = new ReadabilityScores(characterCount, complexWordCount,
+//         longWordCount, sentenceCount, syllableCount, wordCount);
+//
+    ReadabilityScores scores = new ReadabilityScores(prose);
 
-    ReadabilityScores scores = new ReadabilityScores(characterCount, complexWordCount,
-        longWordCount, sentenceCount, syllableCount, wordCount);
-
-//     Prose prose = new Prose(this.text);
-//     ReadabilityScores scores = new ReadabilityScores(prose);
-
-    logger.info("Automated Readability Index: " + scores.getAutomatedReadabilityIndex());
-    logger.info("Coleman Liau Index: " + scores.getColemanLiauIndex());
-    logger.info("Flesch Reading Ease: " + scores.getFleschReadingEase());
-    logger.info("Flesch Kincaid Grade Level: " + scores.getFleschKincaidGradeLevel());
-    logger.info("Gunning Fox Index: " + scores.getGunningFogIndex());
-    logger.info("LIX: " + scores.getLix());
-    logger.info("SMOG Index: " + scores.getSmog());
+    logger.info("Automated Readability Index: " + formatter.format(scores.getAutomatedReadabilityIndex()));
+    logger.info("Coleman Liau Index: " + formatter.format(scores.getColemanLiauIndex()));
+    logger.info("Flesch Reading Ease: " + formatter.format(scores.getFleschReadingEase()));
+    logger.info("Flesch Kincaid Grade Level: " + formatter.format(scores.getFleschKincaidGradeLevel()));
+    logger.info("Gunning Fox Index: " + formatter.format(scores.getGunningFogIndex()));
+    logger.info("LIX: " + formatter.format(scores.getLix()));
+    logger.info("SMOG Index: " + formatter.format(scores.getSmog()));
 //     logger.info(prose.getInitialText());
   }
 
