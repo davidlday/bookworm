@@ -9,7 +9,8 @@ public enum PovType {
     this.person = person;
   }
 
-  private String person() {
+  @Override
+  public String toString() {
     return this.person;
   }
 
