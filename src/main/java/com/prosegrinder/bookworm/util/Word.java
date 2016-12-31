@@ -80,6 +80,9 @@ public final class Word {
        * 2) Do not include proper nouns, familiar jargon, or compound words.
        * 3) Do not include common suffixes (such as -es, -ed, or -ing) as a syllable.
        *
+       * <p>The definition for Complex Word is unclear and difficult to implement.
+       * Any calculations using Complex Word Count should be considered experimental.
+       *
        * <p>See:
        * - https://en.wikipedia.org/wiki/Gunning_fog_index
        * - http://www.readabilityformulas.com/gunning-fog-readability-formula.php
@@ -117,8 +120,6 @@ public final class Word {
     return wordFrequency;
   }
 
-
-
   /**
    * Returns a String representation of the Word.
    *
@@ -153,6 +154,15 @@ public final class Word {
     return WordContainer.getWordPattern();
   }
 
+  /**
+   * Indicates whether the word is a Complex Word.
+   *
+   * <p>The definition for Complex Word is unclear and difficult to implement.
+   * Any calculations using Complex Word Count should be considered experimental.
+   *
+   * @return Boolean indicating whether the word is considered complex.
+   *
+   */
   public final Boolean isComplexWord() {
     return this.isComplexWord;
   }

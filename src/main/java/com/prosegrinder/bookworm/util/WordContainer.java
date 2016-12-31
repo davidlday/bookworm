@@ -188,6 +188,9 @@ public abstract class WordContainer {
   /**
    * Returns the number of complex Words found in the WordContainer.
    *
+   * <p>The definition for Complex Word is unclear and difficult to implement.
+   * Any calculations using Complex Word Count should be considered experimental.
+   *
    * @return the number of complex Words in the WordContainer.
    *
    */
@@ -269,5 +272,5 @@ public abstract class WordContainer {
    *
    */
   public abstract List<Word> getWords();
-  
+
 }
