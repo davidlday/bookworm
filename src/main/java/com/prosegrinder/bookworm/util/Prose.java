@@ -23,8 +23,10 @@ public final class Prose extends WordContainer {
   private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
   private final List<DialogueFragment> dialogueFragments
       = new ArrayList<DialogueFragment>();
+  private final Map<Word, Integer> dialogueWordFrequency = new HashMap<Word, Integer>();
   private final List<NarrativeFragment> narrativeFragments
       = new ArrayList<NarrativeFragment>();
+  private final Map<Word, Integer> narrativeWordFrequency = new HashMap<Word, Integer>();
 
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
@@ -117,13 +119,31 @@ public final class Prose extends WordContainer {
     this.thirdPersonWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
-    this.paragraphs.stream().forEach( fragment -> {
+    this.paragraphs.stream().forEach( paragraph -> {
+      Set<Word> uniqueWords = paragraph.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (this.wordFrequency.containsKey(word))
+            ? this.wordFrequency.get(word) : 0;
+        count += paragraph.getWordFrequency(word);
+        this.wordFrequency.put(word, count);
+      });
+    });
+    this.dialogueFragments.stream().forEach( fragment -> {
       Set<Word> uniqueWords = fragment.getUniqueWords();
       uniqueWords.stream().forEach( word -> {
-        int count = (wordFrequency.containsKey(word))
-            ? wordFrequency.get(word) : 0;
+        int count = (this.dialogueWordFrequency.containsKey(word))
+            ? this.dialogueWordFrequency.get(word) : 0;
         count += fragment.getWordFrequency(word);
-        wordFrequency.put(word, count);
+        this.dialogueWordFrequency.put(word, count);
+      });
+    });
+    this.narrativeFragments.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (this.narrativeWordFrequency.containsKey(word))
+            ? this.narrativeWordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        this.narrativeWordFrequency.put(word, count);
       });
     });
   }
@@ -136,6 +156,10 @@ public final class Prose extends WordContainer {
     return this.dialogueWordCount;
   }
 
+  public final Integer getDialogueSyllableCount() {
+    return this.dialogueSyllableCount;
+  }
+
   public final List<NarrativeFragment> getNarrativeFragments() {
     return this.narrativeFragments;
   }
@@ -144,10 +168,15 @@ public final class Prose extends WordContainer {
     return this.narrativeWordCount;
   }
 
+  public final Integer getNarrativeSyllableCount() {
+    return this.narrativeSyllableCount;
+  }
+
   /**
    * Returns the Point of View of the prose as an PovType.
    *
    * @return the Point of View of the prose as an PovType.
+   *
    * @see com.progringer.bookworm.enums.PovType
    *
    */
@@ -216,6 +245,30 @@ public final class Prose extends WordContainer {
   public final Integer getWordFrequency(Word word) {
     if (this.wordFrequency.containsKey(word)) {
       return this.wordFrequency.get(word);
+    } else {
+      return 0;
+    }
+  }
+
+  public final Map<Word, Integer> getDialogueWordFrequency() {
+    return this.dialogueWordFrequency;
+  }
+
+  public final Integer getDialogueWordFrequency(Word word) {
+    if (this.dialogueWordFrequency.containsKey(word)) {
+      return this.dialogueWordFrequency.get(word);
+    } else {
+      return 0;
+    }
+  }
+
+  public final Map<Word, Integer> getNarrativeWordFrequency() {
+    return this.narrativeWordFrequency;
+  }
+
+  public final Integer getNarrativeWordFrequency(Word word) {
+    if (this.narrativeWordFrequency.containsKey(word)) {
+      return this.narrativeWordFrequency.get(word);
     } else {
       return 0;
     }
