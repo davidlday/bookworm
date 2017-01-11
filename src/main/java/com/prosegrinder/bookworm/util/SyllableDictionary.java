@@ -3,6 +3,9 @@ package com.prosegrinder.bookworm.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -75,12 +78,16 @@ public final class SyllableDictionary {
   private SyllableDictionary() {
     syllableMap = new HashMap<String, Integer>();
     /**  Try loading cmudict from resources. **/
-    try {
+//     try {
       /** TODO: Externalize in a properties file. **/
       String cmudict = "cmudict/cmudict.dict";
       ClassLoader classLoader = SyllableDictionary.class.getClassLoader();
-      Path cmudictPath = Paths.get(classLoader.getResource(cmudict).toURI());
-      Stream<String> stream = Files.lines(cmudictPath);
+//       logger.error("Loading cmudict: " + classLoader.getResource(cmudict).toURI());
+//       Path cmudictPath = Paths.get(classLoader.getResource(cmudict).toURI());
+//       Stream<String> stream = Files.lines(cmudictPath);
+      InputStream in = classLoader.getResourceAsStream(cmudict);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      Stream<String> stream = reader.lines();
       stream.filter(line -> !line.startsWith(";;;"))
           .map(String::toLowerCase)
           .forEach(line -> {
@@ -100,13 +107,13 @@ public final class SyllableDictionary {
             }
           });
       logger.info("SyllableDictionary entries: " + syllableMap.size());
-    } catch (IOException ioe) {
-      logger.warn("Could not load dictionary file: " + ioe);
-      logger.warn("Continuing with only lookup by heuristics.");
-    } catch (URISyntaxException use) {
-      logger.warn("Could not load dictionary file: " + use);
-      logger.warn("Continuing with only lookup by heuristics.");
-    }
+//     } catch (IOException ioe) {
+//       logger.warn("Could not load dictionary file: " + ioe);
+//       logger.warn("Continuing with only lookup by heuristics.");
+//     } catch (URISyntaxException use) {
+//       logger.warn("Could not load dictionary file: " + use);
+//       logger.warn("Continuing with only lookup by heuristics.");
+//     }
   }
 
   /** Returns the SyllableDictionary Singleton for use. **/
