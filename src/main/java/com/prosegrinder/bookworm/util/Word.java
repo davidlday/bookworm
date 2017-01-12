@@ -127,7 +127,7 @@ public final class Word {
    *
    */
   public final String toString() {
-    return this.getInitialText();
+    return this.getNormalizedText();
   }
 
   /**
