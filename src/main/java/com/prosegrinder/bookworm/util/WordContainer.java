@@ -3,12 +3,9 @@ package com.prosegrinder.bookworm.util;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -48,7 +45,7 @@ public abstract class WordContainer {
       "[\\w’']+"
   );
 
-  private static final String RE_SMART_QUOTES = new String("[“”]");
+  private static final String RE_SMART_QUOTES = "[“”]";
 
   private final String initialText;
   private final String normalizedText;

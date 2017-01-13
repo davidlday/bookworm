@@ -5,8 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
+// import org.junit.Rule;
+// import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,37 +43,15 @@ public class ProseTest {
   }
 
 //   @Test
-//   public void testProse() {
-//     logger.info("Syllable Count: " + prose.getSyllableCount());
-//     logger.info("Word Count: " + prose.getWordCount());
-//     logger.info("Sentence Count: " + prose.getSentenceCount());
-//     logger.info("Complex Word Count: " + prose.getComplexWordCount());
-//     logger.info("Long Word Count: " + prose.getLongWordCount());
-//     logger.info("Average Syllables per Word: " + prose.getAverageSyllablesPerWord());
-//     logger.info("Average Words per Sentence: " + prose.getAverageWordsPerSentence());
-//     logger.info("Dialogue Fragment Word Count: " + prose.getDialogueWordCount());
-//     logger.info("Narrative Fragment Word Count: " + prose.getNarrativeWordCount());
-//     logger.info("Point of View: " + prose.getPov());
-//     logger.info("Unique Words: " + prose.getUniqueWords().size());
-//     int scount = 1;
-//     for (Paragraph paragraph: prose.getParagraphs()) {
-//       for (Sentence sentence: paragraph.getSentences()) {
-//         logger.info(scount + ":\t" + sentence);
-//         scount++;
-//       }
-//     }
+//   public void testWordsInDictionary() {
+//     Set<Word> words = prose.getUniqueWords();
+//     words.stream()
+//         .forEach( word -> {
+//             if (!word.isDictionaryWord()) {
+//               logger.info("Not in dictionary: " + word + " (" + word.getSyllableCount() + ")");
+//             }
+//         });
 //   }
-
-  @Test
-  public void testWordsInDictionary() {
-    Set<Word> words = prose.getUniqueWords();
-    words.stream()
-        .forEach( word -> {
-            if (!word.isDictionaryWord()) {
-              logger.info("Not in dictionary: " + word + " (" + word.getSyllableCount() + ")");
-            }
-        });
-  }
 
   @Test
   public void testSyllableCount() {

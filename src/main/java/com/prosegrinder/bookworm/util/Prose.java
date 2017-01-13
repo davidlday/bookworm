@@ -1,10 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
 import com.prosegrinder.bookworm.enums.PovType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
