@@ -80,29 +80,11 @@ public final class DialogueFragment extends WordContainer {
   }
 
   @Override
-  public final Set<Word> getUniqueWords() {
-    return this.wordFrequency.keySet();
-  }
-
-  public final Integer getUniqueWordCount() {
-    return this.wordFrequency.keySet().size();
-  }
-
-  @Override
   public final Map<Word, Integer> getWordFrequency() {
     return this.wordFrequency;
   }
 
-  @Override
-  public final Integer getWordFrequency(Word word) {
-    if (this.wordFrequency.containsKey(word)) {
-      return this.wordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-
-  @Override
+ @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }

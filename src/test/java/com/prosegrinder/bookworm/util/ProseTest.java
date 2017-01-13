@@ -24,7 +24,6 @@ public class ProseTest {
 
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(SyllableDictionaryTest.class);
-  private String text;
   private Prose prose;
 
   private static final int COMPLEX_WORD_COUNT = 202;
@@ -40,8 +39,7 @@ public class ProseTest {
     ClassLoader classLoader = ProseTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.text = String.join("\n",lines);
-    this.prose = new Prose(this.text);
+    this.prose = new Prose(String.join("\n",lines));
   }
 
 //   @Test

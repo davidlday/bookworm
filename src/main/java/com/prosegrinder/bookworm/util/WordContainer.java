@@ -241,12 +241,24 @@ public abstract class WordContainer {
   public abstract Integer getPovWordCount();
 
   /**
+   * Returns the count of unique Words found in the WordContainer.
+   *
+   * @return the count of unique Words found in the WordContainer.
+   *
+   */
+  public final Integer getUniqueWordCount() {
+    return this.getUniqueWords().size();
+  }
+
+  /**
    * Returns a set of unique Words found in the WordContainer
    *
    * @return a set of unique Words found in the WordContainer.
    *
    */
-  public abstract Set<Word> getUniqueWords();
+  public final Set<Word> getUniqueWords() {
+    return this.getWordFrequency().keySet();
+  }
 
   /**
    * Returns a map of unique Words found in the WordContainer
@@ -263,7 +275,11 @@ public abstract class WordContainer {
    * @return the number of times a Word appears in the Wordcontainer.
    *
    */
-  public abstract Integer getWordFrequency(Word word);
+  public final Integer getWordFrequency(Word word) {
+    return (this.getWordFrequency().containsKey(word))
+        ? this.getWordFrequency().get(word)
+        : 0;
+  }
 
   /**
    * Returns a list of all Words found in the WordContainer.

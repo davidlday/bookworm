@@ -70,7 +70,6 @@ public class SyllableDictionaryTest {
   public void testHeuristicesVsLookup() {
     // Test heuristics is at least 80%
     double hits = 0.0;
-    double misses = 0.0;
     Map<String, Integer> map = syllableDictionary.getSyllableMap();
     for ( Map.Entry<String, Integer> e: map.entrySet() ) {
       String word = e.getKey();
@@ -78,8 +77,6 @@ public class SyllableDictionaryTest {
       Integer byHeuristics = syllableDictionary.getByHeuristics( word );
       if ( byHeuristics == byLookup ) {
         hits++;
-      } else {
-        misses++;
       }
     }
     double ratio = (double) hits / (double) map.size();

@@ -3,7 +3,6 @@ package com.prosegrinder.bookworm.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -94,29 +93,11 @@ public final class Paragraph extends WordContainer {
   }
 
   @Override
-  public final Set<Word> getUniqueWords() {
-    return this.wordFrequency.keySet();
-  }
-
-  public final Integer getUniqueWordCount() {
-    return this.wordFrequency.keySet().size();
-  }
-
-  @Override
   public final Map<Word, Integer> getWordFrequency() {
     return this.wordFrequency;
   }
 
-  @Override
-  public final Integer getWordFrequency(Word word) {
-    if (this.wordFrequency.containsKey(word)) {
-      return this.wordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-
-  @Override
+ @Override
   public final List<Word> getWords() {
     List<Word> words = new ArrayList<Word>();
     this.getSentences().stream().forEach( sentence -> {

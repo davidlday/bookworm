@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
@@ -77,15 +76,10 @@ public final class SyllableDictionary {
   /** Private constructor to enforce Singelton. **/
   private SyllableDictionary() {
     syllableMap = new HashMap<String, Integer>();
-    /**  Try loading cmudict from resources. **/
-//     try {
-      /** TODO: Externalize in a properties file. **/
-      String cmudict = "cmudict/cmudict.dict";
-      ClassLoader classLoader = SyllableDictionary.class.getClassLoader();
-//       logger.error("Loading cmudict: " + classLoader.getResource(cmudict).toURI());
-//       Path cmudictPath = Paths.get(classLoader.getResource(cmudict).toURI());
-//       Stream<String> stream = Files.lines(cmudictPath);
-      InputStream in = classLoader.getResourceAsStream(cmudict);
+    /** TODO: Externalize in a properties file. **/
+    String cmudict = "cmudict/cmudict.dict";
+    try {
+      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudict);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Stream<String> stream = reader.lines();
       stream.filter(line -> !line.startsWith(";;;"))
@@ -106,14 +100,10 @@ public final class SyllableDictionary {
               }
             }
           });
-      logger.info("SyllableDictionary entries: " + syllableMap.size());
-//     } catch (IOException ioe) {
-//       logger.warn("Could not load dictionary file: " + ioe);
-//       logger.warn("Continuing with only lookup by heuristics.");
-//     } catch (URISyntaxException use) {
-//       logger.warn("Could not load dictionary file: " + use);
-//       logger.warn("Continuing with only lookup by heuristics.");
-//     }
+    } catch (Exception e) {
+      logger.error("Exception during cmudict load: " + e);
+      logger.error("Continuing using Heuristics, but performance and accuracy will be affected.");
+    }
   }
 
   /** Returns the SyllableDictionary Singleton for use. **/

@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -228,29 +227,11 @@ public final class Prose extends WordContainer {
   }
 
   @Override
-  public final Set<Word> getUniqueWords() {
-    return this.wordFrequency.keySet();
-  }
-
-  public final Integer getUniqueWordCount() {
-    return this.wordFrequency.keySet().size();
-  }
-
-  @Override
   public final Map<Word, Integer> getWordFrequency() {
     return this.wordFrequency;
   }
 
-  @Override
-  public final Integer getWordFrequency(Word word) {
-    if (this.wordFrequency.containsKey(word)) {
-      return this.wordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-
-  public final Map<Word, Integer> getDialogueWordFrequency() {
+ public final Map<Word, Integer> getDialogueWordFrequency() {
     return this.dialogueWordFrequency;
   }
 

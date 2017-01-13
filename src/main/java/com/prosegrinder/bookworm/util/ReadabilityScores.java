@@ -1,8 +1,5 @@
 package com.prosegrinder.bookworm.util;
 
-import java.util.List;
-
-
 /**
  * Encapsulates common readability scores for a piece of text.
  *
@@ -17,12 +14,12 @@ import java.util.List;
  */
 public final class ReadabilityScores {
 
-  private Integer characterCount;
-  private Integer complexWordCount;
-  private Integer longWordCount;
-  private Integer sentenceCount;
-  private Integer syllableCount;
-  private Integer wordCount;
+//   private Integer characterCount;
+//   private Integer complexWordCount;
+//   private Integer longWordCount;
+//   private Integer sentenceCount;
+//   private Integer syllableCount;
+//   private Integer wordCount;
 
   private Double automatedReadabilityIndex;
   private Double colemanLiauIndex;
@@ -54,12 +51,12 @@ public final class ReadabilityScores {
       final Integer longWordCount, final Integer sentenceCount,
       final Integer syllableCount, final Integer wordCount) {
 
-    this.characterCount = characterCount;
-    this.complexWordCount = complexWordCount;
-    this.longWordCount = longWordCount;
-    this.sentenceCount = sentenceCount;
-    this.syllableCount = syllableCount;
-    this.wordCount = wordCount;
+//     this.characterCount = characterCount;
+//     this.complexWordCount = complexWordCount;
+//     this.longWordCount = longWordCount;
+//     this.sentenceCount = sentenceCount;
+//     this.syllableCount = syllableCount;
+//     this.wordCount = wordCount;
 
     this.automatedReadabilityIndex =
         this.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);

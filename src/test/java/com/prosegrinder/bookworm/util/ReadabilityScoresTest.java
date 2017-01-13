@@ -23,7 +23,6 @@ public class ReadabilityScoresTest {
 
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(SyllableDictionaryTest.class);
-  private String text;
   private Prose prose;
   private static final NumberFormat formatter = new DecimalFormat("#0.000");
 
@@ -33,8 +32,7 @@ public class ReadabilityScoresTest {
     ClassLoader classLoader = ProseTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.text = String.join("\n",lines);
-    this.prose = new Prose(this.text);
+    this.prose = new Prose(String.join("\n",lines));
   }
 
   @Test
