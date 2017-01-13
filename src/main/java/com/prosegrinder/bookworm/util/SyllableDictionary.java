@@ -6,8 +6,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -148,9 +146,9 @@ public final class SyllableDictionary {
         .replaceAll("e$", "");
     int syllableCount = 0;
 
-    if (strippedWord.equals("") || strippedWord == null) {
+    if (strippedWord == null || "".equals(strippedWord)) {
       syllableCount = 0;
-    } else if (strippedWord.equals("w")) {
+    } else if ("w".equals(strippedWord)) {
       syllableCount = 2;
     } else if (strippedWord.length() == 1) {
       syllableCount = 1;
