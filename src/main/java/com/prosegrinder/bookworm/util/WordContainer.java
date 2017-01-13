@@ -1,7 +1,5 @@
 package com.prosegrinder.bookworm.util;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

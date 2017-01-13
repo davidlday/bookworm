@@ -75,7 +75,7 @@ public class SyllableDictionaryTest {
       String word = e.getKey();
       Integer byLookup = e.getValue();
       Integer byHeuristics = syllableDictionary.getByHeuristics( word );
-      if ( byHeuristics == byLookup ) {
+      if ( byHeuristics.equals(byLookup) ) {
         hits++;
       }
     }
