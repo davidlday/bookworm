@@ -4,8 +4,6 @@ import com.prosegrinder.bookworm.enums.PovType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -42,9 +40,6 @@ public final class Prose extends WordContainer {
   private final Integer dialogueWordCount;
   private final Integer narrativeSyllableCount;
   private final Integer narrativeWordCount;
-
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(SyllableDictionary.class);
 
   /**
    * Returns a new Prose object from a string.
