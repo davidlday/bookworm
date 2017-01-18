@@ -27,6 +27,7 @@ public final class ReadabilityScores {
   private Double fleschReadingEase;
   private Double gunningFogIndex;
   private Double lix;
+  private Double rix;
   private Double smog;
 
   /**
@@ -70,6 +71,8 @@ public final class ReadabilityScores {
         this.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
     this.lix =
         this.lix(wordCount, longWordCount, sentenceCount);
+    this.rix =
+        this.rix(longWordCount, sentenceCount);
     this.smog =
         this.smog(complexWordCount, sentenceCount);
   }
@@ -117,6 +120,11 @@ public final class ReadabilityScores {
   /** Returns the LIX score for the analyzed text. **/
   public final Double getLix() {
     return this.lix;
+  }
+
+  /** Returns the RIX score for the analyzed text. **/
+  public final Double getRix() {
+    return this.rix;
   }
 
   /** Returns the SMOG (Simple Measure of Gobbledygood) score for the analyzed text. **/
@@ -266,5 +274,26 @@ public final class ReadabilityScores {
     return score;
   }
 
-
+  /**
+   * Calculates the RIX score for the analyzed text.
+   *
+   * <p>This was implemented in the original bookworm experiment due to copying
+   * a formula found in another readability library. So far, I've been unable
+   * to find a clear definition of this readability score, so I'm marking it
+   * as deprecated and will remove it in a future release.
+   *
+   * @param longWordCount  the number of long word found in the source text
+   * @param sentenceCount the number of sentences found in the source text
+   * @return RIX score
+   *
+   **/
+  @Deprecated
+  public static final Double rix(final Integer longWordCount,
+      final Integer sentenceCount) {
+    Double score = 0.0;
+    if (sentenceCount > 0) {
+      score = (double) longWordCount / (double) sentenceCount;
+    }
+    return score;
+  }
 }

@@ -58,6 +58,7 @@ public class ReadabilityScoresTest {
     logger.info("Flesch Kincaid Grade Level: " + formatter.format(scores.getFleschKincaidGradeLevel()));
     logger.info("Gunning Fox Index: " + formatter.format(scores.getGunningFogIndex()));
     logger.info("LIX: " + formatter.format(scores.getLix()));
+    logger.info("RIX: " + formatter.format(scores.getRix()));
     logger.info("SMOG Index: " + formatter.format(scores.getSmog()));
 //     logger.info(prose.getInitialText());
   }
