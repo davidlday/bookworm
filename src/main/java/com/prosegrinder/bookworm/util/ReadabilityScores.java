@@ -60,21 +60,21 @@ public final class ReadabilityScores {
 //     this.wordCount = wordCount;
 
     this.automatedReadabilityIndex =
-        this.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);
+        ReadabilityScores.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);
     this.colemanLiauIndex =
-        this.colemanLiauIndex(characterCount, wordCount, sentenceCount);
+        ReadabilityScores.colemanLiauIndex(characterCount, wordCount, sentenceCount);
     this.fleschKincaidGradeLevel =
-        this.fleschKincaidGradeLevel(sentenceCount, wordCount, syllableCount);
+        ReadabilityScores.fleschKincaidGradeLevel(sentenceCount, wordCount, syllableCount);
     this.fleschReadingEase =
-        this.fleschReadingEase(sentenceCount, wordCount, syllableCount);
+        ReadabilityScores.fleschReadingEase(sentenceCount, wordCount, syllableCount);
     this.gunningFogIndex =
-        this.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
+        ReadabilityScores.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
     this.lix =
-        this.lix(wordCount, longWordCount, sentenceCount);
+        ReadabilityScores.lix(wordCount, longWordCount, sentenceCount);
     this.rix =
-        this.rix(longWordCount, sentenceCount);
+        ReadabilityScores.rix(longWordCount, sentenceCount);
     this.smog =
-        this.smog(complexWordCount, sentenceCount);
+        ReadabilityScores.smog(complexWordCount, sentenceCount);
   }
 
   /**

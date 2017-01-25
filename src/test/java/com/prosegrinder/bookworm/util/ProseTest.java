@@ -34,32 +34,32 @@ public class ProseTest {
 
   @Test
   public void testSyllableCount() {
-    assertEquals("Syllable Count: ", this.SYLLABLE_COUNT, prose.getSyllableCount().intValue());
+    assertEquals("Syllable Count: ", ProseTest.SYLLABLE_COUNT, prose.getSyllableCount().intValue());
   }
 
   @Test
   public void testWordCount() {
-    assertEquals("Word Count: ", this.WORD_COUNT, prose.getWordCount().intValue());
+    assertEquals("Word Count: ", ProseTest.WORD_COUNT, prose.getWordCount().intValue());
   }
 
   @Test
   public void testLongWordCount() {
-    assertEquals("Long Word Count: ", this.LONG_WORD_COUNT, prose.getLongWordCount().intValue());
+    assertEquals("Long Word Count: ", ProseTest.LONG_WORD_COUNT, prose.getLongWordCount().intValue());
   }
 
   @Test
   public void testComplexWordCount() {
-    assertEquals("Complex Word Count: ", this.COMPLEX_WORD_COUNT, prose.getComplexWordCount().intValue());
+    assertEquals("Complex Word Count: ", ProseTest.COMPLEX_WORD_COUNT, prose.getComplexWordCount().intValue());
   }
 
   @Test
   public void testUniqueWordCount() {
-    assertEquals("Unique Word Count: ", this.UNIQUE_WORD_COUNT, prose.getUniqueWordCount().intValue());
+    assertEquals("Unique Word Count: ", ProseTest.UNIQUE_WORD_COUNT, prose.getUniqueWordCount().intValue());
   }
 
   @Test
   public void testSentenceCount() {
-    assertEquals("Sentence Count: ", this.SENTENCE_COUNT, prose.getSentenceCount().intValue());
+    assertEquals("Sentence Count: ", ProseTest.SENTENCE_COUNT, prose.getSentenceCount().intValue());
   }
 
   @Test
@@ -69,7 +69,7 @@ public class ProseTest {
 
   @Test
   public void testSumFragmentWordCount() {
-    assertEquals("Dialogue word count + narrative word count = total word count: ", this.WORD_COUNT,
+    assertEquals("Dialogue word count + narrative word count = total word count: ", ProseTest.WORD_COUNT,
         prose.getDialogueWordCount().intValue() + prose.getNarrativeWordCount().intValue());
   }
 

@@ -45,12 +45,12 @@ public final class Prose extends WordContainer {
    */
   public Prose(final String text) {
     super(text);
-    Matcher paragraphMatcher = this.getParagraphPattern().matcher(text);
+    Matcher paragraphMatcher = WordContainer.getParagraphPattern().matcher(text);
     while (paragraphMatcher.find()) {
       Paragraph paragraph = new Paragraph(paragraphMatcher.group());
       this.paragraphs.add(paragraph);
     }
-    final Pattern dialoguePattern = this.getDialoguePattern();
+    final Pattern dialoguePattern = WordContainer.getDialoguePattern();
     Matcher dialogueMatcher = dialoguePattern.matcher(
         WordContainer.convertSmartQuotes(this.getInitialText())
     );
@@ -170,7 +170,7 @@ public final class Prose extends WordContainer {
    * @see com.progringer.bookworm.enums.PovType
    *
    */
-  public final Enum getPov() {
+  public final PovType getPov() {
     if (this.getFirstPersonWordCount() > 0) {
       return PovType.FIRST;
     } else if (this.getSecondPersonWordCount() > 0) {

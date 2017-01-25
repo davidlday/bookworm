@@ -34,7 +34,7 @@ public final class NarrativeFragment extends WordContainer {
    */
   public NarrativeFragment(final String text) {
     super(text);
-    Matcher wordMatcher = this.getWordPattern().matcher(text);
+    Matcher wordMatcher = WordContainer.getWordPattern().matcher(text);
     while (wordMatcher.find()) {
       this.words.add(new Word(wordMatcher.group()));
     }

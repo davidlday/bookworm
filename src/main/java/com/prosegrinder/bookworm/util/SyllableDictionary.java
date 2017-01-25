@@ -220,15 +220,15 @@ public final class SyllableDictionary {
   }
 
   /** Test if a String is a typical number. **/
-  public static final boolean isNumeric(String word) {
-    if (SyllableDictionary.inDictionary(word)) {
+  public final boolean isNumeric(String word) {
+    if (this.inDictionary(word)) {
       return false;
     } else {
       return word.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
     }
   }
 
-  public static final Boolean inDictionary(String text) {
+  public final Boolean inDictionary(String text) {
     return syllableMap.containsKey(text);
   }
 
