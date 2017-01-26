@@ -31,3 +31,8 @@ buildNumber.properties
 
 # Exclude maven wrapper
 !/.mvn/wrapper/maven-wrapper.jar
+
+# Exclude Eclipse files
+/.classpath
+/.project
+/.settings
