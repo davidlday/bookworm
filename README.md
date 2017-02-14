@@ -34,7 +34,7 @@ Issue tracker: https://github.com/davidlday/bookworm/issues
  2. Apache Maven 3+
  3. Internet access
  
- #### Build
+#### Build
 ```sh
 git clone https://github.com/davidlday/bookworm.git bookworm
 cd bookworm
