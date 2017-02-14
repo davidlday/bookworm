@@ -24,6 +24,7 @@ When ready, binary downloads will be available at: https://github.com/davidlday/
 ## Documentation
 
 WIKI: https://github.com/davidlday/bookworm/wiki
+
 Issue tracker: https://github.com/davidlday/bookworm/issues
 
 ## Building
