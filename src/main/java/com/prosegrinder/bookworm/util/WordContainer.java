@@ -263,9 +263,10 @@ public abstract class WordContainer {
   public abstract Map<Word, Integer> getWordFrequency();
 
   /**
-   * Returns the number of times a Word appears in the Wordcontainer.
+   * Returns the number of times a Word appears in the WordContainer.
    *
-   * @return the number of times a Word appears in the Wordcontainer.
+   * @param word  the word you want the frequency for.
+   * @return the number of times a Word appears in the WordContainer.
    *
    */
   public final Integer getWordFrequency(Word word) {
