@@ -10,6 +10,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The top-level class representing a single work of prose fiction. The underlying text
+ * is split out two ways:
+ *   1) into a List of Paragraphs, and 
+ *   2) into a List of DialogueFragments and a List of NarrativeFragments.
+ * 
+ */
 public final class Prose extends WordContainer {
 
   private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
