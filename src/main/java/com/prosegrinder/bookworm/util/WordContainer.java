@@ -7,8 +7,7 @@ import java.util.regex.Pattern;
 
 /**
  * The WordContainer abstract class represents some fragment of text found in a piece of
- * prose fiction. It also provides a central point for managing all common text analysis
- * patterns and processes and enforcing all subclasses implement a standard set of methods.
+ * prose fiction, and acts as a central point for managing common patterns and processes.
  *
  */
 public abstract class WordContainer {
