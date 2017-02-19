@@ -29,6 +29,8 @@ public final class Paragraph extends WordContainer {
    *
    * <p>String is not currently validated since Paragraphs should
    * only be created by a Prose object using WordContainer.PARAGRAPH_PATTERN.
+   * 
+   * @param text    a string of text representing a complete paragraph
    */
   public Paragraph(final String text) {
     super(text);
