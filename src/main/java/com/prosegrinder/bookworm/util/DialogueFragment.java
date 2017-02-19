@@ -6,6 +6,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents a fragment of dialogue.
+ * 
+ * <p>In fiction, dialogue and narrative can be interspersed with each other, 
+ * meaning they may or may not be found in complete sentences.
+ */
 public final class DialogueFragment extends WordContainer {
 
   private final List<Word> words = new ArrayList<Word>();
@@ -31,6 +37,8 @@ public final class DialogueFragment extends WordContainer {
    *
    * <p>String is not currently validated since DialogueFragments should
    * only be created by a Prose object using WordContainer.DIALOGUE_PATTERN.
+   * 
+   * @param text    a string of text representing a piece of dialogue
    */
   public DialogueFragment(final String text) {
     super(text);
