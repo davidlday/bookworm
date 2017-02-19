@@ -101,7 +101,9 @@ public final class SyllableDictionary {
     }
   }
 
-  /** Returns the SyllableDictionary Singleton for use. **/
+  /**
+   * @return    the SyllableDictionary Singleton for use
+   */
   public static synchronized SyllableDictionary getInstance() {
     if (INSTANCE == null) {
       synchronized (SyllableDictionary.class) {
@@ -214,20 +216,33 @@ public final class SyllableDictionary {
     }
   }
 
-  /** Returns the underlying Map of word:syllable pairs used for lookup. **/
+  /**
+   * @return the underlying Map of word:syllable pairs used for lookup.
+   */
   public final Map<String, Integer> getSyllableMap() {
     return Collections.unmodifiableMap(syllableMap);
   }
 
-  /** Test if a String is a typical number. **/
-  public final boolean isNumeric(String word) {
-    if (this.inDictionary(word)) {
+  /**
+   * Test if a String is a typical number.
+   * 
+   * @param text    a string representing a single word
+   * @return boolean representing whether the word is a number
+   */
+  public final boolean isNumeric(String text) {
+    if (this.inDictionary(text)) {
       return false;
     } else {
-      return word.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
+      return text.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
     }
   }
 
+  /**
+   * Test if a String is in the underlying cmudict dictionary.
+   * 
+   * @param text    a string representing a single word
+   * @return boolean representing whether the word is found in the underlying dictionary
+   */
   public final Boolean inDictionary(String text) {
     return syllableMap.containsKey(text);
   }
