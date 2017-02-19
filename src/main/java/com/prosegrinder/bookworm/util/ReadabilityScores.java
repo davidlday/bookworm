@@ -31,7 +31,7 @@ public final class ReadabilityScores {
   private Double smog;
 
   /**
-   * Efficient constructor for ReadabilityScores.
+   * Granular constructor for ReadabilityScores.
    *
    * <p>This constructor is used in larger processes where the basic
    * underlying inputs have already been calculated. All inputs must come from
@@ -83,7 +83,7 @@ public final class ReadabilityScores {
    * <p>This constructor is used when only interested in readability scores
    * and not any of the other prose metrics.
    *
-   * @param prose  prose to score.
+   * @param prose  prose to score
    *
    */
   public ReadabilityScores(Prose prose) {
@@ -92,42 +92,58 @@ public final class ReadabilityScores {
         prose.getSyllableCount(), prose.getWordCount());
   }
 
-  /** Returns the Automated Readability Index score for the analyzed text. **/
+  /**
+   * @return the Automated Readability Index score for the analyzed text.
+   */
   public final Double getAutomatedReadabilityIndex() {
     return this.automatedReadabilityIndex;
   }
 
-  /** Returns the Coleman-Liau Index score for the analyzed text. **/
+  /**
+   * @return the Coleman-Liau Index score for the analyzed text.
+   */
   public final Double getColemanLiauIndex() {
     return this.colemanLiauIndex;
   }
 
-  /** Returns the Flesch-Kincaid Grade Level score for the analyzed text. **/
+  /**
+   * @return the Flesch-Kincaid Grade Level score for the analyzed text.
+   */
   public final Double getFleschKincaidGradeLevel() {
     return this.fleschKincaidGradeLevel;
   }
 
-  /** Returns the Flesch Reading Ease score for the analyzed text. **/
+  /**
+   * @return the Flesch Reading Ease score for the analyzed text.
+   */
   public final Double getFleschReadingEase() {
     return this.fleschReadingEase;
   }
 
-  /** Returns the Gunning-Fog Index score for the analyzed text. **/
+  /** 
+   * @return the Gunning-Fog Index score for the analyzed text.
+   */
   public final Double getGunningFogIndex() {
     return this.gunningFogIndex;
   }
 
-  /** Returns the LIX score for the analyzed text. **/
+  /** 
+   * @return the LIX score for the analyzed text.
+   */
   public final Double getLix() {
     return this.lix;
   }
 
-  /** Returns the RIX score for the analyzed text. **/
+  /**
+   * @return the RIX score for the analyzed text.
+   */
   public final Double getRix() {
     return this.rix;
   }
 
-  /** Returns the SMOG (Simple Measure of Gobbledygood) score for the analyzed text. **/
+  /**
+   * @return the SMOG (Simple Measure of Gobbledygood) score for the analyzed text.
+   */
   public final Double getSmog() {
     return this.smog;
   }
