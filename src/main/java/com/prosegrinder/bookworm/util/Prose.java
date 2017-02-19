@@ -49,6 +49,8 @@ public final class Prose extends WordContainer {
    *
    * <p>Prose is currently considered the top level WordContainer. The String is not validated
    * as it is assumed to be an arbitrary block of text representing some kind of story.
+   * 
+   * @param text    a string of text representing a complete work of prose fiction
    */
   public Prose(final String text) {
     super(text);
@@ -174,7 +176,7 @@ public final class Prose extends WordContainer {
    *
    * @return the Point of View of the prose as an PovType.
    *
-   * @see com.progringer.bookworm.enums.PovType
+   * @see com.prosegrinder.bookworm.enums.PovType
    *
    */
   public final PovType getPov() {
