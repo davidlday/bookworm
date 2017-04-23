@@ -41,8 +41,14 @@ public final class Prose extends WordContainer {
   private final Integer paragraphCount;
   private final Integer dialogueSyllableCount;
   private final Integer dialogueWordCount;
+  private final Integer dialogueFirstPersonWordCount;
+  private final Integer dialogueSecondPersonWordCount;
+  private final Integer dialogueThirdPersonWordCount;
   private final Integer narrativeSyllableCount;
   private final Integer narrativeWordCount;
+  private final Integer narrativeFirstPersonWordCount;
+  private final Integer narrativeSecondPersonWordCount;
+  private final Integer narrativeThirdPersonWordCount;
 
   /**
    * Returns a new Prose object from a string.
@@ -80,11 +86,29 @@ public final class Prose extends WordContainer {
     this.dialogueWordCount = this.dialogueFragments.stream()
         .mapToInt( fragment -> fragment.getWordCount())
         .sum();
+    this.dialogueFirstPersonWordCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+        .sum();
+    this.dialogueSecondPersonWordCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+        .sum();
+    this.dialogueThirdPersonWordCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
+        .sum();
     this.narrativeSyllableCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getSyllableCount())
         .sum();
     this.narrativeWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getWordCount())
+        .sum();
+    this.narrativeFirstPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+        .sum();
+    this.narrativeSecondPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+        .sum();
+    this.narrativeThirdPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
     this.wordCharacterCount = this.paragraphs.stream()
         .mapToInt( paragraph -> paragraph.getWordCharacterCount())
@@ -172,7 +196,9 @@ public final class Prose extends WordContainer {
   }
 
   /**
-   * Returns the Point of View of the prose as an PovType.
+   * Returns the Point of View of the prose as an PovType, as determined
+   * by the number of PoV words found in the narrative. Dialogue is,
+   * by nature, always in first person.
    *
    * @return the Point of View of the prose as an PovType.
    *
@@ -180,11 +206,11 @@ public final class Prose extends WordContainer {
    *
    */
   public final PovType getPov() {
-    if (this.getFirstPersonWordCount() > 0) {
+    if (this.getNarrativeFirstPersonWordCount() > 0) {
       return PovType.FIRST;
-    } else if (this.getSecondPersonWordCount() > 0) {
+    } else if (this.getNarrativeSecondPersonWordCount() > 0) {
       return PovType.SECOND;
-    } else if (this.getThirdPersonWordCount() > 0) {
+    } else if (this.getNarrativeThirdPersonWordCount() > 0) {
       return PovType.THIRD;
     } else {
       return PovType.UNKNOWN;
@@ -242,6 +268,18 @@ public final class Prose extends WordContainer {
       return 0;
     }
   }
+  
+  public final Integer getDialogueFirstPersonWordCount() {
+    return this.dialogueFirstPersonWordCount;
+  }
+  
+  public final Integer getDialogueSecondPersonWordCount() {
+    return this.dialogueSecondPersonWordCount;
+  }
+  
+  public final Integer getDialogueThirdPersonWordCount() {
+    return this.dialogueThirdPersonWordCount;
+  }
 
   public final Map<Word, Integer> getNarrativeWordFrequency() {
     return this.narrativeWordFrequency;
@@ -253,6 +291,18 @@ public final class Prose extends WordContainer {
     } else {
       return 0;
     }
+  }
+  
+  public final Integer getNarrativeFirstPersonWordCount() {
+    return this.narrativeFirstPersonWordCount;
+  }
+  
+  public final Integer getNarrativeSecondPersonWordCount() {
+    return this.narrativeSecondPersonWordCount;
+  }
+  
+  public final Integer getNarrativeThirdPersonWordCount() {
+    return this.narrativeThirdPersonWordCount;
   }
 
   public final Double getAverageSyllablesPerWord() {
