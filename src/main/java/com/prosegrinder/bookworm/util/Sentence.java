@@ -2,14 +2,17 @@ package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A Sentence.
+ */
 public final class Sentence extends WordContainer {
 
   private final List<Word> words = new ArrayList<Word>();
@@ -25,6 +28,14 @@ public final class Sentence extends WordContainer {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
 
+  /**
+   * Returns a new Sentence from a string.
+   *
+   * <p>String is not currently validates since Sentences should
+   * only be created by a Paragraph using WordContainer.SENTENCE_PATTERN.
+   * 
+   * @param text    a string of text representing a complete sentence
+   */
   public Sentence(final String text) {
     super(text);
     Matcher wordMatcher = WordContainer.getWordPattern().matcher(text);
@@ -58,7 +69,7 @@ public final class Sentence extends WordContainer {
         .sum();
     Set<Word> uniqueWords = new HashSet<Word>(this.words);
     uniqueWords.stream().forEach(word -> {
-        wordFrequency.put(word, Collections.frequency(this.words, word));
+      wordFrequency.put(word, Collections.frequency(this.words, word));
     });
   }
 
@@ -66,17 +77,9 @@ public final class Sentence extends WordContainer {
     return WordContainer.getSentencePattern();
   }
 
+  @Override
   public final List<Word> getWords() {
     return this.words;
-  }
-
-  @Override
-  public final Set<Word> getUniqueWords() {
-    return this.wordFrequency.keySet();
-  }
-
-  public final Integer getUniqueWordCount() {
-    return this.wordFrequency.keySet().size();
   }
 
   @Override
@@ -84,16 +87,7 @@ public final class Sentence extends WordContainer {
     return this.wordFrequency;
   }
 
-  @Override
-  public final Integer getWordFrequency(Word word) {
-    if (this.wordFrequency.containsKey(word)) {
-      return this.wordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-
-  @Override
+ @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }

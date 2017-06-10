@@ -1,21 +1,25 @@
 package com.prosegrinder.bookworm.util;
 
-import java.util.List;
-
-
 /**
  * Encapsulates common readability scores for a piece of text.
  *
- * <p>See: https://en.wikipedia.org/wiki/Readability_test
+ * <p>Note that for now, the scores that use Complex Word Count
+ * are considered experimental. The definition for Complex Word is
+ * not entirely clear and difficult to implement.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Readability_test">Readability Test</a>
+ * @see Word#isComplexWord()
+ * @see WordContainer#getComplexWordCount()
+ *
  */
 public final class ReadabilityScores {
 
-  private Integer characterCount;
-  private Integer complexWordCount;
-  private Integer longWordCount;
-  private Integer sentenceCount;
-  private Integer syllableCount;
-  private Integer wordCount;
+//   private Integer characterCount;
+//   private Integer complexWordCount;
+//   private Integer longWordCount;
+//   private Integer sentenceCount;
+//   private Integer syllableCount;
+//   private Integer wordCount;
 
   private Double automatedReadabilityIndex;
   private Double colemanLiauIndex;
@@ -23,42 +27,11 @@ public final class ReadabilityScores {
   private Double fleschReadingEase;
   private Double gunningFogIndex;
   private Double lix;
+  private Double rix;
   private Double smog;
 
   /**
-   * Default constructor for ReadabilityScores.
-   *
-   * @param text  source text for score computation
-   *
-   */
-  //   public ReadabilityScores(final String text) {
-  //
-  //     Integer characterCount = 0;
-  //     Integer complexWordCount = 0;
-  //     Integer longWordCount = 0;
-  //     Integer sentenceCount = 0;
-  //     Integer syllableCount = 0;
-  //     Integer wordCount = 0;
-  //
-  //     List<String> sentences = Parser.parseSentences(text);
-  //     for (String sentence: sentences) {
-  //       sentenceCount++;
-  //       // Complex word counting uses a sentence context.
-  //       complexWordCount += Counter.countComplexWords(sentence);
-  //       List<String> words = Parser.parseWords(sentence);
-  //       longWordCount += Counter.countLongWords(words);
-  //       for (String word: words) {
-  //         wordCount++;
-  //         syllableCount += Counter.countSyllables(word);
-  //         characterCount += Counter.countWordCharacters(word);
-  //       }
-  //     }
-  //     this.calculateScores(characterCount, complexWordCount, longWordCount,
-  //         sentenceCount, syllableCount, wordCount);
-  //   }
-
-  /**
-   * Efficient constructor for ReadabilityScores.
+   * Granular constructor for ReadabilityScores.
    *
    * <p>This constructor is used in larger processes where the basic
    * underlying inputs have already been calculated. All inputs must come from
@@ -78,88 +51,99 @@ public final class ReadabilityScores {
   public ReadabilityScores(final Integer characterCount, final Integer complexWordCount,
       final Integer longWordCount, final Integer sentenceCount,
       final Integer syllableCount, final Integer wordCount) {
-    this.calculateScores(characterCount, complexWordCount, longWordCount,
-        sentenceCount, syllableCount, wordCount);
+
+//     this.characterCount = characterCount;
+//     this.complexWordCount = complexWordCount;
+//     this.longWordCount = longWordCount;
+//     this.sentenceCount = sentenceCount;
+//     this.syllableCount = syllableCount;
+//     this.wordCount = wordCount;
+
+    this.automatedReadabilityIndex =
+        ReadabilityScores.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);
+    this.colemanLiauIndex =
+        ReadabilityScores.colemanLiauIndex(characterCount, wordCount, sentenceCount);
+    this.fleschKincaidGradeLevel =
+        ReadabilityScores.fleschKincaidGradeLevel(sentenceCount, wordCount, syllableCount);
+    this.fleschReadingEase =
+        ReadabilityScores.fleschReadingEase(sentenceCount, wordCount, syllableCount);
+    this.gunningFogIndex =
+        ReadabilityScores.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
+    this.lix =
+        ReadabilityScores.lix(wordCount, longWordCount, sentenceCount);
+    this.rix =
+        ReadabilityScores.rix(longWordCount, sentenceCount);
+    this.smog =
+        ReadabilityScores.smog(complexWordCount, sentenceCount);
   }
 
   /**
-   * Efficient constructor for ReadabilityScores.
+   * Convenience constructor for ReadabilityScores.
    *
-   * <p>This constructor is used in larger processes where the basic
-   * underlying inputs have already been calculated. All inputs must come from
-   * the same source text or the resulting scores have no meaning.
+   * <p>This constructor is used when only interested in readability scores
+   * and not any of the other prose metrics.
    *
-   * <p>All necessary inputs can be calculated by corresponding methods
-   * found in the Calculator utility class.
-   *
-   * @param prose  prose to score.
+   * @param prose  prose to score
    *
    */
   public ReadabilityScores(Prose prose) {
-    this.calculateScores(prose.getWordCharacterCount(), prose.getComplexWordCount(), prose.getLongWordCount(),
-        prose.getSentenceCount(), prose.getSyllableCount(), prose.getWordCount());
+    this(prose.getWordCharacterCount(), prose.getComplexWordCount(),
+        prose.getLongWordCount(), prose.getSentenceCount(),
+        prose.getSyllableCount(), prose.getWordCount());
   }
 
-  /** Calculates all scores for the source text. **/
-  private void calculateScores(final Integer characterCount, final Integer complexWordCount,
-      final Integer longWordCount, final Integer sentenceCount,
-      final Integer syllableCount, final Integer wordCount) {
-
-    this.characterCount = characterCount;
-    this.complexWordCount = complexWordCount;
-    this.longWordCount = longWordCount;
-    this.sentenceCount = sentenceCount;
-    this.syllableCount = syllableCount;
-    this.wordCount = wordCount;
-
-    this.automatedReadabilityIndex =
-        this.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);
-    this.colemanLiauIndex =
-        this.colemanLiauIndex(characterCount, wordCount, sentenceCount);
-    this.fleschKincaidGradeLevel =
-        this.fleschKincaidGradeLevel(sentenceCount, wordCount, syllableCount);
-    this.fleschReadingEase =
-        this.fleschReadingEase(sentenceCount, wordCount, syllableCount);
-    this.gunningFogIndex =
-        this.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
-    this.lix =
-        this.lix(wordCount, longWordCount, sentenceCount);
-    this.smog =
-        this.smog(complexWordCount, sentenceCount);
-
-  }
-
-  /** Returns the Automated Readability Index score for the analyzed text. **/
+  /**
+   * @return the Automated Readability Index score for the analyzed text.
+   */
   public final Double getAutomatedReadabilityIndex() {
     return this.automatedReadabilityIndex;
   }
 
-  /** Returns the Coleman-Liau Index score for the analyzed text. **/
+  /**
+   * @return the Coleman-Liau Index score for the analyzed text.
+   */
   public final Double getColemanLiauIndex() {
     return this.colemanLiauIndex;
   }
 
-  /** Returns the Flesch-Kincaid Grade Level score for the analyzed text. **/
+  /**
+   * @return the Flesch-Kincaid Grade Level score for the analyzed text.
+   */
   public final Double getFleschKincaidGradeLevel() {
     return this.fleschKincaidGradeLevel;
   }
 
-  /** Returns the Flesch Reading Ease score for the analyzed text. **/
+  /**
+   * @return the Flesch Reading Ease score for the analyzed text.
+   */
   public final Double getFleschReadingEase() {
     return this.fleschReadingEase;
   }
 
-  /** Returns the Gunning-Fog Index score for the analyzed text. **/
+  /** 
+   * @return the Gunning-Fog Index score for the analyzed text.
+   */
   public final Double getGunningFogIndex() {
     return this.gunningFogIndex;
   }
 
-  /** Returns the LIX score for the analyzed text. **/
+  /** 
+   * @return the LIX score for the analyzed text.
+   */
   public final Double getLix() {
     return this.lix;
   }
 
-  /** Returns the SMOG (Simple Measure of Gobbledygood) score for the analyzed text. **/
+  /**
+   * @return the RIX score for the analyzed text.
+   */
+  public final Double getRix() {
+    return this.rix;
+  }
+
+  /**
+   * @return the SMOG (Simple Measure of Gobbledygood) score for the analyzed text.
+   */
   public final Double getSmog() {
     return this.smog;
   }
@@ -189,9 +173,9 @@ public final class ReadabilityScores {
   /**
    * Calculates the Flesch Reading Ease score for the analyzed text.
    *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param syllableCount the number of syllables found in the source text
+   * @param sentenceCount the number of sentences found in the source text
    * @param wordCount the number of words found in the source text
+   * @param syllableCount the number of syllables found in the source text
    * @return Flesch Reading Ease score
    *
    **/
@@ -210,9 +194,9 @@ public final class ReadabilityScores {
   /**
    * Calculates the Flesch Kincaid Grade Level score for the analyzed text.
    *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param syllableCount the number of syllables found in the source text
+   * @param sentenceCount the number of sentences found in the source text
    * @param wordCount the number of words found in the source text
+   * @param syllableCount the number of syllables found in the source text
    * @return Flesch Kincaid Grade Level score
    *
    **/
@@ -231,9 +215,9 @@ public final class ReadabilityScores {
   /**
    * Calculates the Gunning Fog Index score for the analyzed text.
    *
-   * @param averageWordsPerSentence the average number of words per sentence in the sourc text
-   * @param complexWordCount the number of complex words found in the source text
+   * @param sentenceCount the number of sentences found in the source text
    * @param wordCount the number of words found in the source text
+   * @param complexWordCount the number of complex words found in the source text
    * @return Gunning Fog Index score
    *
    **/
@@ -260,7 +244,8 @@ public final class ReadabilityScores {
   public static final Double smog(final Integer complexWordCount, final Integer sentenceCount) {
     Double score = 0.0;
     if (sentenceCount > 0) {
-      score = (1.0430 * Math.sqrt((double) complexWordCount * (30 / (double) sentenceCount))) + 3.1291;
+      score = (1.0430 * Math.sqrt((double) complexWordCount
+          * (30 / (double) sentenceCount))) + 3.1291;
     }
     return score;
   }
@@ -279,9 +264,9 @@ public final class ReadabilityScores {
                                               final Integer sentenceCount) {
     Double score = 0.0;
     if (wordCount > 0) {
-      Double L = (double) characterCount / (double) wordCount * 100;
-      Double S = (double) sentenceCount / (double) wordCount * 100;
-      score = (0.0588 * L) - (0.296 * S) - 15.8;
+      Double lettersPerWord = (double) characterCount / (double) wordCount * 100;
+      Double sentencesPerWord = (double) sentenceCount / (double) wordCount * 100;
+      score = (0.0588 * lettersPerWord) - (0.296 * sentencesPerWord) - 15.8;
     }
     return score;
   }
@@ -305,5 +290,26 @@ public final class ReadabilityScores {
     return score;
   }
 
-
+  /**
+   * Calculates the RIX score for the analyzed text.
+   *
+   * <p>This was implemented in the original bookworm experiment due to copying
+   * a formula found in another readability library. So far, I've been unable
+   * to find a clear definition of this readability score, so I'm marking it
+   * as deprecated and will remove it in a future release.
+   *
+   * @param longWordCount  the number of long word found in the source text
+   * @param sentenceCount the number of sentences found in the source text
+   * @return RIX score
+   *
+   **/
+  @Deprecated
+  public static final Double rix(final Integer longWordCount,
+      final Integer sentenceCount) {
+    Double score = 0.0;
+    if (sentenceCount > 0) {
+      score = (double) longWordCount / (double) sentenceCount;
+    }
+    return score;
+  }
 }

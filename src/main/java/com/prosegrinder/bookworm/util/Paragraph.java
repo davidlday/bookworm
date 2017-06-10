@@ -1,16 +1,12 @@
 package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class Paragraph extends WordContainer {
 
@@ -28,6 +24,14 @@ public final class Paragraph extends WordContainer {
   private final Integer thirdPersonWordCount;
   private final Integer sentenceCount;
 
+  /**
+   * Returns a new Paragraph from a string.
+   *
+   * <p>String is not currently validated since Paragraphs should
+   * only be created by a Prose object using WordContainer.PARAGRAPH_PATTERN.
+   * 
+   * @param text    a string of text representing a complete paragraph
+   */
   public Paragraph(final String text) {
     super(text);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
@@ -66,8 +70,8 @@ public final class Paragraph extends WordContainer {
     this.sentences.stream().forEach( fragment -> {
       Set<Word> uniqueWords = fragment.getUniqueWords();
       uniqueWords.stream().forEach( word -> {
-        int count = (wordFrequency.containsKey(word)) ?
-            wordFrequency.get(word) : 0;
+        int count = (wordFrequency.containsKey(word))
+            ? wordFrequency.get(word) : 0;
         count += fragment.getWordFrequency(word);
         wordFrequency.put(word, count);
       });
@@ -88,28 +92,11 @@ public final class Paragraph extends WordContainer {
   }
 
   @Override
-  public final Set<Word> getUniqueWords() {
-    return this.wordFrequency.keySet();
-  }
-
-  public final Integer getUniqueWordCount() {
-    return this.wordFrequency.keySet().size();
-  }
-
-  @Override
   public final Map<Word, Integer> getWordFrequency() {
     return this.wordFrequency;
   }
 
-  @Override
-  public final Integer getWordFrequency(Word word) {
-    if (this.wordFrequency.containsKey(word)) {
-      return this.wordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-
+ @Override
   public final List<Word> getWords() {
     List<Word> words = new ArrayList<Word>();
     this.getSentences().stream().forEach( sentence -> {

@@ -1,20 +1,13 @@
 package com.prosegrinder.bookworm.util;
 
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * The WordContainer abstract class represents some fragment of text found in a piece of
- * prose fiction. It also provides a central point for managing all common text analysis
- * patterns and processes and enforcing all subclasses implement a standard set of methods.
+ * prose fiction, and acts as a central point for managing common patterns and processes.
  *
  */
 public abstract class WordContainer {
@@ -33,22 +26,22 @@ public abstract class WordContainer {
   // http://stackoverflow.com/questions/5553410/regular-expression-match-a-sentence#5553924
   private static final Pattern SENTENCE_PATTERN = Pattern.compile(
       "# Match a sentence ending in punctuation or EOS.\n"
-      + "[^.!?\\s]    # First char is non-punct, non-ws\n"
-      + "[^.!?]*      # Greedily consume up to punctuation.\n"
+      + "[^.!?…\\s]    # First char is non-punct, non-ws\n"
+      + "[^.!?…]*      # Greedily consume up to punctuation.\n"
       + "(?:          # Group for unrolling the loop.\n"
-      + "  [.!?]      # (special) inner punctuation ok if\n"
-      + "  (?!['\"]?\\s|$)  # not followed by ws or EOS.\n"
-      + "  [^.!?]*    # Greedily consume up to punctuation.\n"
+      + "  [.!?…]      # (special) inner punctuation ok if\n"
+      + "  (?!['\")]?\\s|$)  # not followed by ws or EOS.\n"
+      + "  [^.!?…]*    # Greedily consume up to punctuation.\n"
       + ")*           # Zero or more (special normal*)\n"
-      + "[.!?]?       # Optional ending punctuation.\n"
-      + "['\"]?       # Optional closing quote.\n"
+      + "[.!?…]       # Ending punctuation.\n"
+      + "['\")]?       # Optional closing quote.\n"
       + "(?=\\s|$)",
       Pattern.MULTILINE | Pattern.COMMENTS);
   private static final Pattern WORD_PATTERN = Pattern.compile(
-      "[\\w’'-]+"
+      "[\\w’']+"
   );
 
-  private static final String RE_SMART_QUOTES = new String("[“”]");
+  private static final String RE_SMART_QUOTES = "[“”]";
 
   private final String initialText;
   private final String normalizedText;
@@ -62,13 +55,13 @@ public abstract class WordContainer {
    */
   public WordContainer(final String text) {
     this.initialText = text;
-    this.normalizedText = this.normalizeText(text);
+    this.normalizedText = WordContainer.normalizeText(text);
   }
 
   /**
-   * Normalizes text for processing by trimming and converting to lower case.
+   * Normalize text for processing by trimming and converting to lower case.
    *
-   * @params text  source text to analyze
+   * @param text  source text to analyze
    * @return a normalized representation of text
    *
    */
@@ -115,12 +108,6 @@ public abstract class WordContainer {
   public static final Pattern getDialoguePattern() {
     return WordContainer.DIALOGUE_PATTERN;
   }
-
-//   public static final Pattern getDelimitedPattern(String delimiter) {
-//     return Pattern.compile(
-//         ".*(?:" + delimiter + "|$)"
-//     );
-//   }
 
   /**
    * Converts left and right double quotation marks (“”) to
@@ -194,6 +181,9 @@ public abstract class WordContainer {
   /**
    * Returns the number of complex Words found in the WordContainer.
    *
+   * <p>The definition for Complex Word is unclear and difficult to implement.
+   * Any calculations using Complex Word Count should be considered experimental.
+   *
    * @return the number of complex Words in the WordContainer.
    *
    */
@@ -243,11 +233,54 @@ public abstract class WordContainer {
    */
   public abstract Integer getPovWordCount();
 
+  /**
+   * Returns the count of unique Words found in the WordContainer.
+   *
+   * @return the count of unique Words found in the WordContainer.
+   *
+   */
+  public final Integer getUniqueWordCount() {
+    return this.getUniqueWords().size();
+  }
 
-  public abstract Set<Word> getUniqueWords();
+  /**
+   * Returns a set of unique Words found in the WordContainer
+   *
+   * @return a set of unique Words found in the WordContainer.
+   *
+   */
+  public final Set<Word> getUniqueWords() {
+    return this.getWordFrequency().keySet();
+  }
 
+  /**
+   * Returns a map of unique Words found in the WordContainer
+   * with a value of how many times that Word occurs in the underlying text.
+   *
+   * @return a map with Word as key and the number of times Word appears as value.
+   *
+   */
   public abstract Map<Word, Integer> getWordFrequency();
 
-  public abstract Integer getWordFrequency(Word word);
+  /**
+   * Returns the number of times a Word appears in the WordContainer.
+   *
+   * @param word  the word you want the frequency for.
+   * @return the number of times a Word appears in the WordContainer.
+   *
+   */
+  public final Integer getWordFrequency(Word word) {
+    return (this.getWordFrequency().containsKey(word))
+        ? this.getWordFrequency().get(word)
+        : 0;
+  }
+
+  /**
+   * Returns a list of all Words found in the WordContainer.
+   *
+   * @return a list of all Words found in the WordContainer.
+   *
+   */
+  public abstract List<Word> getWords();
 
 }

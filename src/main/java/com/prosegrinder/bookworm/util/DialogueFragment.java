@@ -1,15 +1,17 @@
 package com.prosegrinder.bookworm.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents a fragment of dialogue.
+ * 
+ * <p>In fiction, dialogue and narrative can be interspersed with each other, 
+ * meaning they may or may not be found in complete sentences.
+ */
 public final class DialogueFragment extends WordContainer {
 
   private final List<Word> words = new ArrayList<Word>();
@@ -25,9 +27,22 @@ public final class DialogueFragment extends WordContainer {
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
 
+  /**
+   * Returns a new DialogueFragment from a string.
+   *
+   * <p>Dialogue slices out independently of sentences and paragraphs. A
+   * single sentence may contain a mix of dialogue and narrative, or a chunk of dialogue
+   * may span multiple paragraphs. The only place dialogue can effectively be parsed out
+   * is from the entirety of the original Prose.
+   *
+   * <p>String is not currently validated since DialogueFragments should
+   * only be created by a Prose object using WordContainer.DIALOGUE_PATTERN.
+   * 
+   * @param text    a string of text representing a piece of dialogue
+   */
   public DialogueFragment(final String text) {
     super(text);
-    Matcher wordMatcher = this.getWordPattern().matcher(text);
+    Matcher wordMatcher = WordContainer.getWordPattern().matcher(text);
     while (wordMatcher.find()) {
       this.words.add(new Word(wordMatcher.group()));
     }
@@ -63,17 +78,9 @@ public final class DialogueFragment extends WordContainer {
     return WordContainer.getDialoguePattern();
   }
 
+  @Override
   public final List<Word> getWords() {
     return this.words;
-  }
-
-  @Override
-  public final Set<Word> getUniqueWords() {
-    return this.wordFrequency.keySet();
-  }
-
-  public final Integer getUniqueWordCount() {
-    return this.wordFrequency.keySet().size();
   }
 
   @Override
@@ -81,16 +88,7 @@ public final class DialogueFragment extends WordContainer {
     return this.wordFrequency;
   }
 
-  @Override
-  public final Integer getWordFrequency(Word word) {
-    if (this.wordFrequency.containsKey(word)) {
-      return this.wordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-
-  @Override
+ @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }

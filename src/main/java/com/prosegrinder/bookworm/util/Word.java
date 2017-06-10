@@ -1,6 +1,5 @@
 package com.prosegrinder.bookworm.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,9 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A Word, the base unit for measuring fiction prose.
+ */
 public final class Word {
 
   /** Magic number for determining complex words. **/
@@ -51,12 +52,22 @@ public final class Word {
   private final Boolean isNumeric;
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
+  private final Boolean isDictionaryWord;
 
+  /**
+   * Returns a new Word from a string.
+   *
+   * <p>String is not currently validates since Words should
+   * only be created by a Sentence using WordContainer.WORD_PATTERN.
+   *
+   * @param text  a single word
+   */
   public Word(final String text) {
     this.initialWord = text.trim();
     this.normalizedWord = this.initialWord.toLowerCase();
     final SyllableDictionary sd = SyllableDictionary.getInstance();
     this.syllableCount = sd.getSyllableCount(this.getNormalizedText());
+    this.isDictionaryWord = sd.inDictionary(this.getNormalizedText());
     this.wordCharacterCount = this.getNormalizedText().length();
     if (this.syllableCount >= MIN_SYLLABLES_COMPLEX_WORD) {
       /**
@@ -66,6 +77,9 @@ public final class Word {
        * 1) Those with three or more syllables.
        * 2) Do not include proper nouns, familiar jargon, or compound words.
        * 3) Do not include common suffixes (such as -es, -ed, or -ing) as a syllable.
+       *
+       * <p>The definition for Complex Word is unclear and difficult to implement.
+       * Any calculations using Complex Word Count should be considered experimental.
        *
        * <p>See:
        * - https://en.wikipedia.org/wiki/Gunning_fog_index
@@ -91,7 +105,7 @@ public final class Word {
   /**
    * Static method for building word frequency from a list of fragments.
    *
-   * @param a list of WordContainers.
+   * @param words a list of WordContainers.
    * @return a map of Word with counts.
    *
    */
@@ -99,12 +113,10 @@ public final class Word {
     Set<Word> uniqueWords = new HashSet<Word>(words);
     Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
     uniqueWords.stream().forEach(word -> {
-        wordFrequency.put(word, Collections.frequency(words, word));
+      wordFrequency.put(word, Collections.frequency(words, word));
     });
     return wordFrequency;
   }
-
-
 
   /**
    * Returns a String representation of the Word.
@@ -113,7 +125,7 @@ public final class Word {
    *
    */
   public final String toString() {
-    return this.getInitialText();
+    return this.getNormalizedText();
   }
 
   /**
@@ -140,8 +152,21 @@ public final class Word {
     return WordContainer.getWordPattern();
   }
 
+  /**
+   * Indicates whether the word is a Complex Word.
+   *
+   * <p>The definition for Complex Word is unclear and difficult to implement.
+   * Any calculations using Complex Word Count should be considered experimental.
+   *
+   * @return Boolean indicating whether the word is considered complex.
+   *
+   */
   public final Boolean isComplexWord() {
     return this.isComplexWord;
+  }
+
+  public final Boolean isDictionaryWord() {
+    return this.isDictionaryWord;
   }
 
   public final Boolean isLongWord() {

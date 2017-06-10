@@ -6,7 +6,7 @@
     <groupId>com.prosegrinder</groupId>
     <artifactId>bookworm</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.5</version>
 
     <name>bookworm</name>
     <url>http://prosegrinder.com</url>
@@ -18,7 +18,7 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <checkstyle.version>2.17</checkstyle.version>
         <junit.version>4.12</junit.version>
-        <log4j.version>2.7</log4j.version>
+        <log4j.version>2.8.2</log4j.version>
     </properties>
 
     <dependencies>
@@ -29,7 +29,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j </groupId>
+            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>${log4j.version}</version>
         </dependency>
@@ -74,15 +74,63 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.10.3</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
             </plugin>
+            <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+			    	<archive>
+				    	<manifest>
+				      		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+				    	</manifest>
+						<manifestEntries>
+							<Build-Date>${maven.build.timestamp}</Build-Date>
+						</manifestEntries>
+					</archive>
+				</configuration>
+		    </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4.1</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+						  		<requireMavenVersion>
+						    		<version>[3.0,)</version>
+						  		</requireMavenVersion>
+							</rules>    
+						</configuration>
+					</execution>
+					<execution>
+						<id>enforce-java</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>[1.8,)</version>
+								</requireJavaVersion>
+							</rules>    
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
     </build>
 
@@ -107,8 +155,16 @@
                 <configLocation>google_checks.xml</configLocation>
               </configuration>
             </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
         </plugins>
     </reporting>
 
 
+    <description>A lightweight text analytics library for prose fiction.</description>
+    <scm>
+    	<url>https://github.com/davidlday/bookworm</url>
+    </scm>
 </project>

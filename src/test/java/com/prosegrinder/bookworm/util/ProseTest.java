@@ -1,29 +1,27 @@
 package com.prosegrinder.bookworm.util;
 
+import com.prosegrinder.bookworm.enums.PovType;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 
 public class ProseTest {
 
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(SyllableDictionaryTest.class);
-  private String text;
   private Prose prose;
+
+  private static final int COMPLEX_WORD_COUNT = 202;
+  private static final int LONG_WORD_COUNT = 275;
+  private static final int SENTENCE_COUNT = 90;
+  private static final int SYLLABLE_COUNT = 2287;
+  private static final int UNIQUE_WORD_COUNT = 526;
+  private static final int WORD_COUNT = 1528;
 
   @Before
   public void loadProse() throws IOException, URISyntaxException {
@@ -31,25 +29,48 @@ public class ProseTest {
     ClassLoader classLoader = ProseTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.text = String.join("\n",lines);
-    this.prose = new Prose(this.text);
+    this.prose = new Prose(String.join("\n",lines));
   }
 
   @Test
-  public void testProse() {
-    assertEquals( "Dialogue word count + narrative word count = total word count: ", prose.getWordCount().intValue(),
+  public void testSyllableCount() {
+    assertEquals("Syllable Count: ", ProseTest.SYLLABLE_COUNT, prose.getSyllableCount().intValue());
+  }
+
+  @Test
+  public void testWordCount() {
+    assertEquals("Word Count: ", ProseTest.WORD_COUNT, prose.getWordCount().intValue());
+  }
+
+  @Test
+  public void testLongWordCount() {
+    assertEquals("Long Word Count: ", ProseTest.LONG_WORD_COUNT, prose.getLongWordCount().intValue());
+  }
+
+  @Test
+  public void testComplexWordCount() {
+    assertEquals("Complex Word Count: ", ProseTest.COMPLEX_WORD_COUNT, prose.getComplexWordCount().intValue());
+  }
+
+  @Test
+  public void testUniqueWordCount() {
+    assertEquals("Unique Word Count: ", ProseTest.UNIQUE_WORD_COUNT, prose.getUniqueWordCount().intValue());
+  }
+
+  @Test
+  public void testSentenceCount() {
+    assertEquals("Sentence Count: ", ProseTest.SENTENCE_COUNT, prose.getSentenceCount().intValue());
+  }
+
+  @Test
+  public void testPov() {
+    assertEquals("Point of View: ", PovType.FIRST, prose.getPov());
+  }
+
+  @Test
+  public void testSumFragmentWordCount() {
+    assertEquals("Dialogue word count + narrative word count = total word count: ", ProseTest.WORD_COUNT,
         prose.getDialogueWordCount().intValue() + prose.getNarrativeWordCount().intValue());
-    logger.info("Syllable Count: " + prose.getSyllableCount());
-    logger.info("Word Count: " + prose.getWordCount());
-    logger.info("Sentence Count: " + prose.getSentenceCount());
-    logger.info("Complex Word Count: " + prose.getComplexWordCount());
-    logger.info("Long Word Count: " + prose.getLongWordCount());
-    logger.info("Average Syllables per Word: " + prose.getAverageSyllablesPerWord());
-    logger.info("Average Words per Sentence: " + prose.getAverageWordsPerSentence());
-    logger.info("Dialogue Fragment Word Count: " + prose.getDialogueWordCount());
-    logger.info("Narrative Fragment Word Count: " + prose.getNarrativeWordCount());
-    logger.info("Point of View: " + prose.getPov());
-    logger.info("Unique Words: " + prose.getUniqueWords().size());
   }
 
 }

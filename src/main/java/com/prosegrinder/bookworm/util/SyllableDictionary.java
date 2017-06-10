@@ -3,12 +3,9 @@ package com.prosegrinder.bookworm.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,13 +71,12 @@ public final class SyllableDictionary {
   /** Private constructor to enforce Singelton. **/
   private SyllableDictionary() {
     syllableMap = new HashMap<String, Integer>();
-    /**  Try loading cmudict from resources. **/
+    /** TODO: Externalize in a properties file. **/
+    String cmudict = "cmudict/cmudict.dict";
     try {
-      /** TODO: Externalize in a properties file. **/
-      String cmudict = "cmudict/cmudict.dict";
-      ClassLoader classLoader = SyllableDictionary.class.getClassLoader();
-      Path cmudictPath = Paths.get(classLoader.getResource(cmudict).toURI());
-      Stream<String> stream = Files.lines(cmudictPath);
+      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudict);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      Stream<String> stream = reader.lines();
       stream.filter(line -> !line.startsWith(";;;"))
           .map(String::toLowerCase)
           .forEach(line -> {
@@ -99,17 +95,15 @@ public final class SyllableDictionary {
               }
             }
           });
-      logger.info("Map entries: " + syllableMap.size());
-    } catch (IOException ioe) {
-      logger.warn("Could not load dictionary file: " + ioe);
-      logger.warn("Continuing with only lookup by heuristics.");
-    } catch (URISyntaxException use) {
-      logger.warn("Could not load dictionary file: " + use);
-      logger.warn("Continuing with only lookup by heuristics.");
+    } catch (Exception e) {
+      logger.error("Exception during cmudict load: " + e);
+      logger.error("Continuing using Heuristics, but performance and accuracy will be affected.");
     }
   }
 
-  /** Returns the SyllableDictionary Singleton for use. **/
+  /**
+   * @return    the SyllableDictionary Singleton for use
+   */
   public static synchronized SyllableDictionary getInstance() {
     if (INSTANCE == null) {
       synchronized (SyllableDictionary.class) {
@@ -154,9 +148,9 @@ public final class SyllableDictionary {
         .replaceAll("e$", "");
     int syllableCount = 0;
 
-    if (strippedWord.equals("") || strippedWord == null) {
+    if (strippedWord == null || "".equals(strippedWord)) {
       syllableCount = 0;
-    } else if (strippedWord.equals("w")) {
+    } else if ("w".equals(strippedWord)) {
       syllableCount = 2;
     } else if (strippedWord.length() == 1) {
       syllableCount = 1;
@@ -222,21 +216,34 @@ public final class SyllableDictionary {
     }
   }
 
-  /** Returns the underlying Map of word:syllable pairs used for lookup. **/
+  /**
+   * @return the underlying Map of word:syllable pairs used for lookup.
+   */
   public final Map<String, Integer> getSyllableMap() {
     return Collections.unmodifiableMap(syllableMap);
   }
 
-  /** Test if a String is a typical number. **/
-  public static final boolean isNumeric(String word) {
-    if (SyllableDictionary.inDictionary(word)) {
+  /**
+   * Test if a String is a typical number.
+   * 
+   * @param text    a string representing a single word
+   * @return boolean representing whether the word is a number
+   */
+  public final boolean isNumeric(String text) {
+    if (this.inDictionary(text)) {
       return false;
     } else {
-      return word.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
+      return text.matches("^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$");
     }
   }
 
-  public static final Boolean inDictionary(String text) {
+  /**
+   * Test if a String is in the underlying cmudict dictionary.
+   * 
+   * @param text    a string representing a single word
+   * @return boolean representing whether the word is found in the underlying dictionary
+   */
+  public final Boolean inDictionary(String text) {
     return syllableMap.containsKey(text);
   }
 
