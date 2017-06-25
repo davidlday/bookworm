@@ -106,27 +106,9 @@ public final class Word {
    *
    * @param wordString a single word
    */
+  @Deprecated
   public Word(final String wordString) {
     this(wordString, SyllableDictionary.getInstance().getSyllableCount(wordString), SyllableDictionary.getInstance().inDictionary(wordString), SyllableDictionary.getInstance().isNumeric(wordString));
-/**
-    this.initialWord = wordString;
-    this.normalizedWord = WordContainer.normalizeText(this.initialWord);
-    final SyllableDictionary sd = SyllableDictionary.getInstance();
-    this.syllableCount = sd.getSyllableCount(this.getNormalizedText());
-    this.isDictionaryWord = sd.inDictionary(this.getNormalizedText());
-    this.wordCharacterCount = this.getNormalizedText().length();
-    this.isNumeric = sd.isNumeric(this.getNormalizedText());
-    if (this.syllableCount >= MIN_SYLLABLES_COMPLEX_WORD) {
-      this.isComplexWord = true;
-    } else {
-      this.isComplexWord = false;
-    }
-    this.isLongWord = (this.wordCharacterCount >= MIN_CHARS_LONG_WORD) ? true : false;
-    this.isFirstPersonWord = Word.POV_FIRST.contains(this.getNormalizedText());
-    this.isSecondPersonWord = Word.POV_SECOND.contains(this.getNormalizedText());
-    this.isThirdPersonWord = Word.POV_THIRD.contains(this.getNormalizedText());
-    this.isPovWord = (this.isFirstPersonWord || this.isSecondPersonWord || this.isThirdPersonWord);
-**/
   }
 
   /**
