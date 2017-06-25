@@ -18,17 +18,18 @@ import java.util.stream.Stream;
 /**
  * A Singleton Class to access cmudict data.
  *
- * <p>Parses phonemes and syllable counts from 
- * cmudict (https://github.com/cmusphinx/cmudict).
+ * <p>
+ * Parses phonemes and syllable counts from cmudict (https://github.com/cmusphinx/cmudict).
  *
- * <p>Singleton implementation based on:
+ * <p>
+ * Singleton implementation based on:
  * http://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples
  */
 public final class CMUDict {
 
   private static volatile CMUDict INSTANCE;
   private static volatile Map<String, String> phonemeStringMap;
-  
+
   /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
   private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
 
@@ -36,7 +37,7 @@ public final class CMUDict {
   private static final Logger logger = LogManager.getLogger(CMUDict.class);
 
   /**
-   * @return    the CMUDict Singleton for use
+   * @return the CMUDict Singleton for use
    */
   public static synchronized CMUDict getInstance() {
     if (INSTANCE == null) {
@@ -55,35 +56,51 @@ public final class CMUDict {
       InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudict);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Stream<String> stream = reader.lines();
-      stream.filter(line -> !line.startsWith(";;;"))
-          .map(String::toLowerCase)
-          .forEach(line -> {
-            String[] parts = line.split("\\s+", 2);
-            String word = parts[0];
-            if (!word.endsWith(")")) {
-              phonemeStringMap.put(word, parts[1]);
-            }
-          });
+      stream.filter(line -> !line.startsWith(";;;")).map(String::toLowerCase).forEach(line -> {
+        String[] parts = line.split("\\s+", 2);
+        String wordString = parts[0];
+        if (!wordString.endsWith(")")) {
+          phonemeStringMap.put(wordString, parts[1]);
+        }
+      });
     } catch (Exception e) {
       logger.error("Exception during cmudict load: " + e);
     }
   }
 
   /**
-   * Get the number of syllables by looking up the word in the underlying cmudict.
-   *
-   * @param word  a single word
-   * @return  the number of syllables in the word
-   * @throws NullPointerException throws if the word is not in the underlying dictionary
+   * Get cmudict phonemes for a word.
+   * 
+   * @param wordString a single word
+   * @return List of Stings representing the phonemes
+   * @throws NullPointerException throws if the word is not in cmudict
    *
    */
-  public final String getPhonemeString(final String word) throws NullPointerException {
-    if (!this.inCMUDict(word)) {
-      String msg = "Dictionary does not contain an entry for " + word + ".";
+  public final List<String> getPhonemes(final String wordString) throws NullPointerException {
+    if (!this.inCMUDict(wordString)) {
+      String msg = "Dictionary does not contain an entry for " + wordString + ".";
       logger.error(msg);
       throw new NullPointerException(msg);
     } else {
-      return phonemeStringMap.get(word);
+      return Arrays.asList(phonemeStringMap.get(wordString).split("\\s+"));
+    }
+  }
+
+  /**
+   * Get the number of syllables by looking up the word in the underlying cmudict.
+   *
+   * @param wordString a single word
+   * @return the number of syllables in the word
+   * @throws NullPointerException throws if the word is not in the underlying dictionary
+   *
+   */
+  public final String getPhonemeString(final String wordString) throws NullPointerException {
+    if (!this.inCMUDict(wordString)) {
+      String msg = "Dictionary does not contain an entry for " + wordString + ".";
+      logger.error(msg);
+      throw new NullPointerException(msg);
+    } else {
+      return phonemeStringMap.get(wordString);
     }
   }
 
@@ -97,20 +114,20 @@ public final class CMUDict {
   /**
    * Get the number of syllables by looking up the word in the underlying cmudict.
    *
-   * @param word  a single word
-   * @return  the number of syllables in the word
+   * @param wordString a single word
+   * @return the number of syllables in the word
    * @throws NullPointerException throws if the word is not in the underlying dictionary
    *
    */
-  public final Integer getSyllableCount(final String word) throws NullPointerException {
+  public final Integer getSyllableCount(final String wordString) throws NullPointerException {
     Integer syllables = 0;
-    if (!this.inCMUDict(word)) {
-      String msg = "Dictionary does not contain an entry for " + word + ".";
+    if (!this.inCMUDict(wordString)) {
+      String msg = "Dictionary does not contain an entry for " + wordString + ".";
       logger.error(msg);
       throw new NullPointerException(msg);
     } else {
-      List<String> phonemes = this.getPhonemes(word);
-      for (String phoneme: phonemes) {
+      List<String> phonemes = this.getPhonemes(wordString);
+      for (String phoneme : phonemes) {
         Matcher matcher = cmudictSyllablePattern.matcher(phoneme);
         if (matcher.find()) {
           syllables++;
@@ -121,32 +138,14 @@ public final class CMUDict {
   }
 
   /**
-   * Get cmudict phonemes for a word.
-   * 
-   * @param word    a single word
-   * @return List of Stings representing the phonemes
-   * @throws NullPointerException throws if the word is not in cmudict
-   *
-   */
-  public final List<String> getPhonemes(final String word) throws NullPointerException {
-    if (!this.inCMUDict(word)) {
-      String msg = "Dictionary does not contain an entry for " + word + ".";
-      logger.error(msg);
-      throw new NullPointerException(msg);
-    } else {
-      return Arrays.asList(phonemeStringMap.get(word).split("\\s+"));
-    }
-  }
-  
-  /**
    * Test if a String is in the underlying cmudict dictionary.
    * 
-   * @param word    a string representing a single word
+   * @param wordString a string representing a single word
    * @return boolean representing whether the word is found in the underlying dictionary
    * 
    */
-  public final Boolean inCMUDict(final String word) {
-    return phonemeStringMap.containsKey(word);
+  public final Boolean inCMUDict(final String wordString) {
+    return phonemeStringMap.containsKey(wordString);
   }
 
 }
