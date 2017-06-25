@@ -8,9 +8,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -27,8 +27,8 @@ import java.util.stream.Stream;
  */
 public final class CMUDict {
 
-  private static volatile CMUDict INSTANCE;
-  private static volatile Map<String, String> phonemeStringMap;
+  private static CMUDict INSTANCE = new CMUDict();
+  private Map<String, String> phonemeStringMap;
 
   /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
   private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
@@ -40,17 +40,12 @@ public final class CMUDict {
    * @return the CMUDict Singleton for use
    */
   public static synchronized CMUDict getInstance() {
-    if (INSTANCE == null) {
-      synchronized (CMUDict.class) {
-        INSTANCE = new CMUDict();
-      }
-    }
     return INSTANCE;
   }
 
   /** Private constructor to enforce Singelton. **/
   private CMUDict() {
-    phonemeStringMap = new HashMap<String, String>();
+    phonemeStringMap = new ConcurrentHashMap<String, String>();
     String cmudict = "cmudict/cmudict.dict";
     try {
       InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudict);
