@@ -3,8 +3,8 @@ package com.prosegrinder.bookworm.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
  */
 public final class Dictionary {
 
-  private static volatile Dictionary INSTANCE;
-  private static volatile Map<String, Word> wordMap;
+  private static Dictionary INSTANCE = new Dictionary();
+  private Map<String, Word> wordMap;
 
   /** Regex used to test if a string represents a number. **/
   private static final String RE_NUMERIC = "^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$";
@@ -59,17 +59,12 @@ public final class Dictionary {
    * @return the SyllableDictionary Singleton for use
    */
   public static synchronized Dictionary getInstance() {
-    if (INSTANCE == null) {
-      synchronized (Dictionary.class) {
-        INSTANCE = new Dictionary();
-      }
-    }
     return INSTANCE;
   }
 
   /** Private constructor to enforce Singelton. **/
   private Dictionary() {
-    wordMap = new HashMap<String, Word>();
+    wordMap = new ConcurrentHashMap<String, Word>();
   }
 
   /**
