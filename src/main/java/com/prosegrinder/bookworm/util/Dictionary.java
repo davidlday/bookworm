@@ -192,7 +192,7 @@ public final class Dictionary {
   /**
    * Test if a String is in an underlying real dictionary.
    * 
-   * @param text a string representing a single word
+   * @param wordString a string representing a single word
    * @return boolean representing whether the word is found in the underlying dictionary
    */
   public final Boolean inDictionary(final String wordString) {
