@@ -73,14 +73,14 @@ public final class CMUDict {
    * 
    * @param wordString a single word
    * @return List of Stings representing the phonemes
-   * @throws NullPointerException throws if the word is not in cmudict
+   * @throws IllegalArgumentException thrown if the word is not in cmudict
    *
    */
-  public final List<String> getPhonemes(final String wordString) throws NullPointerException {
+  public final List<String> getPhonemes(final String wordString) throws IllegalArgumentException {
     if (!this.inCMUDict(wordString)) {
       String msg = "Dictionary does not contain an entry for " + wordString + ".";
       logger.error(msg);
-      throw new NullPointerException(msg);
+      throw new IllegalArgumentException(msg);
     } else {
       return Arrays.asList(phonemeStringMap.get(wordString).split("\\s+"));
     }
@@ -91,14 +91,14 @@ public final class CMUDict {
    *
    * @param wordString a single word
    * @return the number of syllables in the word
-   * @throws NullPointerException throws if the word is not in the underlying dictionary
+   * @throws IllegalArgumentException throws if the word is not in the underlying dictionary
    *
    */
-  public final String getPhonemeString(final String wordString) throws NullPointerException {
+  public final String getPhonemeString(final String wordString) throws IllegalArgumentException {
     if (!this.inCMUDict(wordString)) {
       String msg = "Dictionary does not contain an entry for " + wordString + ".";
       logger.error(msg);
-      throw new NullPointerException(msg);
+      throw new IllegalArgumentException(msg);
     } else {
       return phonemeStringMap.get(wordString);
     }
@@ -116,15 +116,15 @@ public final class CMUDict {
    *
    * @param wordString a single word
    * @return the number of syllables in the word
-   * @throws NullPointerException throws if the word is not in the underlying dictionary
+   * @throws IllegalArgumentException throws if the word is not in the underlying dictionary
    *
    */
-  public final Integer getSyllableCount(final String wordString) throws NullPointerException {
+  public final Integer getSyllableCount(final String wordString) throws IllegalArgumentException {
     Integer syllables = 0;
     if (!this.inCMUDict(wordString)) {
       String msg = "Dictionary does not contain an entry for " + wordString + ".";
       logger.error(msg);
-      throw new NullPointerException(msg);
+      throw new IllegalArgumentException(msg);
     } else {
       List<String> phonemes = this.getPhonemes(wordString);
       for (String phoneme : phonemes) {
