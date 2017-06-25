@@ -30,7 +30,7 @@ public class SyllableDictionaryTest {
     // No numbers are in the dictionary. Throws a NullPointerException.
     logger.info("Expecting NullPointerException...");
     String notWord = "1,904";
-    thrown.expect( NullPointerException.class );
+    thrown.expect( IllegalArgumentException.class );
     thrown.expectMessage( "Dictionary does not contain an entry for " + notWord + "." );
     syllableDictionary.getByLookup( notWord );
   }
