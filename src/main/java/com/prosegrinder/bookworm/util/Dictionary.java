@@ -179,13 +179,15 @@ public final class Dictionary {
   }
 
   public final Word getWord(final String wordString) {
-    if (wordMap.containsKey(wordString)) {
-      return wordMap.get(wordString);
-    } else {
-      Word word = new Word(wordString, this.getSyllableCount(wordString),
-          this.inDictionary(wordString), this.isNumeric(wordString));
-      wordMap.put(wordString, word);
-      return word;
+    synchronized (Dictionary.class) {
+      if (wordMap.containsKey(wordString)) {
+        return wordMap.get(wordString);
+      } else {
+        Word word = new Word(wordString, this.getSyllableCount(wordString),
+            this.inDictionary(wordString), this.isNumeric(wordString));
+        wordMap.put(wordString, word);
+        return word;
+      }
     }
   }
 
