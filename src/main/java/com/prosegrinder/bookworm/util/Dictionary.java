@@ -77,16 +77,16 @@ public final class Dictionary {
    *
    * @param wordString a single word
    * @return the number of syllables in the word
-   * @throws NullPointerException throws if the word is not in the underlying dictionary
+   * @throws IllegalArgumentException thrown if the word is not in the underlying dictionary
    *
    */
   public final Integer getCMUDictSyllableCount(final String wordString)
-      throws NullPointerException {
+      throws IllegalArgumentException {
     CMUDict cmudict = CMUDict.getInstance();
     if (!cmudict.inCMUDict(wordString)) {
       String msg = "CMUDict does not contain an entry for " + wordString + ".";
       logger.error(msg);
-      throw new NullPointerException(msg);
+      throw new IllegalArgumentException(msg);
     } else {
       return cmudict.getSyllableCount(wordString);
     }

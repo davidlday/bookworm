@@ -121,11 +121,11 @@ public final class SyllableDictionary {
    * @throws NullPointerException throws if the word is not in the underlying dictionary
    *
    */
-  public final Integer getByLookup(final String word) throws NullPointerException {
+  public final Integer getByLookup(final String word) throws IllegalArgumentException {
     if (!syllableMap.containsKey(word)) {
       String msg = "Dictionary does not contain an entry for " + word + ".";
       logger.error(msg);
-      throw new NullPointerException(msg);
+      throw new IllegalArgumentException(msg);
     } else {
       return syllableMap.get(word);
     }
