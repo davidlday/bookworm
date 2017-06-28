@@ -39,8 +39,8 @@ public class CMUDictTest {
 
   @Test
   public void testScanPhonemeString() {
-    assertEquals("frowning:", cmudict.scanPhonemeString( "frowning" ), "F R AW1 N IH0 NG");
-    assertEquals("zurkuhlen:", cmudict.scanPhonemeString( "zurkuhlen" ), "Z ER0 K Y UW1 L AH0 N");
+    assertEquals("frowning:", "F R AW1 N IH0 NG", cmudict.scanPhonemeString( "frowning" ));
+    assertEquals("zurkuhlen:", "Z ER0 K Y UW1 L AH0 N", cmudict.scanPhonemeString( "zurkuhlen" ));
     String notWord = "1,904";
     thrown.expect( IllegalArgumentException.class );
     thrown.expectMessage( "Dictionary does not contain an entry for " + notWord + "." );
