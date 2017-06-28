@@ -24,6 +24,7 @@ import java.util.stream.Stream;
  * <p>Singleton implementation based on:
  * http://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples
  */
+@Deprecated
 public final class SyllableDictionary {
 
   private static volatile SyllableDictionary INSTANCE;
