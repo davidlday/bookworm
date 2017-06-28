@@ -161,8 +161,8 @@ public final class CMUDict {
       InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Stream<String> stream = reader.lines();
-      List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + "\\s+"))
-          .map(String::toLowerCase).collect(Collectors.toList());
+      List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + " "))
+          .collect(Collectors.toList());
       if (phonemeStrings.size() == 1) {
         String[] parts = phonemeStrings.get(0).split("\\s+", 2);
         phoneme = parts[1];
