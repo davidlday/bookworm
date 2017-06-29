@@ -1,5 +1,6 @@
 package com.prosegrinder.bookworm.util;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -12,6 +13,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@Ignore
 public class SyllableDictionaryTest {
 
   private static final SyllableDictionary syllableDictionary = SyllableDictionary.getInstance();

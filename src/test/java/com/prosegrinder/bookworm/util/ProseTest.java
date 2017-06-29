@@ -1,6 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
 import com.prosegrinder.bookworm.enums.PovType;
+import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+@Ignore
 public class ProseTest {
 
   private Prose prose;
