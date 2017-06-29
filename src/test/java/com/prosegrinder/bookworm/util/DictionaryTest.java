@@ -10,9 +10,7 @@ import org.junit.rules.ExpectedException;
 
 public class DictionaryTest {
 
-  Dictionary dictionary = Dictionary.getInstance();
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(SyllableDictionaryTest.class);
+  private static final Dictionary dictionary = Dictionary.getInstance();
 
   @Rule
   public final ExpectedException thrown = ExpectedException.none();
