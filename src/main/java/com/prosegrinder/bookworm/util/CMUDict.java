@@ -4,11 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 //import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 //import java.util.Map;
 //import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -29,6 +32,8 @@ import java.util.stream.Stream;
 public final class CMUDict {
 
   private static CMUDict INSTANCE = new CMUDict();
+  private Map<String, String> phonemeStringMap;
+
   // TODO: Externalize
   private static final String CMUDictFile = "cmudict/cmudict.dict";
   /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
@@ -46,6 +51,22 @@ public final class CMUDict {
 
   /** Private constructor to enforce Singleton. **/
   private CMUDict() {
+    phonemeStringMap = new ConcurrentHashMap<String, String>();
+    try{ 
+      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      Stream<String> stream = reader.lines();
+      stream.filter(line -> !line.startsWith(";;;")).forEach(line -> {
+        String[] parts = line.split("\\s+", 2);
+        String wordString = parts[0];
+        if (!wordString.endsWith(")")) {
+          phonemeStringMap.put(wordString, parts[1]);
+        }
+      });
+      in.close();
+    } catch (IOException ioe) {
+      logger.error(ioe.getMessage());
+    }
   }
 
   /**
@@ -92,6 +113,7 @@ public final class CMUDict {
       this.getPhonemeString(wordString);
       return true;
     } catch (IllegalArgumentException iae) {
+//      logger.warn(iae.getMessage());
       return false;
     }
   }
@@ -105,26 +127,34 @@ public final class CMUDict {
    *
    */
   public final String getPhonemeString(final String wordString) throws IllegalArgumentException {
-    // TODO: Consider https://stackoverflow.com/questions/22694884/filter-java-stream-to-1-and-only-1-element#22695031
-    String phoneme = "";
-    InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-    Stream<String> stream = reader.lines();
-    List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + " "))
-        .collect(Collectors.toList());
-    if (phonemeStrings.size() == 1) {
-      String[] parts = phonemeStrings.get(0).split("\\s+", 2);
-      phoneme = parts[1];
-    } else if (phonemeStrings.size() < 1){
-      String msg = "cmudict does not contain an entry for " + wordString + ".";
-      logger.warn(msg);
-      throw new IllegalArgumentException(msg);
+    if (phonemeStringMap.containsKey(wordString)) {
+      return phonemeStringMap.get(wordString);
     } else {
-      String msg = "cmudict contains multiple entries for " + wordString + ".";
-      logger.warn(msg);
-      throw new IllegalArgumentException(msg);
+      // This is all bypassed for now since the whole file is parsed and cached on instantiation.
+      // Will revisit performance vs. memory trade-off later.
+      String phoneme = "";
+      try {
+        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        Stream<String> stream = reader.lines();
+        List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + " "))
+            .collect(Collectors.toList());
+        in.close();
+        if (phonemeStrings.size() == 1) {
+          String[] parts = phonemeStrings.get(0).split("\\s+", 2);
+          phoneme = parts[1];
+        } else if (phonemeStrings.size() < 1){
+          String msg = "cmudict does not contain an entry for " + wordString + ".";
+          throw new IllegalArgumentException(msg);
+        } else {
+          String msg = "cmudict contains multiple entries for " + wordString + ".";
+          throw new IllegalArgumentException(msg);
+        }
+      } catch (IOException ioe) {
+        logger.error(ioe.getMessage());
+      }
+      return phoneme;
     }
-    return phoneme;
   }
 
 }
