@@ -78,13 +78,7 @@ public final class Dictionary {
   public final Integer getCMUDictSyllableCount(final String wordString)
       throws IllegalArgumentException {
     CMUDict cmudict = CMUDict.getInstance();
-    if (!cmudict.inCMUDict(wordString)) {
-      String msg = "CMUDict does not contain an entry for " + wordString + ".";
-      logger.error(msg);
-      throw new IllegalArgumentException(msg);
-    } else {
-      return cmudict.getSyllableCount(wordString);
-    }
+    return cmudict.getSyllableCount(wordString);
   }
 
   /**
@@ -166,10 +160,10 @@ public final class Dictionary {
    */
   public final Integer getSyllableCount(final String wordString) {
     CMUDict cmudict = CMUDict.getInstance();
-    if (cmudict.inCMUDict(wordString)) {
+    if (!this.isNumeric(wordString) && this.inDictionary(wordString)) {
       return cmudict.getSyllableCount(wordString);
     } else {
-      return getHeuristicSyllableCount(wordString);
+      return this.getHeuristicSyllableCount(wordString);
     }
   }
 
@@ -178,8 +172,9 @@ public final class Dictionary {
       if (wordMap.containsKey(wordString)) {
         return wordMap.get(wordString);
       } else {
-        Word word = new Word(wordString, this.getSyllableCount(wordString),
-            this.inDictionary(wordString), this.isNumeric(wordString));
+        Word word =
+            new Word(WordContainer.normalizeText(wordString), this.getSyllableCount(wordString),
+                this.inDictionary(wordString), this.isNumeric(wordString));
         wordMap.put(wordString, word);
         return word;
       }
