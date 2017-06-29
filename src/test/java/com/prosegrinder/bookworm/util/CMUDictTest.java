@@ -1,10 +1,12 @@
 package com.prosegrinder.bookworm.util;
 
 import static org.junit.Assert.*;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CMUDictTest {
   private static final CMUDict cmudict = CMUDict.getInstance();
@@ -14,37 +16,38 @@ public class CMUDictTest {
 
   @Test
   public void testGetPhonemes() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testGetPhonemeString() {
-    fail("Not yet implemented");
-  }
-
-  @Test
-  public void testGetPhonemeStringMap() {
-    fail("Not yet implemented");
+    List<String> frowningPhonemes = Arrays.asList("F", "R", "AW1", "N", "IH0", "NG");
+    assertEquals("frowning:", frowningPhonemes, cmudict.getPhonemes( "frowning" ));
+    List<String> zurkuhlenPhonemes = Arrays.asList("Z", "ER0", "K", "Y", "UW1", "L", "AH0", "N");
+    assertEquals("zurkuhlen:", zurkuhlenPhonemes, cmudict.getPhonemes( "zurkuhlen" ));
+    List<String> cafePhonemes = Arrays.asList("K", "AH0", "F", "EY1");
+    assertEquals("cafe:", cafePhonemes, cmudict.getPhonemes( "cafe" ));
   }
 
   @Test
   public void testGetSyllableCount() {
-    fail("Not yet implemented");
+    assertEquals("frowning:", 2, cmudict.getSyllableCount( "frowning" ).intValue());
+    assertEquals("zurkuhlen:", 3, cmudict.getSyllableCount( "zurkuhlen" ).intValue());
+    assertEquals( "cafe: ", 2, cmudict.getSyllableCount( "cafe" ).intValue());
   }
 
   @Test
   public void testInCMUDict() {
-    fail("Not yet implemented");
+    assertTrue("frowning:", cmudict.inCMUDict( "frowning" ));
+    assertTrue("zurkuhlen:", cmudict.inCMUDict( "zurkuhlen" ));
+    assertTrue( "cafe: ", cmudict.inCMUDict( "cafe" ));
+    assertFalse("1,904", cmudict.inCMUDict("1,904"));
   }
 
   @Test
-  public void testScanPhonemeString() {
-    assertEquals("frowning:", "F R AW1 N IH0 NG", cmudict.scanPhonemeString( "frowning" ));
-    assertEquals("zurkuhlen:", "Z ER0 K Y UW1 L AH0 N", cmudict.scanPhonemeString( "zurkuhlen" ));
+  public void testGetPhonemeString() {
+    assertEquals("frowning:", "F R AW1 N IH0 NG", cmudict.getPhonemeString( "frowning" ));
+    assertEquals("zurkuhlen:", "Z ER0 K Y UW1 L AH0 N", cmudict.getPhonemeString( "zurkuhlen" ));
+    assertEquals("cafe:", "K AH0 F EY1", cmudict.getPhonemeString( "cafe" ));
     String notWord = "1,904";
     thrown.expect( IllegalArgumentException.class );
-    thrown.expectMessage( "Dictionary does not contain an entry for " + notWord + "." );
-    cmudict.scanPhonemeString( notWord );
+    thrown.expectMessage( "cmudict does not contain an entry for " + notWord + "." );
+    cmudict.getPhonemeString( notWord );
   }
 
 }
