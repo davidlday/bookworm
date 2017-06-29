@@ -1,8 +1,5 @@
 package com.prosegrinder.bookworm.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -158,7 +155,7 @@ public final class Dictionary {
   public final Integer getSyllableCount(final String wordString) {
     CMUDict cmudict = CMUDict.getInstance();
     if (!this.isNumeric(wordString) && this.inDictionary(wordString)) {
-      return cmudict.getSyllableCount(wordString);
+      return cmudict.getSyllableCount(WordContainer.normalizeText(wordString));
     } else {
       return this.getHeuristicSyllableCount(wordString);
     }
@@ -170,7 +167,7 @@ public final class Dictionary {
         return wordMap.get(wordString);
       } else {
         Word word =
-            new Word(WordContainer.normalizeText(wordString), this.getSyllableCount(wordString),
+            new Word(wordString, this.getSyllableCount(wordString),
                 this.inDictionary(wordString), this.isNumeric(wordString));
         wordMap.put(wordString, word);
         return word;
@@ -186,7 +183,7 @@ public final class Dictionary {
    */
   public final Boolean inDictionary(final String wordString) {
     /** Only one reference dictionary for now. **/
-    return CMUDict.getInstance().inCMUDict(wordString);
+    return CMUDict.getInstance().inCMUDict(WordContainer.normalizeText(wordString));
   }
 
   /**
