@@ -7,10 +7,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Collections;
+//import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+//import java.util.Map;
+//import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,8 +31,6 @@ public final class CMUDict {
   private static CMUDict INSTANCE = new CMUDict();
   // TODO: Externalize
   private static final String CMUDictFile = "cmudict/cmudict.dict";
-  private Map<String, String> phonemeStringMap;
-
   /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
   private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
 
@@ -46,24 +44,8 @@ public final class CMUDict {
     return INSTANCE;
   }
 
-  /** Private constructor to enforce Singelton. **/
+  /** Private constructor to enforce Singleton. **/
   private CMUDict() {
-    phonemeStringMap = new ConcurrentHashMap<String, String>();
-    // String cmudict = "cmudict/cmudict.dict";
-    try {
-      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      Stream<String> stream = reader.lines();
-      stream.filter(line -> !line.startsWith(";;;")).map(String::toLowerCase).forEach(line -> {
-        String[] parts = line.split("\\s+", 2);
-        String wordString = parts[0];
-        if (!wordString.endsWith(")")) {
-          phonemeStringMap.put(wordString, parts[1]);
-        }
-      });
-    } catch (Exception e) {
-      logger.error("Exception during cmudict load: " + e);
-    }
   }
 
   /**
@@ -75,38 +57,7 @@ public final class CMUDict {
    *
    */
   public final List<String> getPhonemes(final String wordString) throws IllegalArgumentException {
-    if (!this.inCMUDict(wordString)) {
-      String msg = "Dictionary does not contain an entry for " + wordString + ".";
-      logger.error(msg);
-      throw new IllegalArgumentException(msg);
-    } else {
-      return Arrays.asList(phonemeStringMap.get(wordString).split("\\s+"));
-    }
-  }
-
-  /**
-   * Get the number of syllables by looking up the word in the underlying cmudict.
-   *
-   * @param wordString a single word
-   * @return the number of syllables in the word
-   * @throws IllegalArgumentException throws if the word is not in the underlying dictionary
-   *
-   */
-  public final String getPhonemeString(final String wordString) throws IllegalArgumentException {
-    if (!this.inCMUDict(wordString)) {
-      String msg = "Dictionary does not contain an entry for " + wordString + ".";
-      logger.error(msg);
-      throw new IllegalArgumentException(msg);
-    } else {
-      return phonemeStringMap.get(wordString);
-    }
-  }
-
-  /**
-   * @return the underlying Map of word:phoneme pairs.
-   */
-  public final Map<String, String> getPhonemeStringMap() {
-    return Collections.unmodifiableMap(phonemeStringMap);
+    return Arrays.asList(this.getPhonemeString(wordString).split("\\s+"));
   }
 
   /**
@@ -119,17 +70,11 @@ public final class CMUDict {
    */
   public final Integer getSyllableCount(final String wordString) throws IllegalArgumentException {
     Integer syllables = 0;
-    if (!this.inCMUDict(wordString)) {
-      String msg = "Dictionary does not contain an entry for " + wordString + ".";
-      logger.error(msg);
-      throw new IllegalArgumentException(msg);
-    } else {
-      List<String> phonemes = this.getPhonemes(wordString);
-      for (String phoneme : phonemes) {
-        Matcher matcher = cmudictSyllablePattern.matcher(phoneme);
-        if (matcher.find()) {
-          syllables++;
-        }
+    List<String> phonemes = this.getPhonemes(wordString);
+    for (String phoneme : phonemes) {
+      Matcher matcher = cmudictSyllablePattern.matcher(phoneme);
+      if (matcher.find()) {
+        syllables++;
       }
     }
     return syllables;
@@ -143,7 +88,12 @@ public final class CMUDict {
    * 
    */
   public final Boolean inCMUDict(final String wordString) {
-    return phonemeStringMap.containsKey(wordString);
+    try {
+      this.getPhonemeString(wordString);
+      return true;
+    } catch (IllegalArgumentException iae) {
+      return false;
+    }
   }
 
   /**
@@ -154,27 +104,25 @@ public final class CMUDict {
    * @throws IllegalArgumentException throws if the word is not in the underlying dictionary
    *
    */
-  public final String scanPhonemeString(final String wordString) throws IllegalArgumentException {
+  public final String getPhonemeString(final String wordString) throws IllegalArgumentException {
     // TODO: Consider https://stackoverflow.com/questions/22694884/filter-java-stream-to-1-and-only-1-element#22695031
     String phoneme = "";
-    try {
-      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      Stream<String> stream = reader.lines();
-      List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + " "))
-          .collect(Collectors.toList());
-      if (phonemeStrings.size() == 1) {
-        String[] parts = phonemeStrings.get(0).split("\\s+", 2);
-        phoneme = parts[1];
-      } else if (phonemeStrings.size() < 1){
-        String msg = "cmudict does not contain an entry for " + wordString + ".";
-        throw new IllegalArgumentException(msg);
-      } else {
-        String msg = "cmudict contains multiple entries for " + wordString + ".";
-        throw new IllegalArgumentException(msg);
-      }
-    } catch (Exception e) {
-      logger.error("Exception during cmudict load: " + e);
+    InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+    Stream<String> stream = reader.lines();
+    List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + " "))
+        .collect(Collectors.toList());
+    if (phonemeStrings.size() == 1) {
+      String[] parts = phonemeStrings.get(0).split("\\s+", 2);
+      phoneme = parts[1];
+    } else if (phonemeStrings.size() < 1){
+      String msg = "cmudict does not contain an entry for " + wordString + ".";
+      logger.warn(msg);
+      throw new IllegalArgumentException(msg);
+    } else {
+      String msg = "cmudict contains multiple entries for " + wordString + ".";
+      logger.warn(msg);
+      throw new IllegalArgumentException(msg);
     }
     return phoneme;
   }
