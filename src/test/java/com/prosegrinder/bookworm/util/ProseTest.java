@@ -1,7 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
 import com.prosegrinder.bookworm.enums.PovType;
-import org.junit.Ignore;
+//import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -13,25 +13,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-@Ignore
+//@Ignore
 public class ProseTest {
 
   private Prose prose;
 
-//  private static final int COMPLEX_WORD_COUNT = 202;
-//  private static final int LONG_WORD_COUNT = 275;
-//  private static final int SENTENCE_COUNT = 90;
-//  private static final int SYLLABLE_COUNT = 2287;
-//  private static final int UNIQUE_WORD_COUNT = 526;
-//  private static final int WORD_COUNT = 1528;
-
-  private static final int COMPLEX_WORD_COUNT = 198;
+  private static final int COMPLEX_WORD_COUNT = 202;
   private static final int LONG_WORD_COUNT = 275;
   private static final int SENTENCE_COUNT = 90;
-  private static final int SYLLABLE_COUNT = 2285;
+  private static final int SYLLABLE_COUNT = 2287;
   private static final int UNIQUE_WORD_COUNT = 526;
   private static final int WORD_COUNT = 1528;
-
   
   @Before
   public void loadProse() throws IOException, URISyntaxException {
