@@ -52,9 +52,6 @@ public final class Dictionary {
           Pattern.compile("dnt$") // neilb: couldn't
       };
 
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(Dictionary.class);
-
   /**
    * @return the SyllableDictionary Singleton for use
    */
