@@ -1,7 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
 import com.prosegrinder.bookworm.enums.PovType;
-//import org.junit.Ignore;
+// import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-//@Ignore
+// @Ignore
 public class ProseTest {
 
   private Prose prose;
@@ -24,14 +24,14 @@ public class ProseTest {
   private static final int SYLLABLE_COUNT = 2287;
   private static final int UNIQUE_WORD_COUNT = 526;
   private static final int WORD_COUNT = 1528;
-  
+
   @Before
   public void loadProse() throws IOException, URISyntaxException {
     String prose = "shunn/shortstory.txt";
     ClassLoader classLoader = ProseTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.prose = new Prose(String.join("\n",lines));
+    this.prose = new Prose(String.join("\n", lines));
   }
 
   @Test
@@ -46,17 +46,20 @@ public class ProseTest {
 
   @Test
   public void testLongWordCount() {
-    assertEquals("Long Word Count: ", ProseTest.LONG_WORD_COUNT, prose.getLongWordCount().intValue());
+    assertEquals("Long Word Count: ", ProseTest.LONG_WORD_COUNT,
+        prose.getLongWordCount().intValue());
   }
 
   @Test
   public void testComplexWordCount() {
-    assertEquals("Complex Word Count: ", ProseTest.COMPLEX_WORD_COUNT, prose.getComplexWordCount().intValue());
+    assertEquals("Complex Word Count: ", ProseTest.COMPLEX_WORD_COUNT,
+        prose.getComplexWordCount().intValue());
   }
 
   @Test
   public void testUniqueWordCount() {
-    assertEquals("Unique Word Count: ", ProseTest.UNIQUE_WORD_COUNT, prose.getUniqueWordCount().intValue());
+    assertEquals("Unique Word Count: ", ProseTest.UNIQUE_WORD_COUNT,
+        prose.getUniqueWordCount().intValue());
   }
 
   @Test
@@ -71,7 +74,8 @@ public class ProseTest {
 
   @Test
   public void testSumFragmentWordCount() {
-    assertEquals("Dialogue word count + narrative word count = total word count: ", ProseTest.WORD_COUNT,
+    assertEquals("Dialogue word count + narrative word count = total word count: ",
+        ProseTest.WORD_COUNT,
         prose.getDialogueWordCount().intValue() + prose.getNarrativeWordCount().intValue());
   }
 
