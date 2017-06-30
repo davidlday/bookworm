@@ -182,8 +182,12 @@ public final class Dictionary {
    * @return boolean representing whether the word is found in the underlying dictionary
    */
   public final Boolean inDictionary(final String wordString) {
-    /** Only one reference dictionary for now. **/
-    return CMUDict.getInstance().inCMUDict(WordContainer.normalizeText(wordString));
+    /** Only one reference dictionary for now. No numbers in the dictionary. **/
+    if (!wordString.matches(Dictionary.RE_NUMERIC)) {
+      return CMUDict.getInstance().inCMUDict(WordContainer.normalizeText(wordString));
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -193,11 +197,7 @@ public final class Dictionary {
    * @return boolean representing whether the word is a number
    */
   public final boolean isNumeric(final String wordString) {
-    if (this.inDictionary(wordString)) {
-      return false;
-    } else {
-      return wordString.matches(Dictionary.RE_NUMERIC);
-    }
+    return wordString.matches(Dictionary.RE_NUMERIC);
   }
 
 }
