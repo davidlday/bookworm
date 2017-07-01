@@ -20,7 +20,7 @@ import java.util.List;
 public class ReadabilityScoresTest {
 
   /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(SyllableDictionaryTest.class);
+  private static final Logger logger = LogManager.getLogger(ReadabilityScoresTest.class);
   private Prose prose;
   private static final NumberFormat formatter = new DecimalFormat("#0.000");
 

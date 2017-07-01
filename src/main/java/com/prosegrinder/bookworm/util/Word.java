@@ -67,9 +67,10 @@ public final class Word {
   /**
    * Creates a new Word.
    *
-   * <p>
-   * String is not currently validates since Words should only be created by a Sentence using
+   * <p>String is not currently validates since Words should only be created by a Sentence using
    * WordContainer.WORD_PATTERN.
+   * 
+   * <p>Words are typically create by Dictionary.getWord(wordString).
    *
    * @param wordString a String representing a single word
    * @param syllableCount number of syllables in word
@@ -95,20 +96,6 @@ public final class Word {
     this.isSecondPersonWord = Word.POV_SECOND.contains(this.getNormalizedText());
     this.isThirdPersonWord = Word.POV_THIRD.contains(this.getNormalizedText());
     this.isPovWord = (this.isFirstPersonWord || this.isSecondPersonWord || this.isThirdPersonWord);
-  }
-
-  /**
-   * Returns a new Word from a string.
-   *
-   * <p>
-   * String is not currently validates since Words should only be created by a Sentence using
-   * WordContainer.WORD_PATTERN.
-   *
-   * @param wordString a single word
-   */
-  @Deprecated
-  public Word(final String wordString) {
-    this(wordString, SyllableDictionary.getInstance().getSyllableCount(wordString), SyllableDictionary.getInstance().inDictionary(wordString), SyllableDictionary.getInstance().isNumeric(wordString));
   }
 
   /**
