@@ -14,21 +14,21 @@ package com.prosegrinder.bookworm.util;
  */
 public final class ReadabilityScores {
 
-//   private Integer characterCount;
-//   private Integer complexWordCount;
-//   private Integer longWordCount;
-//   private Integer sentenceCount;
-//   private Integer syllableCount;
-//   private Integer wordCount;
+  private final Integer characterCount;
+  private final Integer complexWordCount;
+  private final Integer longWordCount;
+  private final Integer sentenceCount;
+  private final Integer syllableCount;
+  private final Integer wordCount;
 
-  private Double automatedReadabilityIndex;
-  private Double colemanLiauIndex;
-  private Double fleschKincaidGradeLevel;
-  private Double fleschReadingEase;
-  private Double gunningFogIndex;
-  private Double lix;
-  private Double rix;
-  private Double smog;
+  private final Double automatedReadabilityIndex;
+  private final Double colemanLiauIndex;
+  private final Double fleschKincaidGradeLevel;
+  private final Double fleschReadingEase;
+  private final Double gunningFogIndex;
+  private final Double lix;
+  private final Double rix;
+  private final Double smog;
 
   /**
    * Granular constructor for ReadabilityScores.
@@ -52,29 +52,30 @@ public final class ReadabilityScores {
       final Integer longWordCount, final Integer sentenceCount,
       final Integer syllableCount, final Integer wordCount) {
 
-//     this.characterCount = characterCount;
-//     this.complexWordCount = complexWordCount;
-//     this.longWordCount = longWordCount;
-//     this.sentenceCount = sentenceCount;
-//     this.syllableCount = syllableCount;
-//     this.wordCount = wordCount;
+    
+     this.characterCount = characterCount;
+     this.complexWordCount = complexWordCount;
+     this.longWordCount = longWordCount;
+     this.sentenceCount = sentenceCount;
+     this.syllableCount = syllableCount;
+     this.wordCount = wordCount;
 
     this.automatedReadabilityIndex =
-        ReadabilityScores.automatedReadabilityIndex(characterCount, wordCount, sentenceCount);
+        ReadabilityScores.automatedReadabilityIndex(this.getCharacterCount(), this.getWordCount(), this.getSentenceCount());
     this.colemanLiauIndex =
-        ReadabilityScores.colemanLiauIndex(characterCount, wordCount, sentenceCount);
+        ReadabilityScores.colemanLiauIndex(this.getCharacterCount(), this.getWordCount(), this.getSentenceCount());
     this.fleschKincaidGradeLevel =
-        ReadabilityScores.fleschKincaidGradeLevel(sentenceCount, wordCount, syllableCount);
+        ReadabilityScores.fleschKincaidGradeLevel(this.getSentenceCount(), this.getWordCount(), this.getSyllableCount());
     this.fleschReadingEase =
-        ReadabilityScores.fleschReadingEase(sentenceCount, wordCount, syllableCount);
+        ReadabilityScores.fleschReadingEase(this.getSentenceCount(), this.getWordCount(), this.getSyllableCount());
     this.gunningFogIndex =
-        ReadabilityScores.gunningFogIndex(sentenceCount, wordCount, complexWordCount);
+        ReadabilityScores.gunningFogIndex(this.getSentenceCount(), this.getWordCount(), this.getComplexWordCount());
     this.lix =
-        ReadabilityScores.lix(wordCount, longWordCount, sentenceCount);
+        ReadabilityScores.lix(this.getWordCount(), this.getLongWordCount(), this.getSentenceCount());
     this.rix =
-        ReadabilityScores.rix(longWordCount, sentenceCount);
+        ReadabilityScores.rix(this.getLongWordCount(), this.getSentenceCount());
     this.smog =
-        ReadabilityScores.smog(complexWordCount, sentenceCount);
+        ReadabilityScores.smog(this.getComplexWordCount(), this.getSentenceCount());
   }
 
   /**
@@ -90,6 +91,30 @@ public final class ReadabilityScores {
     this(prose.getWordCharacterCount(), prose.getComplexWordCount(),
         prose.getLongWordCount(), prose.getSentenceCount(),
         prose.getSyllableCount(), prose.getWordCount());
+  }
+
+  public final Integer getCharacterCount() {
+    return characterCount;
+  }
+
+  public final Integer getComplexWordCount() {
+    return complexWordCount;
+  }
+
+  public final Integer getLongWordCount() {
+    return longWordCount;
+  }
+
+  public final Integer getSentenceCount() {
+    return sentenceCount;
+  }
+
+  public final Integer getSyllableCount() {
+    return syllableCount;
+  }
+
+  public final Integer getWordCount() {
+    return wordCount;
   }
 
   /**
@@ -142,7 +167,7 @@ public final class ReadabilityScores {
   }
 
   /**
-   * @return the SMOG (Simple Measure of Gobbledygood) score for the analyzed text.
+   * @return the SMOG (Simple Measure of Gobbledygook) score for the analyzed text.
    */
   public final Double getSmog() {
     return this.smog;

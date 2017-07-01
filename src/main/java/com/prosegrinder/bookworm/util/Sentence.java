@@ -38,9 +38,11 @@ public final class Sentence extends WordContainer {
    */
   public Sentence(final String text) {
     super(text);
-    Matcher wordMatcher = WordContainer.getWordPattern().matcher(text);
+    Dictionary dictionary = Dictionary.getInstance();
+    Matcher wordMatcher = WordContainer.getWordPattern().matcher(this.getNormalizedText());
     while (wordMatcher.find()) {
-      this.words.add(new Word(wordMatcher.group()));
+      this.words.add(dictionary.getWord(wordMatcher.group()));
+      //this.words.add(new Word(wordMatcher.group()));
     }
     this.wordCharacterCount = this.words.stream()
         .mapToInt( word -> word.getWordCharacterCount())

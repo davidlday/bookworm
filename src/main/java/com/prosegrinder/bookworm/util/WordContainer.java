@@ -55,7 +55,7 @@ public abstract class WordContainer {
    */
   public WordContainer(final String text) {
     this.initialText = text;
-    this.normalizedText = WordContainer.normalizeText(text);
+    this.normalizedText = WordContainer.normalizeText(this.initialText);
   }
 
   /**
