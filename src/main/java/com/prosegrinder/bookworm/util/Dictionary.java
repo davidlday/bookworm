@@ -1,7 +1,9 @@
 package com.prosegrinder.bookworm.util;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.cache2k.Cache;
+import org.cache2k.Cache2kBuilder;
+import org.cache2k.integration.CacheLoader;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +23,7 @@ import java.util.regex.Pattern;
 public final class Dictionary {
 
   private static Dictionary INSTANCE = new Dictionary();
-  private Map<String, Word> wordMap;
+  private Cache<String, Word> wordCache;
 
   /** Regex used to test if a string represents a number. **/
   private static final String RE_NUMERIC = "^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$";
@@ -58,7 +60,15 @@ public final class Dictionary {
 
   /** Private constructor to enforce Singelton. **/
   private Dictionary() {
-    wordMap = new ConcurrentHashMap<String, Word>();
+    wordCache = new Cache2kBuilder<String, Word>() {}.name("word").eternal(true)
+        .entryCapacity(10000)
+        .loader(new CacheLoader<String,Word>() {
+          @Override
+          public final Word load(final String key) throws Exception {
+            return loadWord(key);
+          }
+        })
+        .build();
   }
 
   /**
@@ -133,7 +143,7 @@ public final class Dictionary {
         syllableCount += scrugg.length;
       }
 
-      /** If there are no vowles, assume 1 syllable. **/
+      /** If there are no vowels, assume 1 syllable. **/
       if (syllableCount == 0) {
         syllableCount = 1;
       }
@@ -161,33 +171,41 @@ public final class Dictionary {
     }
   }
 
+  /**
+   * Public word loader. Pulls from cache first.
+   * 
+   * @param wordString
+   * @return a Word object represented by wordString
+   */
   public final Word getWord(final String wordString) {
-    synchronized (Dictionary.class) {
-      if (wordMap.containsKey(wordString)) {
-        return wordMap.get(wordString);
-      } else {
-        Word word =
-            new Word(wordString, this.getSyllableCount(wordString),
-                this.inDictionary(wordString), this.isNumeric(wordString));
-        wordMap.put(wordString, word);
-        return word;
-      }
-    }
+      return wordCache.get(wordString);
   }
 
   /**
+   * Private word loader used to create a new word if it's not in the cache.
+   * 
+   * @param wordString
+   * @return a Word object represented by wordString
+   */
+  private final Word loadWord(final String wordString) {
+    Word word =
+        new Word(wordString, this.getSyllableCount(wordString),
+            this.inDictionary(wordString), this.isNumeric(wordString));
+    return word;
+  }
+  
+  /**
    * Test if a String is in an underlying real dictionary.
+   * 
+   * <p>Dictionary only relies on CMUDict for now, but the
+   * two are separate to permit adding more underlying
+   * files like CMUDict and possibly for localization.
    * 
    * @param wordString a string representing a single word
    * @return boolean representing whether the word is found in the underlying dictionary
    */
   public final Boolean inDictionary(final String wordString) {
-    /** Only one reference dictionary for now. No numbers in the dictionary. **/
-    if (!wordString.matches(Dictionary.RE_NUMERIC)) {
-      return CMUDict.getInstance().inCMUDict(WordContainer.normalizeText(wordString));
-    } else {
-      return false;
-    }
+    return CMUDict.getInstance().inCMUDict(WordContainer.normalizeText(wordString));
   }
 
   /**
