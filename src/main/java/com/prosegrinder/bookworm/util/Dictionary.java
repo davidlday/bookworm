@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 public final class Dictionary {
 
   private static Dictionary INSTANCE = new Dictionary();
+  private static final long CACHE_ENTRIES = 100_000;
   private LoadingCache<String, Word> wordCache;
 
   /** Regex used to test if a string represents a number. **/
@@ -60,7 +61,7 @@ public final class Dictionary {
   /** Private constructor to enforce Singelton. **/
   private Dictionary() {
     wordCache = Caffeine.newBuilder()
-        .maximumSize(100_000)
+        .maximumSize(Dictionary.CACHE_ENTRIES)
         .build(wordString -> loadWord(wordString));
   }
 
