@@ -1,7 +1,8 @@
 package com.prosegrinder.bookworm.util;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +22,7 @@ import java.util.regex.Pattern;
 public final class Dictionary {
 
   private static Dictionary INSTANCE = new Dictionary();
-  private Map<String, Word> wordMap;
+  private LoadingCache<String, Word> wordCache;
 
   /** Regex used to test if a string represents a number. **/
   private static final String RE_NUMERIC = "^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$";
@@ -58,7 +59,9 @@ public final class Dictionary {
 
   /** Private constructor to enforce Singelton. **/
   private Dictionary() {
-    wordMap = new ConcurrentHashMap<String, Word>();
+    wordCache = Caffeine.newBuilder()
+        .maximumSize(100_000)
+        .build(wordString -> loadWord(wordString));
   }
 
   /**
@@ -161,20 +164,29 @@ public final class Dictionary {
     }
   }
 
+  /**
+   * Public word loader. Pulls from cache first.
+   * 
+   * @param wordString
+   * @return a Word object represented by wordString
+   */
   public final Word getWord(final String wordString) {
-    synchronized (Dictionary.class) {
-      if (wordMap.containsKey(wordString)) {
-        return wordMap.get(wordString);
-      } else {
-        Word word =
-            new Word(wordString, this.getSyllableCount(wordString),
-                this.inDictionary(wordString), this.isNumeric(wordString));
-        wordMap.put(wordString, word);
-        return word;
-      }
-    }
+    return wordCache.get(wordString);
   }
 
+  /**
+   * Private word loader used to create a new word if it's not in the cache.
+   * 
+   * @param wordString
+   * @return a Word object represented by wordString
+   */
+  private final Word loadWord(final String wordString) {
+    Word word =
+        new Word(wordString, this.getSyllableCount(wordString),
+            this.inDictionary(wordString), this.isNumeric(wordString));
+    return word;
+  }
+  
   /**
    * Test if a String is in an underlying real dictionary.
    * 
