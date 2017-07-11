@@ -164,7 +164,7 @@ public final class Dictionary {
    */
   public final Integer getSyllableCount(final String wordString) {
     CMUDict cmudict = CMUDict.getInstance();
-    if (!this.isNumeric(wordString) && this.inDictionary(wordString)) {
+    if (this.inDictionary(wordString)) {
       return cmudict.getSyllableCount(WordContainer.normalizeText(wordString));
     } else {
       return this.getHeuristicSyllableCount(wordString);
