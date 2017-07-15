@@ -19,6 +19,7 @@
         <checkstyle.version>2.17</checkstyle.version>
         <junit.version>4.12</junit.version>
         <log4j.version>2.8.2</log4j.version>
+        <guava.version>22.0</guava.version>
     </properties>
 
     <dependencies>
@@ -44,6 +45,11 @@
             <version>${log4j.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.google.guava</groupId>
+        	<artifactId>guava</artifactId>
+        	<version>${guava.version}</version>
         </dependency>
     </dependencies>
 
