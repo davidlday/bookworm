@@ -20,6 +20,7 @@
         <junit.version>4.12</junit.version>
         <log4j.version>2.8.2</log4j.version>
         <guava.version>22.0</guava.version>
+        <typesafeconfig.version>1.3.1</typesafeconfig.version>
     </properties>
 
     <dependencies>
@@ -50,6 +51,11 @@
         	<groupId>com.google.guava</groupId>
         	<artifactId>guava</artifactId>
         	<version>${guava.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.typesafe</groupId>
+        	<artifactId>config</artifactId>
+        	<version>${typesafeconfig.version}</version>
         </dependency>
     </dependencies>
 
