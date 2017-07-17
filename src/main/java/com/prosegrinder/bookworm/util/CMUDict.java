@@ -1,5 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,12 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-//import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-//import java.util.Map;
-//import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,13 +30,13 @@ import java.util.stream.Stream;
  */
 public final class CMUDict {
 
-  private static CMUDict INSTANCE = new CMUDict();
+  private static CMUDict INSTANCE;
   private Map<String, String> phonemeStringMap;
 
-  // TODO: Externalize
-  private static final String CMUDictFile = "cmudict/cmudict.dict";
+  /** Location of cmudict.dict file. **/
+  private String CMUDictFile;
   /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
-  private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
+  private Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
 
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(CMUDict.class);
@@ -46,13 +45,29 @@ public final class CMUDict {
    * @return the CMUDict Singleton for use
    */
   public static synchronized CMUDict getInstance() {
+    if (INSTANCE == null) {
+      synchronized (CMUDict.class) {
+        if (INSTANCE == null) {
+          INSTANCE = new CMUDict();
+        }
+      }
+    }
     return INSTANCE;
   }
 
-  /** Private constructor to enforce Singleton. **/
   private CMUDict() {
+    Config config = ConfigFactory.load();
+    config.checkValid(ConfigFactory.defaultReference(), "com.prosegrinder.bookworm.util");
     phonemeStringMap = new ConcurrentHashMap<String, String>();
-    try{ 
+    loadCmudictFile(config.getString("com.prosegrinder.bookworm.util.cmudict.file"),
+        config.getString("com.prosegrinder.bookworm.util.cmudict.syllablePattern"));
+  }
+
+  private void loadCmudictFile(String cmudictfile, String syllablePattern) {
+    logger.info("Loading " + cmudictfile);
+    CMUDictFile = cmudictfile;
+    cmudictSyllablePattern = Pattern.compile(syllablePattern);
+    try {
       InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Stream<String> stream = reader.lines();
@@ -113,7 +128,7 @@ public final class CMUDict {
       this.getPhonemeString(wordString);
       return true;
     } catch (IllegalArgumentException iae) {
-//      logger.warn(iae.getMessage());
+      // logger.warn(iae.getMessage());
       return false;
     }
   }
@@ -137,13 +152,13 @@ public final class CMUDict {
         InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         Stream<String> stream = reader.lines();
-        List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + " "))
-            .collect(Collectors.toList());
+        List<String> phonemeStrings =
+            stream.filter(line -> line.startsWith(wordString + " ")).collect(Collectors.toList());
         in.close();
         if (phonemeStrings.size() == 1) {
           String[] parts = phonemeStrings.get(0).split("\\s+", 2);
           phoneme = parts[1];
-        } else if (phonemeStrings.size() < 1){
+        } else if (phonemeStrings.size() < 1) {
           String msg = "cmudict does not contain an entry for " + wordString + ".";
           throw new IllegalArgumentException(msg);
         } else {
