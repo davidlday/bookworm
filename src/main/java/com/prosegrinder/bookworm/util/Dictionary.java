@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  */
 public final class Dictionary {
 
-  private static Dictionary INSTANCE = new Dictionary();
+  private static Dictionary INSTANCE;
   private LoadingCache<String, Word> wordCache;
 
   /** Regex used to test if a string represents a number. **/
@@ -56,6 +56,13 @@ public final class Dictionary {
    * @return the SyllableDictionary Singleton for use
    */
   public static synchronized Dictionary getInstance() {
+    if (INSTANCE == null) {
+      synchronized (Dictionary.class) {
+        if (INSTANCE == null) {
+          INSTANCE = new Dictionary();
+        }
+      }
+    }
     return INSTANCE;
   }
 
