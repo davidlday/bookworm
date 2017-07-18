@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -33,10 +32,12 @@ public final class CMUDict {
   private static CMUDict INSTANCE;
   private Map<String, String> phonemeStringMap;
 
+  /** Configuration. **/
+  private Config config;
   /** Location of cmudict.dict file. **/
   private String CMUDictFile;
-  /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
-  private Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
+  /** Patterns used to find stressed syllables in cmudict (phonemes that end in a digit). **/
+  private Pattern cmudictSyllablePattern;
 
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(CMUDict.class);
@@ -55,18 +56,23 @@ public final class CMUDict {
     return INSTANCE;
   }
 
+  /**
+   * Private constructor for CMUDict. 
+   */
   private CMUDict() {
-    Config config = ConfigFactory.load();
-    config.checkValid(ConfigFactory.defaultReference(), "com.prosegrinder.bookworm.util");
     phonemeStringMap = new ConcurrentHashMap<String, String>();
-    loadCmudictFile(config.getString("com.prosegrinder.bookworm.util.cmudict.file"),
-        config.getString("com.prosegrinder.bookworm.util.cmudict.syllablePattern"));
+    config = ConfigFactory.load();
+    config.checkValid(ConfigFactory.defaultReference(), "com.prosegrinder.bookworm.util.cmudict");
+    cmudictSyllablePattern = Pattern.compile(config.getString("com.prosegrinder.bookworm.util.cmudict.syllablePattern"));
+    loadCmudictFile(config.getString("com.prosegrinder.bookworm.util.cmudict.file"));
   }
 
-  private void loadCmudictFile(String cmudictfile, String syllablePattern) {
+  /**
+   * Private method for loading the file and parsing based on syllablePattern 
+   */
+  private void loadCmudictFile(String cmudictfile) {
     logger.info("Loading " + cmudictfile);
     CMUDictFile = cmudictfile;
-    cmudictSyllablePattern = Pattern.compile(syllablePattern);
     try {
       InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -145,30 +151,8 @@ public final class CMUDict {
     if (phonemeStringMap.containsKey(wordString)) {
       return phonemeStringMap.get(wordString);
     } else {
-      // This is all bypassed for now since the whole file is parsed and cached on instantiation.
-      // Will revisit performance vs. memory trade-off later.
-      String phoneme = "";
-      try {
-        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        Stream<String> stream = reader.lines();
-        List<String> phonemeStrings =
-            stream.filter(line -> line.startsWith(wordString + " ")).collect(Collectors.toList());
-        in.close();
-        if (phonemeStrings.size() == 1) {
-          String[] parts = phonemeStrings.get(0).split("\\s+", 2);
-          phoneme = parts[1];
-        } else if (phonemeStrings.size() < 1) {
-          String msg = "cmudict does not contain an entry for " + wordString + ".";
-          throw new IllegalArgumentException(msg);
-        } else {
-          String msg = "cmudict contains multiple entries for " + wordString + ".";
-          throw new IllegalArgumentException(msg);
-        }
-      } catch (IOException ioe) {
-        logger.error(ioe.getMessage());
-      }
-      return phoneme;
+      String msg = "cmudict does not contain an entry for " + wordString + ".";
+      throw new IllegalArgumentException(msg);
     }
   }
 
