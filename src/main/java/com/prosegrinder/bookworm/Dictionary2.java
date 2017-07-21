@@ -4,7 +4,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.prosegrinder.bookworm.util.Word;
-import com.prosegrinder.bookworm.util.WordContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,22 +29,22 @@ import java.util.concurrent.ExecutionException;
  * (https://github.com/neilb/Lingua-EN-Syllable). Original author comments preserved and noted with
  * 'nielb:'.
  *
- * <p>
- * Singleton implementation based on:
- * http://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples
  */
 public final class Dictionary2 {
 
-  private static final Map<String, String> phonemeStringMap =
-      new ConcurrentHashMap<String, String>();
+  /** Cache for Words. **/
   private static LoadingCache<String, Word> wordCache;
   /** Location of cmudict.dict file. **/
-  private static String cmudictFile = null;
-  /** Patterns used to find stressed syllables in cmudict (phonemes that end in a digit). **/
-  private static String cmudictSyllableSeparator = null;
-  private static Pattern cmudictSyllablePattern = null;
+  private static String cmudictFile;
   /** Maximum number of entries in wordCache. **/
-  private static Long maxWordCacheSize = null;
+  private static Long maxWordCacheSize;
+
+  /** Concurrent Hash Map for storing CMUDict lines. **/
+  private static final Map<String, String> phonemeStringMap =
+      new ConcurrentHashMap<String, String>();
+
+  /** Patterns used to find stressed syllables in cmudict (phonemes that end in a digit). **/
+  private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
 
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(Dictionary2.class);
@@ -107,14 +106,10 @@ public final class Dictionary2 {
         });
   }
 
-  public Dictionary2(String cmudictFile, String cmudictSyllableSeparator, Long maxWordCacheSize)
-      throws IOException {
+  public Dictionary2(String cmudictFile, Long maxWordCacheSize) throws IOException {
     if (!cmudictFile.equals(Dictionary2.cmudictFile)
-        || !cmudictSyllableSeparator.equals(Dictionary2.cmudictSyllableSeparator)
         || !maxWordCacheSize.equals(Dictionary2.maxWordCacheSize)) {
       Dictionary2.cmudictFile = cmudictFile;
-      Dictionary2.cmudictSyllableSeparator = cmudictSyllableSeparator;
-      Dictionary2.cmudictSyllablePattern = Pattern.compile(cmudictSyllableSeparator);
       Dictionary2.maxWordCacheSize = maxWordCacheSize;
       Dictionary2.loadCmudictFile(cmudictFile);
       this.initializeWordCache(maxWordCacheSize);
@@ -198,7 +193,7 @@ public final class Dictionary2 {
   public final List<String> getPhonemes(final String wordString) throws IllegalArgumentException {
     return Arrays.asList(this.getPhonemeString(wordString).split("\\s+"));
   }
-  
+
   /**
    * Get the number of syllables by looking up the word in the underlying cmudict.
    *
@@ -228,11 +223,10 @@ public final class Dictionary2 {
    *
    */
   public final Integer getSyllableCount(final String wordString) {
-    String normalizedWordString = WordContainer.normalizeText(wordString);
-    if (this.inCMUDict(normalizedWordString)) {
-      return this.getCMUDictSyllableCount(WordContainer.normalizeText(normalizedWordString));
+    if (this.inCMUDict(wordString)) {
+      return this.getCMUDictSyllableCount(wordString);
     } else {
-      return this.getHeuristicSyllableCount(normalizedWordString);
+      return this.getHeuristicSyllableCount(wordString);
     }
   }
 
@@ -244,7 +238,8 @@ public final class Dictionary2 {
    * @throws IllegalArgumentException throws if the word is not in the underlying dictionary
    *
    */
-  public final Integer getCMUDictSyllableCount(final String wordString) throws IllegalArgumentException {
+  public final Integer getCMUDictSyllableCount(final String wordString)
+      throws IllegalArgumentException {
     Integer syllables = 0;
     List<String> phonemes = this.getPhonemes(wordString);
     for (String phoneme : phonemes) {
@@ -256,7 +251,7 @@ public final class Dictionary2 {
     return syllables;
   }
 
-  
+
   /**
    * Public word loader. Pulls from cache first.
    * 
@@ -294,13 +289,8 @@ public final class Dictionary2 {
    * @param wordString a string representing a single word
    * @return boolean representing whether the word is found in the underlying dictionary
    */
-  public final Boolean inDictionary(final String wordString) {
-    /** Only one reference dictionary for now. No numbers in the dictionary. **/
-    if (!wordString.matches(Dictionary2.RE_NUMERIC)) {
-      return this.inCMUDict(WordContainer.normalizeText(wordString));
-    } else {
-      return false;
-    }
+  public final Boolean inCache(final String wordString) {
+    return wordCache.asMap().containsKey(wordString);
   }
 
   /**
@@ -320,8 +310,8 @@ public final class Dictionary2 {
    * @return a Word object represented by wordString
    */
   private final Word loadWord(final String wordString) {
-    Word word = new Word(wordString, this.getSyllableCount(wordString),
-        this.inDictionary(wordString), this.isNumeric(wordString));
+    Word word = new Word(wordString, this.getSyllableCount(wordString), this.inCMUDict(wordString),
+        this.isNumeric(wordString));
     return word;
   }
 
