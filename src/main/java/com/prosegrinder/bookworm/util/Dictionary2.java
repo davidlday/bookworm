@@ -1,9 +1,9 @@
-package com.prosegrinder.bookworm;
+package com.prosegrinder.bookworm.util;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.prosegrinder.bookworm.util.Word;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 import java.util.concurrent.ExecutionException;
 
 /**
- * A Singleton Class for creating and caching Words.
+ * A cache of Words.
  *
  * <p>
  * Currently uses cmudict (https://github.com/cmusphinx/cmudict) for lookups and implements
