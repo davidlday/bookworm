@@ -32,12 +32,12 @@ import java.util.concurrent.ExecutionException;
  */
 public final class Dictionary2 {
 
-  /** Cache for Words. **/
-  private static LoadingCache<String, Word> wordCache;
   /** Location of cmudict.dict file. **/
   private static String cmudictFile;
   /** Maximum number of entries in wordCache. **/
   private static Long maxWordCacheSize;
+  /** Cache for Words. **/
+  private static LoadingCache<String, Word> wordCache;
 
   /** Concurrent Hash Map for storing CMUDict lines. **/
   private static final Map<String, String> phonemeStringMap =
@@ -76,6 +76,7 @@ public final class Dictionary2 {
       };
 
   public static void loadCmudictFile(String cmudictFile) throws IOException {
+    Dictionary2.cmudictFile = cmudictFile;
     logger.info("Loading " + cmudictFile);
     try {
       Dictionary2.phonemeStringMap.clear();
@@ -98,6 +99,7 @@ public final class Dictionary2 {
 
   /** Private constructor to enforce Singleton. **/
   public void initializeWordCache(Long maxWordCacheSize) {
+    Dictionary2.maxWordCacheSize = maxWordCacheSize;
     wordCache = CacheBuilder.newBuilder().maximumSize(maxWordCacheSize)
         .build(new CacheLoader<String, Word>() {
           public Word load(String wordString) {
@@ -107,11 +109,11 @@ public final class Dictionary2 {
   }
 
   public Dictionary2(String cmudictFile, Long maxWordCacheSize) throws IOException {
-    if (!cmudictFile.equals(Dictionary2.cmudictFile)
-        || !maxWordCacheSize.equals(Dictionary2.maxWordCacheSize)) {
-      Dictionary2.cmudictFile = cmudictFile;
-      Dictionary2.maxWordCacheSize = maxWordCacheSize;
+    if (!cmudictFile.equals(Dictionary2.cmudictFile)) {
       Dictionary2.loadCmudictFile(cmudictFile);
+      wordCache.invalidateAll();
+    }
+    if (!maxWordCacheSize.equals(Dictionary2.maxWordCacheSize)) {
       this.initializeWordCache(maxWordCacheSize);
     }
   }
