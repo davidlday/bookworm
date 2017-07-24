@@ -8,10 +8,6 @@ import com.typesafe.config.ConfigFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
@@ -21,10 +17,11 @@ import java.util.List;
 
 public class Dictionary2Test {
 
-  /** Typesafe Configuration. **/
-  private Config config;
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(Dictionary2Test.class);
+
+  @Rule
+  public final ExpectedException thrown = ExpectedException.none();
 
   private final Dictionary2 getDictionary(Config config) throws IOException {
     String cmudictFile = config.getString("cmudict.file");
@@ -43,28 +40,13 @@ public class Dictionary2Test {
   }
 
   private final Dictionary2 getDictionary() throws IOException {
-    this.config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
+    Config config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
     try {
-      return this.getDictionary(this.config);
+      return this.getDictionary(config);
     } catch (IOException ioe) {
       throw ioe;
     }
   }
-
-  @Rule
-  public final ExpectedException thrown = ExpectedException.none();
-
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {}
-
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {}
-
-  @Before
-  public void setUp() throws Exception {}
-
-  @After
-  public void tearDown() throws Exception {}
 
   @Test
   public final void testGetHeuristicSyllableCount() {

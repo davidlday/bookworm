@@ -102,7 +102,7 @@ public final class Dictionary2 {
       Boolean cacheNumbers) throws IOException {
     if (!cmudictFile.equals(Dictionary2.cmudictFile)) {
       this.loadCmudictFile(cmudictFile);
-      if (Dictionary2.wordCache instanceof com.google.common.cache.LoadingCache) {
+      if (Dictionary2.wordCache instanceof LoadingCache) {
         Dictionary2.wordCache.invalidateAll();
       }
     }
@@ -305,7 +305,7 @@ public final class Dictionary2 {
 
 
   private void initializeNonWordCache(Long ttlNonWordCache, Boolean cacheNumbers) {
-    if (nonWordCache instanceof com.google.common.cache.LoadingCache) {
+    if (nonWordCache instanceof LoadingCache) {
       logger.warn("Resetting non-word cache ttl " + ttlNonWordCache
           + " seconds. All existing entries will be lost.");
     } else {
@@ -323,7 +323,7 @@ public final class Dictionary2 {
   }
 
   private void initializeWordCache(Long maxWordCacheSize) {
-    if (wordCache instanceof com.google.common.cache.LoadingCache) {
+    if (wordCache instanceof LoadingCache) {
       logger.warn("Resizing word cache max size " + maxWordCacheSize
           + " entries. All existing entries will be lost.");
     } else {

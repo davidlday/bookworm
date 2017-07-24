@@ -33,9 +33,9 @@ public final class CMUDict {
   private Map<String, String> phonemeStringMap;
 
   /** Configuration. **/
-  private Config config;
+//  private Config config;
   /** Location of cmudict.dict file. **/
-  private String CMUDictFile;
+//  private String CMUDictFile;
   /** Patterns used to find stressed syllables in cmudict (phonemes that end in a digit). **/
   private Pattern cmudictSyllablePattern;
 
@@ -61,7 +61,7 @@ public final class CMUDict {
    */
   private CMUDict() {
     phonemeStringMap = new ConcurrentHashMap<String, String>();
-    config = ConfigFactory.load();
+    Config config = ConfigFactory.load();
     config.checkValid(ConfigFactory.defaultReference(), "com.prosegrinder.bookworm.util.cmudict");
     cmudictSyllablePattern = Pattern.compile(config.getString("com.prosegrinder.bookworm.util.cmudict.syllablePattern"));
     loadCmudictFile(config.getString("com.prosegrinder.bookworm.util.cmudict.file"));
@@ -72,9 +72,8 @@ public final class CMUDict {
    */
   private void loadCmudictFile(String cmudictfile) {
     logger.info("Loading " + cmudictfile);
-    CMUDictFile = cmudictfile;
     try {
-      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
+      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudictfile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Stream<String> stream = reader.lines();
       stream.filter(line -> !line.startsWith(";;;")).forEach(line -> {
