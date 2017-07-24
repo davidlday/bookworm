@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -36,8 +37,14 @@ public final class Dictionary2 {
   private static String cmudictFile;
   /** Maximum number of entries in wordCache. **/
   private static Long maxWordCacheSize;
+  /** TTL of non-words. **/
+  private static Long ttlSecondsNonWordCache;
+  /** Cache numbers? **/
+  private static Boolean cacheNumbers;
   /** Cache for Words. **/
   private static LoadingCache<String, Word> wordCache;
+  /** Cache for Non-Words. **/
+  private static LoadingCache<String, Word> nonWordCache;
 
   /** Concurrent Hash Map for storing CMUDict lines. **/
   private static final Map<String, String> phonemeStringMap =
@@ -75,47 +82,62 @@ public final class Dictionary2 {
           Pattern.compile("dnt$") // neilb: couldn't
       };
 
-  public static void loadCmudictFile(String cmudictFile) throws IOException {
-    Dictionary2.cmudictFile = cmudictFile;
-    logger.info("Loading " + cmudictFile);
-    try {
-      Dictionary2.phonemeStringMap.clear();
-      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudictFile);
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-      Stream<String> stream = reader.lines();
-      stream.filter(line -> !line.startsWith(";;;")).forEach(line -> {
-        String[] parts = line.split("\\s+", 2);
-        String wordString = parts[0];
-        if (!wordString.endsWith(")")) {
-          phonemeStringMap.put(wordString, parts[1]);
-        }
-      });
-      in.close();
-    } catch (IOException ioe) {
-      logger.error(ioe.getMessage());
-      throw ioe;
-    }
+  public static final Boolean cacheNumbers() {
+    return Dictionary2.cacheNumbers;
   }
 
-  /** Private constructor to enforce Singleton. **/
-  public void initializeWordCache(Long maxWordCacheSize) {
-    Dictionary2.maxWordCacheSize = maxWordCacheSize;
-    wordCache = CacheBuilder.newBuilder().maximumSize(maxWordCacheSize)
-        .build(new CacheLoader<String, Word>() {
-          public Word load(String wordString) {
-            return loadWord(wordString);
-          }
-        });
+  public static final String getCmudictfile() {
+    return Dictionary2.cmudictFile;
   }
 
-  public Dictionary2(String cmudictFile, Long maxWordCacheSize) throws IOException {
+  public static final Long getMaxWordCacheSize() {
+    return Dictionary2.maxWordCacheSize;
+  }
+
+  public static final Long getTtlSecondsNonWordCache() {
+    return Dictionary2.ttlSecondsNonWordCache;
+  }
+
+  public Dictionary2(String cmudictFile, Long maxWordCacheSize, Long ttlSecondsNonWordCache,
+      Boolean cacheNumbers) throws IOException {
     if (!cmudictFile.equals(Dictionary2.cmudictFile)) {
-      Dictionary2.loadCmudictFile(cmudictFile);
-      wordCache.invalidateAll();
+      this.loadCmudictFile(cmudictFile);
+      if (Dictionary2.wordCache instanceof com.google.common.cache.LoadingCache) {
+        Dictionary2.wordCache.invalidateAll();
+      }
     }
     if (!maxWordCacheSize.equals(Dictionary2.maxWordCacheSize)) {
       this.initializeWordCache(maxWordCacheSize);
     }
+    if (!ttlSecondsNonWordCache.equals(Dictionary2.ttlSecondsNonWordCache)) {
+      this.initializeNonWordCache(ttlSecondsNonWordCache, cacheNumbers);
+    }
+  }
+
+  public Dictionary2() throws IOException {
+    this(Dictionary2.getCmudictfile(), Dictionary2.getMaxWordCacheSize(),
+        Dictionary2.getTtlSecondsNonWordCache(), Dictionary2.cacheNumbers());
+  }
+
+  /**
+   * Get the number of syllables by looking up the word in the underlying cmudict.
+   *
+   * @param wordString a single word
+   * @return the number of syllables in the word
+   * @throws IllegalArgumentException throws if the word is not in the underlying dictionary
+   *
+   */
+  public final Integer getCMUDictSyllableCount(final String wordString)
+      throws IllegalArgumentException {
+    Integer syllables = 0;
+    List<String> phonemes = this.getPhonemes(wordString);
+    for (String phoneme : phonemes) {
+      Matcher matcher = Dictionary2.cmudictSyllablePattern.matcher(phoneme);
+      if (matcher.find()) {
+        syllables++;
+      }
+    }
+    return syllables;
   }
 
   /**
@@ -233,39 +255,35 @@ public final class Dictionary2 {
   }
 
   /**
-   * Get the number of syllables by looking up the word in the underlying cmudict.
-   *
-   * @param wordString a single word
-   * @return the number of syllables in the word
-   * @throws IllegalArgumentException throws if the word is not in the underlying dictionary
-   *
-   */
-  public final Integer getCMUDictSyllableCount(final String wordString)
-      throws IllegalArgumentException {
-    Integer syllables = 0;
-    List<String> phonemes = this.getPhonemes(wordString);
-    for (String phoneme : phonemes) {
-      Matcher matcher = Dictionary2.cmudictSyllablePattern.matcher(phoneme);
-      if (matcher.find()) {
-        syllables++;
-      }
-    }
-    return syllables;
-  }
-
-
-  /**
    * Public word loader. Pulls from cache first.
    * 
    * @param wordString
    * @return a Word object represented by wordString
    */
   public final Word getWord(final String wordString) throws IllegalArgumentException {
+    Boolean inCmudict = this.inCMUDict(wordString);
+    Boolean isNumeric = this.isNumeric(wordString);
     try {
-      return wordCache.get(wordString);
-    } catch (ExecutionException e) {
-      throw new IllegalArgumentException(e.getCause());
+      if (inCmudict) {
+        return wordCache.get(wordString);
+      } else if (!isNumeric || Dictionary2.cacheNumbers) {
+        return nonWordCache.get(wordString);
+      } else {
+        return new Word(wordString, this.getSyllableCount(wordString), inCmudict, isNumeric);
+      }
+    } catch (ExecutionException ee) {
+      throw new IllegalArgumentException(ee.getCause());
     }
+  }
+
+  /**
+   * Test if a String is in an underlying real dictionary.
+   * 
+   * @param wordString a string representing a single word
+   * @return boolean representing whether the word is found in the underlying dictionary
+   */
+  public final Boolean inCache(final String wordString) {
+    return this.inWordCache(wordString) || this.inNonWordCache(wordString);
   }
 
   /**
@@ -285,13 +303,58 @@ public final class Dictionary2 {
     }
   }
 
+
+  private void initializeNonWordCache(Long ttlNonWordCache, Boolean cacheNumbers) {
+    if (nonWordCache instanceof com.google.common.cache.LoadingCache) {
+      logger.warn("Resetting non-word cache ttl " + ttlNonWordCache
+          + " seconds. All existing entries will be lost.");
+    } else {
+      logger.info("Initializing non-word cache ttl: " + ttlNonWordCache + " seconds");
+    }
+    Dictionary2.cacheNumbers = cacheNumbers;
+    Dictionary2.ttlSecondsNonWordCache = ttlNonWordCache;
+    Dictionary2.nonWordCache =
+        CacheBuilder.newBuilder().expireAfterAccess(ttlNonWordCache, TimeUnit.SECONDS)
+            .build(new CacheLoader<String, Word>() {
+              public Word load(String wordString) {
+                return loadWord(wordString);
+              }
+            });
+  }
+
+  private void initializeWordCache(Long maxWordCacheSize) {
+    if (wordCache instanceof com.google.common.cache.LoadingCache) {
+      logger.warn("Resizing word cache max size " + maxWordCacheSize
+          + " entries. All existing entries will be lost.");
+    } else {
+      logger.info("Initializing word cache max size: " + maxWordCacheSize);
+    }
+    Dictionary2.maxWordCacheSize = maxWordCacheSize;
+    Dictionary2.wordCache = CacheBuilder.newBuilder().maximumSize(maxWordCacheSize)
+        .build(new CacheLoader<String, Word>() {
+          public Word load(String wordString) {
+            return loadWord(wordString);
+          }
+        });
+  }
+
   /**
    * Test if a String is in an underlying real dictionary.
    * 
    * @param wordString a string representing a single word
    * @return boolean representing whether the word is found in the underlying dictionary
    */
-  public final Boolean inCache(final String wordString) {
+  public final Boolean inNonWordCache(final String wordString) {
+    return nonWordCache.asMap().containsKey(wordString);
+  }
+
+  /**
+   * Test if a String is in an underlying real dictionary.
+   * 
+   * @param wordString a string representing a single word
+   * @return boolean representing whether the word is found in the underlying dictionary
+   */
+  public final Boolean inWordCache(final String wordString) {
     return wordCache.asMap().containsKey(wordString);
   }
 
@@ -303,6 +366,28 @@ public final class Dictionary2 {
    */
   public final boolean isNumeric(final String wordString) {
     return wordString.matches(Dictionary2.RE_NUMERIC);
+  }
+
+  private void loadCmudictFile(String cmudictFile) throws IOException {
+    Dictionary2.cmudictFile = cmudictFile;
+    logger.info("Loading CMU Dictionary file: " + cmudictFile);
+    try {
+      Dictionary2.phonemeStringMap.clear();
+      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudictFile);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      Stream<String> stream = reader.lines();
+      stream.filter(line -> !line.startsWith(";;;")).forEach(line -> {
+        String[] parts = line.split("\\s+", 2);
+        String wordString = parts[0];
+        phonemeStringMap.put(wordString, parts[1]);
+      });
+      in.close();
+    } catch (IOException ioe) {
+      logger.error(ioe.getMessage());
+      throw ioe;
+    } catch (NullPointerException npe) {
+      logger.warn("CMU Dictionary file not found: " + Dictionary2.cmudictFile);
+    }
   }
 
   /**
