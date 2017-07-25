@@ -5,6 +5,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,14 +34,38 @@ public class ReadabilityScoresTest {
   private static final int WORD_COUNT = 1528;
   private static final int CHARACTER_COUNT = 7008;
 
+  private final Dictionary2 getDictionary(Config config) throws IOException {
+    String cmudictFile = config.getString("cmudict.file");
+    Long maxWordCacheSize = config.getLong("wordCache.maxentries");
+    Long ttlSecondsNonWordCache = config.getLong("nonWordCache.ttlSeconds");
+    Boolean cacheNumbers = config.getBoolean("nonWordCache.cacheNumbers");
+    Dictionary2 dictionary;
+    try {
+      dictionary =
+          new Dictionary2(cmudictFile, maxWordCacheSize, ttlSecondsNonWordCache, cacheNumbers);
+      return dictionary;
+    } catch (IOException ioe) {
+      logger.error(ioe.getMessage());
+      throw ioe;
+    }
+  }
 
+  private final Dictionary2 getDictionary() throws IOException {
+    Config config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
+    try {
+      return this.getDictionary(config);
+    } catch (IOException ioe) {
+      throw ioe;
+    }
+  }
+  
   @Before
   public void loadProse() throws IOException, URISyntaxException {
     String prose = "shunn/shortstory.txt";
     ClassLoader classLoader = ReadabilityScoresTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.prose = new Prose(String.join("\n", lines));
+    this.prose = new Prose(String.join("\n", lines), this.getDictionary());
   }
 
   @Test

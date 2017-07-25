@@ -40,6 +40,7 @@ public final class DialogueFragment extends WordContainer {
    * 
    * @param text    a string of text representing a piece of dialogue
    */
+  @Deprecated
   public DialogueFragment(final String text) {
     super(text);
     Dictionary dictionary = Dictionary.getInstance();
@@ -47,6 +48,53 @@ public final class DialogueFragment extends WordContainer {
     while (wordMatcher.find()) {
       this.words.add(dictionary.getWord(wordMatcher.group()));
       //this.words.add(new Word(wordMatcher.group()));
+    }
+    this.wordCharacterCount = words.stream()
+        .mapToInt( word -> word.getWordCharacterCount())
+        .sum();
+    this.syllableCount = words.stream()
+        .mapToInt( word -> word.getSyllableCount())
+        .sum();
+    this.wordCount = words.size();
+    this.complexWordCount = words.stream()
+        .mapToInt( word -> word.getComplexWordCount())
+        .sum();
+    this.longWordCount = words.stream()
+        .mapToInt( word -> word.getLongWordCount())
+        .sum();
+    this.povWordCount = words.stream()
+        .mapToInt( word -> word.getPovWordCount())
+        .sum();
+    this.firstPersonWordCount = words.stream()
+        .mapToInt( word -> word.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonWordCount = words.stream()
+        .mapToInt( word -> word.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonWordCount = words.stream()
+        .mapToInt( word -> word.getThirdPersonWordCount())
+        .sum();
+    this.wordFrequency = Word.getWordFrequency(this.words);
+  }
+
+  /**
+   * Returns a new DialogueFragment from a string.
+   *
+   * <p>Dialogue slices out independently of sentences and paragraphs. A
+   * single sentence may contain a mix of dialogue and narrative, or a chunk of dialogue
+   * may span multiple paragraphs. The only place dialogue can effectively be parsed out
+   * is from the entirety of the original Prose.
+   *
+   * <p>String is not currently validated since DialogueFragments should
+   * only be created by a Prose object using WordContainer.DIALOGUE_PATTERN.
+   * 
+   * @param text    a string of text representing a piece of dialogue
+   */
+  public DialogueFragment(final String text, Dictionary2 dictionary) {
+    super(text);
+    Matcher wordMatcher = WordContainer.getWordPattern().matcher(this.getNormalizedText());
+    while (wordMatcher.find()) {
+      this.words.add(dictionary.getWord(wordMatcher.group()));
     }
     this.wordCharacterCount = words.stream()
         .mapToInt( word -> word.getWordCharacterCount())

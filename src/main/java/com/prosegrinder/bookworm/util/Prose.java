@@ -58,6 +58,7 @@ public final class Prose extends WordContainer {
    * 
    * @param text    a string of text representing a complete work of prose fiction
    */
+  @Deprecated
   public Prose(final String text) {
     super(text);
     Matcher paragraphMatcher = WordContainer.getParagraphPattern().matcher(text);
@@ -78,6 +79,127 @@ public final class Prose extends WordContainer {
         WordContainer.convertSmartQuotes(this.getInitialText()))) {
       this.narrativeFragments.add(
           new NarrativeFragment(narrative)
+      );
+    }
+    this.dialogueSyllableCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getSyllableCount())
+        .sum();
+    this.dialogueWordCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getWordCount())
+        .sum();
+    this.dialogueFirstPersonWordCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+        .sum();
+    this.dialogueSecondPersonWordCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+        .sum();
+    this.dialogueThirdPersonWordCount = this.dialogueFragments.stream()
+        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
+        .sum();
+    this.narrativeSyllableCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getSyllableCount())
+        .sum();
+    this.narrativeWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getWordCount())
+        .sum();
+    this.narrativeFirstPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+        .sum();
+    this.narrativeSecondPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+        .sum();
+    this.narrativeThirdPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
+        .sum();
+    this.wordCharacterCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getWordCharacterCount())
+        .sum();
+    this.syllableCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getSyllableCount())
+        .sum();
+    this.wordCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getWordCount())
+        .sum();
+    this.complexWordCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getComplexWordCount())
+        .sum();
+    this.longWordCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getLongWordCount())
+        .sum();
+    this.povWordCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getPovWordCount())
+        .sum();
+    this.sentenceCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getSentenceCount())
+        .sum();
+    this.paragraphCount = this.paragraphs.size();
+    /** We only consider POV words found in narrative since dialogue is always first person. **/
+    this.firstPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonWordCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
+        .sum();
+    this.paragraphs.stream().forEach( paragraph -> {
+      Set<Word> uniqueWords = paragraph.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (this.wordFrequency.containsKey(word))
+            ? this.wordFrequency.get(word) : 0;
+        count += paragraph.getWordFrequency(word);
+        this.wordFrequency.put(word, count);
+      });
+    });
+    this.dialogueFragments.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (this.dialogueWordFrequency.containsKey(word))
+            ? this.dialogueWordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        this.dialogueWordFrequency.put(word, count);
+      });
+    });
+    this.narrativeFragments.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (this.narrativeWordFrequency.containsKey(word))
+            ? this.narrativeWordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        this.narrativeWordFrequency.put(word, count);
+      });
+    });
+  }
+
+  /**
+   * Returns a new Prose object from a string.
+   *
+   * <p>Prose is currently considered the top level WordContainer. The String is not validated
+   * as it is assumed to be an arbitrary block of text representing some kind of story.
+   * 
+   * @param text    a string of text representing a complete work of prose fiction
+   */
+  public Prose(final String text, final Dictionary2 dictionary) {
+    super(text);
+    Matcher paragraphMatcher = WordContainer.getParagraphPattern().matcher(text);
+    while (paragraphMatcher.find()) {
+      Paragraph paragraph = new Paragraph(paragraphMatcher.group(), dictionary);
+      this.paragraphs.add(paragraph);
+    }
+    final Pattern dialoguePattern = WordContainer.getDialoguePattern();
+    Matcher dialogueMatcher = dialoguePattern.matcher(
+        WordContainer.convertSmartQuotes(this.getInitialText())
+    );
+    while (dialogueMatcher.find()) {
+      this.dialogueFragments.add(
+          new DialogueFragment(dialogueMatcher.group(), dictionary)
+      );
+    }
+    for (String narrative: dialoguePattern.split(
+        WordContainer.convertSmartQuotes(this.getInitialText()))) {
+      this.narrativeFragments.add(
+          new NarrativeFragment(narrative, dictionary)
       );
     }
     this.dialogueSyllableCount = this.dialogueFragments.stream()

@@ -1,6 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
 import static org.junit.Assert.*;
+import org.junit.After;
 import org.junit.Rule;
 
 import com.typesafe.config.Config;
@@ -48,6 +49,15 @@ public class Dictionary2Test {
     }
   }
 
+  @After
+  public void resetDictionary() {
+    try {
+      this.getDictionary();
+    } catch (IOException ioe) {
+      logger.error(ioe.getMessage());;
+    }
+  }
+  
   @Test
   public final void testGetHeuristicSyllableCount() {
     try {
