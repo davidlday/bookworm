@@ -61,14 +61,14 @@ public final class Prose extends WordContainer {
   @Deprecated
   public Prose(final String text) {
     super(text);
-    Matcher paragraphMatcher = WordContainer.getParagraphPattern().matcher(text);
+    Matcher paragraphMatcher = Prose.getParagraphPattern().matcher(text);
     while (paragraphMatcher.find()) {
       Paragraph paragraph = new Paragraph(paragraphMatcher.group());
       this.paragraphs.add(paragraph);
     }
-    final Pattern dialoguePattern = WordContainer.getDialoguePattern();
+    final Pattern dialoguePattern = Prose.getDialoguePattern();
     Matcher dialogueMatcher = dialoguePattern.matcher(
-        WordContainer.convertSmartQuotes(this.getInitialText())
+        Prose.convertSmartQuotes(this.getInitialText())
     );
     while (dialogueMatcher.find()) {
       this.dialogueFragments.add(
@@ -76,7 +76,7 @@ public final class Prose extends WordContainer {
       );
     }
     for (String narrative: dialoguePattern.split(
-        WordContainer.convertSmartQuotes(this.getInitialText()))) {
+        Prose.convertSmartQuotes(this.getInitialText()))) {
       this.narrativeFragments.add(
           new NarrativeFragment(narrative)
       );
@@ -184,22 +184,22 @@ public final class Prose extends WordContainer {
     super(text, dictionary);
     Matcher paragraphMatcher = WordContainer.getParagraphPattern().matcher(text);
     while (paragraphMatcher.find()) {
-      Paragraph paragraph = new Paragraph(paragraphMatcher.group(), WordContainer.getDictionary());
+      Paragraph paragraph = new Paragraph(paragraphMatcher.group(), this.getDictionary());
       this.paragraphs.add(paragraph);
     }
-    final Pattern dialoguePattern = WordContainer.getDialoguePattern();
+    final Pattern dialoguePattern = Prose.getDialoguePattern();
     Matcher dialogueMatcher = dialoguePattern.matcher(
-        WordContainer.convertSmartQuotes(this.getInitialText())
+        Prose.convertSmartQuotes(this.getInitialText())
     );
     while (dialogueMatcher.find()) {
       this.dialogueFragments.add(
-          new DialogueFragment(dialogueMatcher.group(), WordContainer.getDictionary())
+          new DialogueFragment(dialogueMatcher.group(), this.getDictionary())
       );
     }
     for (String narrative: dialoguePattern.split(
-        WordContainer.convertSmartQuotes(this.getInitialText()))) {
+        Prose.convertSmartQuotes(this.getInitialText()))) {
       this.narrativeFragments.add(
-          new NarrativeFragment(narrative, WordContainer.getDictionary())
+          new NarrativeFragment(narrative, this.getDictionary())
       );
     }
     this.dialogueSyllableCount = this.dialogueFragments.stream()

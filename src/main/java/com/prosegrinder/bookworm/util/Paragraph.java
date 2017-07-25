@@ -92,7 +92,7 @@ public final class Paragraph extends WordContainer {
     super(text, dictionary);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
     while (sentenceMatcher.find()) {
-      this.sentences.add(new Sentence(sentenceMatcher.group(), WordContainer.getDictionary()));
+      this.sentences.add(new Sentence(sentenceMatcher.group(), this.getDictionary()));
     }
     this.wordCharacterCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getWordCharacterCount())
@@ -136,7 +136,7 @@ public final class Paragraph extends WordContainer {
   }
 
   public static final Pattern getPattern() {
-    return WordContainer.getParagraphPattern();
+    return Sentence.getParagraphPattern();
   }
 
   public final List<Sentence> getSentences() {

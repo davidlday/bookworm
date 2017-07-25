@@ -40,7 +40,7 @@ public final class Sentence extends WordContainer {
   public Sentence(final String text) {
     super(text);
     Dictionary dictionary = Dictionary.getInstance();
-    Matcher wordMatcher = WordContainer.getWordPattern().matcher(this.getNormalizedText());
+    Matcher wordMatcher = Sentence.getWordPattern().matcher(this.getNormalizedText());
     while (wordMatcher.find()) {
       this.words.add(dictionary.getWord(wordMatcher.group()));
       //this.words.add(new Word(wordMatcher.group()));
@@ -86,9 +86,9 @@ public final class Sentence extends WordContainer {
    */
   public Sentence(final String text, Dictionary2 dictionary) {
     super(text, dictionary);
-    Matcher wordMatcher = WordContainer.getWordPattern().matcher(this.getNormalizedText());
+    Matcher wordMatcher = Sentence.getWordPattern().matcher(this.getNormalizedText());
     while (wordMatcher.find()) {
-      this.words.add(WordContainer.getDictionary().getWord(wordMatcher.group()));
+      this.words.add(this.getDictionary().getWord(wordMatcher.group()));
     }
     this.wordCharacterCount = this.words.stream()
         .mapToInt( word -> word.getWordCharacterCount())
@@ -122,7 +122,7 @@ public final class Sentence extends WordContainer {
   }
 
   public static final Pattern getPattern() {
-    return WordContainer.getSentencePattern();
+    return Sentence.getSentencePattern();
   }
 
   @Override

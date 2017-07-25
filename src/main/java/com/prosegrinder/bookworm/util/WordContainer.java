@@ -45,7 +45,7 @@ public abstract class WordContainer {
 
   private final String initialText;
   private final String normalizedText;
-  private static Dictionary2 dictionary;
+  private final Dictionary2 dictionary;
 
   /**
    * Constructs a new WordContainer, ensuring copies of the text in initial and normalized
@@ -58,6 +58,7 @@ public abstract class WordContainer {
   public WordContainer(final String text) {
     this.initialText = text;
     this.normalizedText = WordContainer.normalizeText(this.initialText);
+    this.dictionary = null;
   }
 
   /**
@@ -71,15 +72,11 @@ public abstract class WordContainer {
   public WordContainer(final String text, Dictionary2 dictionary) {
     this.initialText = text;
     this.normalizedText = WordContainer.normalizeText(this.initialText);
-    WordContainer.setDictionary(dictionary);
+    this.dictionary = dictionary;
   }
   
-  private static void setDictionary(Dictionary2 dictionary) {
-    WordContainer.dictionary = dictionary;
-  }
-  
-  public static final Dictionary2 getDictionary() {
-    return WordContainer.dictionary;
+  public final Dictionary2 getDictionary() {
+    return this.dictionary;
   }
 
   /**

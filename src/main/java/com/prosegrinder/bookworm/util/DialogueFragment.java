@@ -94,7 +94,7 @@ public final class DialogueFragment extends WordContainer {
     super(text, dictionary);
     Matcher wordMatcher = WordContainer.getWordPattern().matcher(this.getNormalizedText());
     while (wordMatcher.find()) {
-      this.words.add(WordContainer.getDictionary().getWord(wordMatcher.group()));
+      this.words.add(this.getDictionary().getWord(wordMatcher.group()));
     }
     this.wordCharacterCount = words.stream()
         .mapToInt( word -> word.getWordCharacterCount())
