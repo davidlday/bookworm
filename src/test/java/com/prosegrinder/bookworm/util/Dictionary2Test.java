@@ -54,7 +54,7 @@ public class Dictionary2Test {
     try {
       this.getDictionary();
     } catch (IOException ioe) {
-      logger.error(ioe.getMessage());;
+      logger.error(ioe.getMessage());
     }
   }
   
