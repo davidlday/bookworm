@@ -85,10 +85,10 @@ public final class Sentence extends WordContainer {
    * @param text    a string of text representing a complete sentence
    */
   public Sentence(final String text, Dictionary2 dictionary) {
-    super(text);
+    super(text, dictionary);
     Matcher wordMatcher = WordContainer.getWordPattern().matcher(this.getNormalizedText());
     while (wordMatcher.find()) {
-      this.words.add(dictionary.getWord(wordMatcher.group()));
+      this.words.add(WordContainer.getDictionary().getWord(wordMatcher.group()));
     }
     this.wordCharacterCount = this.words.stream()
         .mapToInt( word -> word.getWordCharacterCount())

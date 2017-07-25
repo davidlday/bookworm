@@ -181,10 +181,10 @@ public final class Prose extends WordContainer {
    * @param text    a string of text representing a complete work of prose fiction
    */
   public Prose(final String text, final Dictionary2 dictionary) {
-    super(text);
+    super(text, dictionary);
     Matcher paragraphMatcher = WordContainer.getParagraphPattern().matcher(text);
     while (paragraphMatcher.find()) {
-      Paragraph paragraph = new Paragraph(paragraphMatcher.group(), dictionary);
+      Paragraph paragraph = new Paragraph(paragraphMatcher.group(), WordContainer.getDictionary());
       this.paragraphs.add(paragraph);
     }
     final Pattern dialoguePattern = WordContainer.getDialoguePattern();
@@ -193,13 +193,13 @@ public final class Prose extends WordContainer {
     );
     while (dialogueMatcher.find()) {
       this.dialogueFragments.add(
-          new DialogueFragment(dialogueMatcher.group(), dictionary)
+          new DialogueFragment(dialogueMatcher.group(), WordContainer.getDictionary())
       );
     }
     for (String narrative: dialoguePattern.split(
         WordContainer.convertSmartQuotes(this.getInitialText()))) {
       this.narrativeFragments.add(
-          new NarrativeFragment(narrative, dictionary)
+          new NarrativeFragment(narrative, WordContainer.getDictionary())
       );
     }
     this.dialogueSyllableCount = this.dialogueFragments.stream()

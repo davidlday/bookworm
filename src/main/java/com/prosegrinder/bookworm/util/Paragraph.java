@@ -89,10 +89,10 @@ public final class Paragraph extends WordContainer {
    * @param text    a string of text representing a complete paragraph
    */
   public Paragraph(final String text, Dictionary2 dictionary) {
-    super(text);
+    super(text, dictionary);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
     while (sentenceMatcher.find()) {
-      this.sentences.add(new Sentence(sentenceMatcher.group(), dictionary));
+      this.sentences.add(new Sentence(sentenceMatcher.group(), WordContainer.getDictionary()));
     }
     this.wordCharacterCount = this.sentences.stream()
         .mapToInt( sentence -> sentence.getWordCharacterCount())
