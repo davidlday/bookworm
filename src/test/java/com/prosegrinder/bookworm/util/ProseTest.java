@@ -1,12 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
 import com.prosegrinder.bookworm.enums.PovType;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-// import org.junit.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -21,9 +16,6 @@ import java.util.List;
 // @Ignore
 public class ProseTest {
 
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(ProseTest.class);
-  
   private Prose prose;
 
   private static final int COMPLEX_WORD_COUNT = 202;
@@ -33,38 +25,13 @@ public class ProseTest {
   private static final int UNIQUE_WORD_COUNT = 526;
   private static final int WORD_COUNT = 1528;
 
-  private final Dictionary2 getDictionary(Config config) throws IOException {
-    String cmudictFile = config.getString("cmudict.file");
-    Long maxWordCacheSize = config.getLong("wordCache.maxentries");
-    Long ttlSecondsNonWordCache = config.getLong("nonWordCache.ttlSeconds");
-    Boolean cacheNumbers = config.getBoolean("nonWordCache.cacheNumbers");
-    Dictionary2 dictionary;
-    try {
-      dictionary =
-          new Dictionary2(cmudictFile, maxWordCacheSize, ttlSecondsNonWordCache, cacheNumbers);
-      return dictionary;
-    } catch (IOException ioe) {
-      logger.error(ioe.getMessage());
-      throw ioe;
-    }
-  }
-
-  private final Dictionary2 getDictionary() throws IOException {
-    Config config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
-    try {
-      return this.getDictionary(config);
-    } catch (IOException ioe) {
-      throw ioe;
-    }
-  }
-  
   @Before
   public void loadProse() throws IOException, URISyntaxException {
     String prose = "shunn/shortstory.txt";
     ClassLoader classLoader = ProseTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.prose = new Prose(String.join("\n", lines), this.getDictionary());
+    this.prose = new Prose(String.join("\n", lines), Dictionary2.getDictionary());
   }
 
   @Test

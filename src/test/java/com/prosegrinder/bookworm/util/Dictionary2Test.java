@@ -1,14 +1,16 @@
 package com.prosegrinder.bookworm.util;
 
-import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Rule;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
@@ -24,35 +26,10 @@ public class Dictionary2Test {
   @Rule
   public final ExpectedException thrown = ExpectedException.none();
 
-  private final Dictionary2 getDictionary(Config config) throws IOException {
-    String cmudictFile = config.getString("cmudict.file");
-    Long maxWordCacheSize = config.getLong("wordCache.maxentries");
-    Long ttlSecondsNonWordCache = config.getLong("nonWordCache.ttlSeconds");
-    Boolean cacheNumbers = config.getBoolean("nonWordCache.cacheNumbers");
-    Dictionary2 dictionary;
-    try {
-      dictionary =
-          new Dictionary2(cmudictFile, maxWordCacheSize, ttlSecondsNonWordCache, cacheNumbers);
-      return dictionary;
-    } catch (IOException ioe) {
-      logger.error(ioe.getMessage());
-      throw ioe;
-    }
-  }
-
-  private final Dictionary2 getDictionary() throws IOException {
-    Config config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
-    try {
-      return this.getDictionary(config);
-    } catch (IOException ioe) {
-      throw ioe;
-    }
-  }
-
   @After
   public void resetDictionary() {
     try {
-      this.getDictionary();
+      Dictionary2.getDictionary();
     } catch (IOException ioe) {
       logger.error(ioe.getMessage());
     }
@@ -61,7 +38,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetHeuristicSyllableCount() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       assertEquals("frowning: ", 2, dictionary.getHeuristicSyllableCount("frowning").intValue());
       assertEquals("zurkuhlen:", 3, dictionary.getHeuristicSyllableCount("zurkuhlen").intValue());
       assertNotEquals("cafe: ", 2, dictionary.getHeuristicSyllableCount("cafe").intValue());
@@ -78,7 +55,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetPhonemes() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       List<String> frowningPhonemes = Arrays.asList("F", "R", "AW1", "N", "IH0", "NG");
       assertEquals("frowning:", frowningPhonemes, dictionary.getPhonemes("frowning"));
       List<String> zurkuhlenPhonemes = Arrays.asList("Z", "ER0", "K", "Y", "UW1", "L", "AH0", "N");
@@ -93,7 +70,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetPhonemeString() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       assertEquals("frowning:", "F R AW1 N IH0 NG", dictionary.getPhonemeString("frowning"));
       assertEquals("zurkuhlen:", "Z ER0 K Y UW1 L AH0 N", dictionary.getPhonemeString("zurkuhlen"));
       assertEquals("cafe:", "K AH0 F EY1", dictionary.getPhonemeString("cafe"));
@@ -109,7 +86,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetSyllableCount() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       assertEquals("frowning: ", 2, dictionary.getSyllableCount("frowning").intValue());
       assertEquals("zurkuhlen:", 3, dictionary.getSyllableCount("zurkuhlen").intValue());
       assertEquals("cafe: ", 2, dictionary.getSyllableCount("cafe").intValue());
@@ -125,7 +102,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetCMUDictSyllableCount() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       assertEquals("frowning:", 2, dictionary.getSyllableCount("frowning").intValue());
       assertEquals("zurkuhlen:", 3, dictionary.getSyllableCount("zurkuhlen").intValue());
       assertEquals("cafe: ", 2, dictionary.getSyllableCount("cafe").intValue());
@@ -137,7 +114,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetWord() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       Word frowning =
           new Word(WordContainer.normalizeText("frowning"), 2, Boolean.TRUE, Boolean.FALSE);
       assertEquals("frowning:", frowning, dictionary.getWord("frowning"));
@@ -156,7 +133,7 @@ public class Dictionary2Test {
   @Test
   public final void testInCMUDict() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       assertTrue("frowning:", dictionary.inCMUDict("frowning"));
       assertTrue("zurkuhlen:", dictionary.inCMUDict("zurkuhlen"));
       assertTrue("cafe: ", dictionary.inCMUDict("cafe"));
@@ -170,7 +147,7 @@ public class Dictionary2Test {
   public final void testInCache() {
     /** Force reset on dictionary using a non-existent cmudict.dict file. **/
     try {
-      Dictionary2 dictionary = this.getDictionary(ConfigFactory.load("application-missingcmudict")
+      Dictionary2 dictionary = Dictionary2.getDictionary(ConfigFactory.load("application-missingcmudict")
           .getConfig("com.prosegrinder.bookworm.util.dictionary"));
 
       /** Real words should cache. **/
@@ -210,7 +187,7 @@ public class Dictionary2Test {
   @Test
   public final void testIsNumeric() {
     try {
-      Dictionary2 dictionary = this.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDictionary();
       assertFalse("frowning: ", dictionary.isNumeric("frowning"));
       assertFalse("zurkuhlen:", dictionary.isNumeric("zurkuhlen"));
       assertFalse("cafe: ", dictionary.isNumeric("cafe"));
