@@ -3,6 +3,8 @@ package com.prosegrinder.bookworm.util;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,6 +84,31 @@ public final class Dictionary2 {
           Pattern.compile("dnt$") // neilb: couldn't
       };
 
+  public static final Dictionary2 getDictionary(Config config) throws IOException {
+    String cmudictFile = config.getString("cmudict.file");
+    Long maxWordCacheSize = config.getLong("wordCache.maxentries");
+    Long ttlSecondsNonWordCache = config.getLong("nonWordCache.ttlSeconds");
+    Boolean cacheNumbers = config.getBoolean("nonWordCache.cacheNumbers");
+    Dictionary2 dictionary;
+    try {
+      dictionary =
+          new Dictionary2(cmudictFile, maxWordCacheSize, ttlSecondsNonWordCache, cacheNumbers);
+      return dictionary;
+    } catch (IOException ioe) {
+      logger.error(ioe.getMessage());
+      throw ioe;
+    }
+  }
+
+  public static final Dictionary2 getDictionary() throws IOException {
+    Config config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
+    try {
+      return Dictionary2.getDictionary(config);
+    } catch (IOException ioe) {
+      throw ioe;
+    }
+  }
+  
   public static final Boolean cacheNumbers() {
     return Dictionary2.cacheNumbers;
   }
