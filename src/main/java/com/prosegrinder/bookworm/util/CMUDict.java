@@ -27,6 +27,7 @@ import java.util.stream.Stream;
  * Singleton implementation based on:
  * http://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples
  */
+@Deprecated
 public final class CMUDict {
 
   private static CMUDict INSTANCE;
