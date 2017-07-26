@@ -26,9 +26,9 @@ public class ProseTest {
 
   @Before
   public void loadProse() throws IOException, URISyntaxException {
-    String prose = "shunn/shortstory.txt";
+    String proseResource = "shunn/shortstory.txt";
     ClassLoader classLoader = ProseTest.class.getClassLoader();
-    Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
+    Path prosePath = Paths.get(classLoader.getResource(proseResource).toURI());
     List<String> lines = Files.readAllLines(prosePath);
     this.prose = new Prose(String.join("\n", lines), Dictionary2.getDictionary());
   }
