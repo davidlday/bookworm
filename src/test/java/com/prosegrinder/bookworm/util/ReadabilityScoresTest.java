@@ -36,7 +36,7 @@ public class ReadabilityScoresTest {
     ClassLoader classLoader = ReadabilityScoresTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.prose = new Prose(String.join("\n", lines), Dictionary2.getDictionary());
+    this.prose = new Prose(String.join("\n", lines), Dictionary2.getDefaultDictionary());
   }
 
   @Test

@@ -29,7 +29,7 @@ public class Dictionary2Test {
   @After
   public void resetDictionary() {
     try {
-      Dictionary2.getDictionary();
+      Dictionary2.getDefaultDictionary();
     } catch (IOException ioe) {
       logger.error(ioe.getMessage());
     }
@@ -38,7 +38,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetHeuristicSyllableCount() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       assertEquals("frowning: ", 2, dictionary.getHeuristicSyllableCount("frowning").intValue());
       assertEquals("zurkuhlen:", 3, dictionary.getHeuristicSyllableCount("zurkuhlen").intValue());
       assertNotEquals("cafe: ", 2, dictionary.getHeuristicSyllableCount("cafe").intValue());
@@ -55,7 +55,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetPhonemes() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       List<String> frowningPhonemes = Arrays.asList("F", "R", "AW1", "N", "IH0", "NG");
       assertEquals("frowning:", frowningPhonemes, dictionary.getPhonemes("frowning"));
       List<String> zurkuhlenPhonemes = Arrays.asList("Z", "ER0", "K", "Y", "UW1", "L", "AH0", "N");
@@ -70,7 +70,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetPhonemeString() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       assertEquals("frowning:", "F R AW1 N IH0 NG", dictionary.getPhonemeString("frowning"));
       assertEquals("zurkuhlen:", "Z ER0 K Y UW1 L AH0 N", dictionary.getPhonemeString("zurkuhlen"));
       assertEquals("cafe:", "K AH0 F EY1", dictionary.getPhonemeString("cafe"));
@@ -86,7 +86,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetSyllableCount() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       assertEquals("frowning: ", 2, dictionary.getSyllableCount("frowning").intValue());
       assertEquals("zurkuhlen:", 3, dictionary.getSyllableCount("zurkuhlen").intValue());
       assertEquals("cafe: ", 2, dictionary.getSyllableCount("cafe").intValue());
@@ -102,7 +102,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetCMUDictSyllableCount() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       assertEquals("frowning:", 2, dictionary.getSyllableCount("frowning").intValue());
       assertEquals("zurkuhlen:", 3, dictionary.getSyllableCount("zurkuhlen").intValue());
       assertEquals("cafe: ", 2, dictionary.getSyllableCount("cafe").intValue());
@@ -114,7 +114,7 @@ public class Dictionary2Test {
   @Test
   public final void testGetWord() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       Word frowning =
           new Word(WordContainer.normalizeText("frowning"), 2, Boolean.TRUE, Boolean.FALSE);
       assertEquals("frowning:", frowning, dictionary.getWord("frowning"));
@@ -133,7 +133,7 @@ public class Dictionary2Test {
   @Test
   public final void testInCMUDict() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       assertTrue("frowning:", dictionary.inCMUDict("frowning"));
       assertTrue("zurkuhlen:", dictionary.inCMUDict("zurkuhlen"));
       assertTrue("cafe: ", dictionary.inCMUDict("cafe"));
@@ -187,7 +187,7 @@ public class Dictionary2Test {
   @Test
   public final void testIsNumeric() {
     try {
-      Dictionary2 dictionary = Dictionary2.getDictionary();
+      Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
       assertFalse("frowning: ", dictionary.isNumeric("frowning"));
       assertFalse("zurkuhlen:", dictionary.isNumeric("zurkuhlen"));
       assertFalse("cafe: ", dictionary.isNumeric("cafe"));

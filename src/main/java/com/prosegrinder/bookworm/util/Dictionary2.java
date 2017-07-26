@@ -101,7 +101,7 @@ public final class Dictionary2 {
     }
   }
 
-  public static final Dictionary2 getDictionary() throws IOException {
+  public static final Dictionary2 getDefaultDictionary() throws IOException {
     Config config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
     try {
       return Dictionary2.getDictionary(config);
