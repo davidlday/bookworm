@@ -90,6 +90,7 @@ public final class NarrativeFragment extends WordContainer {
    * using WordContainer.DIALOGUE_PATTERN.
    * 
    * @param text    a string of text representing a piece of narrative 
+   * @param dictionary  dictionary used for word reference (cache)
    */
   public NarrativeFragment(final String text, Dictionary2 dictionary) {
     super(text, dictionary);

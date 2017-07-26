@@ -89,6 +89,7 @@ public final class DialogueFragment extends WordContainer {
    * only be created by a Prose object using WordContainer.DIALOGUE_PATTERN.
    * 
    * @param text    a string of text representing a piece of dialogue
+   * @param dictionary  dictionary used for word reference (cache)
    */
   public DialogueFragment(final String text, Dictionary2 dictionary) {
     super(text, dictionary);

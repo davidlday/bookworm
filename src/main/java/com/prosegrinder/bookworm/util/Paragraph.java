@@ -87,6 +87,7 @@ public final class Paragraph extends WordContainer {
    * only be created by a Prose object using WordContainer.PARAGRAPH_PATTERN.
    * 
    * @param text    a string of text representing a complete paragraph
+   * @param dictionary  dictionary used for word reference (cache)
    */
   public Paragraph(final String text, Dictionary2 dictionary) {
     super(text, dictionary);

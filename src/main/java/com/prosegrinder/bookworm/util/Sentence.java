@@ -83,6 +83,7 @@ public final class Sentence extends WordContainer {
    * only be created by a Paragraph using WordContainer.SENTENCE_PATTERN.
    * 
    * @param text    a string of text representing a complete sentence
+   * @param dictionary  dictionary used for word reference (cache)
    */
   public Sentence(final String text, Dictionary2 dictionary) {
     super(text, dictionary);

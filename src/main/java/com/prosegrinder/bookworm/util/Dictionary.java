@@ -182,7 +182,7 @@ public final class Dictionary {
   /**
    * Public word loader. Pulls from cache first.
    * 
-   * @param wordString
+   * @param wordString  a single word
    * @return a Word object represented by wordString
    */
   public final Word getWord(final String wordString) throws IllegalArgumentException {

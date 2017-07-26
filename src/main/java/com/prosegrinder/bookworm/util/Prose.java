@@ -179,6 +179,7 @@ public final class Prose extends WordContainer {
    * as it is assumed to be an arbitrary block of text representing some kind of story.
    * 
    * @param text    a string of text representing a complete work of prose fiction
+   * @param dictionary  dictionary used for word reference (cache)
    */
   public Prose(final String text, final Dictionary2 dictionary) {
     super(text, dictionary);
