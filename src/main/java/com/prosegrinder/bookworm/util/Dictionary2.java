@@ -9,11 +9,10 @@ import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -396,27 +395,23 @@ public final class Dictionary2 {
     return wordString.matches(Dictionary2.RE_NUMERIC);
   }
 
-  private void loadCmudictFile(String cmudictFile) throws IOException {
+  // TODO: Fix exceptions
+  private void loadCmudictFile(String cmudictFile) throws IllegalArgumentException {
     Dictionary2.cmudictFile = cmudictFile;
     logger.info("Loading CMU Dictionary file: " + cmudictFile);
     try {
       Dictionary2.phonemeStringMap.clear();
       ClassLoader classLoader = Dictionary2.class.getClassLoader();
-      Path prosePath = Paths.get(classLoader.getResource(cmudictFile).toURI());
-      List<String> cmudictLines = Files.readAllLines(prosePath);
-      Stream<String> stream = cmudictLines.stream();
+      InputStream in = classLoader.getResourceAsStream(cmudictFile);
+      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      Stream<String> stream = reader.lines();
       stream.filter(line -> !line.startsWith(";;;")).forEach(line -> {
         String[] parts = line.split("\\s+", 2);
         String wordString = parts[0];
         phonemeStringMap.put(wordString, parts[1]);
       });
-    } catch (IOException ioe) {
-      logger.error(ioe.getMessage());
-      throw ioe;
     } catch (NullPointerException npe) {
       logger.warn("CMU Dictionary file not found: " + Dictionary2.cmudictFile);
-    } catch (URISyntaxException use) {
-      logger.warn(use.getMessage());
     }
   }
 
