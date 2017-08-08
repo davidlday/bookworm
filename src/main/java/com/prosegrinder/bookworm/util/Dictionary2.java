@@ -84,31 +84,21 @@ public final class Dictionary2 {
           Pattern.compile("dnt$") // neilb: couldn't
       };
 
-  public static final Dictionary2 getDictionary(Config config) throws IOException {
+  public static final Dictionary2 getDictionary(Config config) {
     String cmudictFile = config.getString("cmudict.file");
     Long maxWordCacheSize = config.getLong("wordCache.maxentries");
     Long ttlSecondsNonWordCache = config.getLong("nonWordCache.ttlSeconds");
     Boolean cacheNumbers = config.getBoolean("nonWordCache.cacheNumbers");
-    Dictionary2 dictionary;
-    try {
-      dictionary =
-          new Dictionary2(cmudictFile, maxWordCacheSize, ttlSecondsNonWordCache, cacheNumbers);
-      return dictionary;
-    } catch (IOException ioe) {
-      logger.error(ioe.getMessage());
-      throw ioe;
-    }
+    Dictionary2 dictionary =
+        new Dictionary2(cmudictFile, maxWordCacheSize, ttlSecondsNonWordCache, cacheNumbers);
+    return dictionary;
   }
 
-  public static final Dictionary2 getDefaultDictionary() throws IOException {
+  public static final Dictionary2 getDefaultDictionary() {
     Config config = ConfigFactory.load().getConfig("com.prosegrinder.bookworm.util.dictionary");
-    try {
-      return Dictionary2.getDictionary(config);
-    } catch (IOException ioe) {
-      throw ioe;
-    }
+    return Dictionary2.getDictionary(config);
   }
-  
+
   public static final Boolean cacheNumbers() {
     return Dictionary2.cacheNumbers;
   }
@@ -126,7 +116,7 @@ public final class Dictionary2 {
   }
 
   public Dictionary2(String cmudictFile, Long maxWordCacheSize, Long ttlSecondsNonWordCache,
-      Boolean cacheNumbers) throws IOException {
+      Boolean cacheNumbers) {
     if (!cmudictFile.equals(Dictionary2.cmudictFile)) {
       this.loadCmudictFile(cmudictFile);
       if (Dictionary2.wordCache instanceof LoadingCache) {
@@ -284,7 +274,7 @@ public final class Dictionary2 {
   /**
    * Public word loader. Pulls from cache first.
    * 
-   * @param wordString  a single word
+   * @param wordString a single word
    * @return a Word object represented by wordString
    */
   public final Word getWord(final String wordString) throws IllegalArgumentException {
@@ -395,14 +385,14 @@ public final class Dictionary2 {
     return wordString.matches(Dictionary2.RE_NUMERIC);
   }
 
-  // TODO: Fix exceptions
-  private void loadCmudictFile(String cmudictFile) throws IllegalArgumentException {
+  // Updated based on: https://stackoverflow.com/questions/20389255/reading-a-resource-file-from-within-jar
+  private void loadCmudictFile(String cmudictFile) {
     Dictionary2.cmudictFile = cmudictFile;
     logger.info("Loading CMU Dictionary file: " + cmudictFile);
+    Dictionary2.phonemeStringMap.clear();
+    ClassLoader classLoader = Dictionary2.class.getClassLoader();
+    InputStream in = classLoader.getResourceAsStream(cmudictFile);
     try {
-      Dictionary2.phonemeStringMap.clear();
-      ClassLoader classLoader = Dictionary2.class.getClassLoader();
-      InputStream in = classLoader.getResourceAsStream(cmudictFile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Stream<String> stream = reader.lines();
       stream.filter(line -> !line.startsWith(";;;")).forEach(line -> {
