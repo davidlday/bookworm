@@ -53,29 +53,27 @@ public final class ReadabilityScores {
       final Integer syllableCount, final Integer wordCount) {
 
     
-     this.characterCount = characterCount;
-     this.complexWordCount = complexWordCount;
-     this.longWordCount = longWordCount;
-     this.sentenceCount = sentenceCount;
-     this.syllableCount = syllableCount;
-     this.wordCount = wordCount;
+    this.characterCount = characterCount;
+    this.complexWordCount = complexWordCount;
+    this.longWordCount = longWordCount;
+    this.sentenceCount = sentenceCount;
+    this.syllableCount = syllableCount;
+    this.wordCount = wordCount;
 
-    this.automatedReadabilityIndex =
-        ReadabilityScores.automatedReadabilityIndex(this.getCharacterCount(), this.getWordCount(), this.getSentenceCount());
-    this.colemanLiauIndex =
-        ReadabilityScores.colemanLiauIndex(this.getCharacterCount(), this.getWordCount(), this.getSentenceCount());
-    this.fleschKincaidGradeLevel =
-        ReadabilityScores.fleschKincaidGradeLevel(this.getSentenceCount(), this.getWordCount(), this.getSyllableCount());
-    this.fleschReadingEase =
-        ReadabilityScores.fleschReadingEase(this.getSentenceCount(), this.getWordCount(), this.getSyllableCount());
-    this.gunningFogIndex =
-        ReadabilityScores.gunningFogIndex(this.getSentenceCount(), this.getWordCount(), this.getComplexWordCount());
-    this.lix =
-        ReadabilityScores.lix(this.getWordCount(), this.getLongWordCount(), this.getSentenceCount());
-    this.rix =
-        ReadabilityScores.rix(this.getLongWordCount(), this.getSentenceCount());
-    this.smog =
-        ReadabilityScores.smog(this.getComplexWordCount(), this.getSentenceCount());
+    this.automatedReadabilityIndex = ReadabilityScores.automatedReadabilityIndex(
+        this.getCharacterCount(), this.getWordCount(), this.getSentenceCount());
+    this.colemanLiauIndex = ReadabilityScores.colemanLiauIndex(this.getCharacterCount(),
+        this.getWordCount(), this.getSentenceCount());
+    this.fleschKincaidGradeLevel = ReadabilityScores.fleschKincaidGradeLevel(
+        this.getSentenceCount(), this.getWordCount(), this.getSyllableCount());
+    this.fleschReadingEase = ReadabilityScores.fleschReadingEase(this.getSentenceCount(),
+        this.getWordCount(), this.getSyllableCount());
+    this.gunningFogIndex = ReadabilityScores.gunningFogIndex(this.getSentenceCount(),
+        this.getWordCount(), this.getComplexWordCount());
+    this.lix = ReadabilityScores.lix(this.getWordCount(), this.getLongWordCount(),
+        this.getSentenceCount());
+    this.rix = ReadabilityScores.rix(this.getLongWordCount(), this.getSentenceCount());
+    this.smog = ReadabilityScores.smog(this.getComplexWordCount(), this.getSentenceCount());
   }
 
   /**
@@ -117,58 +115,34 @@ public final class ReadabilityScores {
     return wordCount;
   }
 
-  /**
-   * @return the Automated Readability Index score for the analyzed text.
-   */
   public final Double getAutomatedReadabilityIndex() {
     return this.automatedReadabilityIndex;
   }
 
-  /**
-   * @return the Coleman-Liau Index score for the analyzed text.
-   */
   public final Double getColemanLiauIndex() {
     return this.colemanLiauIndex;
   }
 
-  /**
-   * @return the Flesch-Kincaid Grade Level score for the analyzed text.
-   */
   public final Double getFleschKincaidGradeLevel() {
     return this.fleschKincaidGradeLevel;
   }
 
-  /**
-   * @return the Flesch Reading Ease score for the analyzed text.
-   */
   public final Double getFleschReadingEase() {
     return this.fleschReadingEase;
   }
 
-  /** 
-   * @return the Gunning-Fog Index score for the analyzed text.
-   */
   public final Double getGunningFogIndex() {
     return this.gunningFogIndex;
   }
 
-  /** 
-   * @return the LIX score for the analyzed text.
-   */
   public final Double getLix() {
     return this.lix;
   }
 
-  /**
-   * @return the RIX score for the analyzed text.
-   */
   public final Double getRix() {
     return this.rix;
   }
 
-  /**
-   * @return the SMOG (Simple Measure of Gobbledygook) score for the analyzed text.
-   */
   public final Double getSmog() {
     return this.smog;
   }

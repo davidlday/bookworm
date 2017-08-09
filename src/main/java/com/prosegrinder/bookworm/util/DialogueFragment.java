@@ -139,7 +139,7 @@ public final class DialogueFragment extends WordContainer {
     return this.wordFrequency;
   }
 
- @Override
+  @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }

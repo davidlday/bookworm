@@ -380,10 +380,16 @@ public final class Prose extends WordContainer {
     return this.wordFrequency;
   }
 
- public final Map<Word, Integer> getDialogueWordFrequency() {
+  public final Map<Word, Integer> getDialogueWordFrequency() {
     return this.dialogueWordFrequency;
   }
 
+  /**
+   * Get the number of times a word appears in dialogue.
+   * 
+   * @param word word to check
+   * @return the number of times word appears in text's dialogue
+   */
   public final Integer getDialogueWordFrequency(Word word) {
     if (this.dialogueWordFrequency.containsKey(word)) {
       return this.dialogueWordFrequency.get(word);
@@ -408,6 +414,12 @@ public final class Prose extends WordContainer {
     return this.narrativeWordFrequency;
   }
 
+  /**
+   * Get the number of times a word appears in narrative.
+   * 
+   * @param word word to check
+   * @return the number of times word appears in text's narrative
+   */
   public final Integer getNarrativeWordFrequency(Word word) {
     if (this.narrativeWordFrequency.containsKey(word)) {
       return this.narrativeWordFrequency.get(word);
