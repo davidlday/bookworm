@@ -7,21 +7,15 @@ import static org.junit.Assert.assertTrue;
 
 import com.typesafe.config.ConfigFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Dictionary2Test {
-
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(Dictionary2Test.class);
 
   @Rule
   public final ExpectedException thrown = ExpectedException.none();
