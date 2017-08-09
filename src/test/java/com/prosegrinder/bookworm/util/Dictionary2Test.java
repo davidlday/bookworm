@@ -80,7 +80,7 @@ public class Dictionary2Test {
   }
 
   @Test
-  public final void testGetCMUDictSyllableCount() {
+  public final void testGetCmudictSyllableCount() {
     Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
     assertEquals("frowning:", 2, dictionary.getSyllableCount("frowning").intValue());
     assertEquals("zurkuhlen:", 3, dictionary.getSyllableCount("zurkuhlen").intValue());
@@ -103,12 +103,12 @@ public class Dictionary2Test {
   }
 
   @Test
-  public final void testInCMUDict() {
+  public final void testInCmudict() {
     Dictionary2 dictionary = Dictionary2.getDefaultDictionary();
-    assertTrue("frowning:", dictionary.inCMUDict("frowning"));
-    assertTrue("zurkuhlen:", dictionary.inCMUDict("zurkuhlen"));
-    assertTrue("cafe: ", dictionary.inCMUDict("cafe"));
-    assertFalse("1,904", dictionary.inCMUDict("1,904"));
+    assertTrue("frowning:", dictionary.inCmudict("frowning"));
+    assertTrue("zurkuhlen:", dictionary.inCmudict("zurkuhlen"));
+    assertTrue("cafe: ", dictionary.inCmudict("cafe"));
+    assertFalse("1,904", dictionary.inCmudict("1,904"));
   }
 
   @Test
