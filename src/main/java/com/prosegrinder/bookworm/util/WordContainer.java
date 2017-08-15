@@ -45,6 +45,7 @@ public abstract class WordContainer {
 
   private final String initialText;
   private final String normalizedText;
+  private final Dictionary2 dictionary;
 
   /**
    * Constructs a new WordContainer, ensuring copies of the text in initial and normalized
@@ -53,9 +54,29 @@ public abstract class WordContainer {
    * @param text  String representing the fragment.
    *
    */
+  @Deprecated
   public WordContainer(final String text) {
     this.initialText = text;
     this.normalizedText = WordContainer.normalizeText(this.initialText);
+    this.dictionary = null;
+  }
+
+  /**
+   * Constructs a new WordContainer, ensuring copies of the text in initial and normalized
+   * form are available for subsequent processing.
+   *
+   * @param text  String representing the fragment.
+   * @param dictionary Dictionary used for processing prose.
+   *
+   */
+  public WordContainer(final String text, Dictionary2 dictionary) {
+    this.initialText = text;
+    this.normalizedText = WordContainer.normalizeText(this.initialText);
+    this.dictionary = dictionary;
+  }
+  
+  public final Dictionary2 getDictionary() {
+    return this.dictionary;
   }
 
   /**

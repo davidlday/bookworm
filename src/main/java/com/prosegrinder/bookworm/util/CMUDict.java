@@ -1,5 +1,7 @@
 package com.prosegrinder.bookworm.util;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,15 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-//import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-//import java.util.Map;
-//import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -29,15 +27,18 @@ import java.util.stream.Stream;
  * Singleton implementation based on:
  * http://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples
  */
+@Deprecated
 public final class CMUDict {
 
-  private static CMUDict INSTANCE = new CMUDict();
+  private static CMUDict INSTANCE;
   private Map<String, String> phonemeStringMap;
 
-  // TODO: Externalize
-  private static final String CMUDictFile = "cmudict/cmudict.dict";
-  /** Patterns used to find stressed syllables in cmudict (symbols that end in a digit). **/
-  private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
+  /** Configuration. **/
+//  private Config config;
+  /** Location of cmudict.dict file. **/
+//  private String CMUDictFile;
+  /** Patterns used to find stressed syllables in cmudict (phonemes that end in a digit). **/
+  private Pattern cmudictSyllablePattern;
 
   /** Log4j Logger. **/
   private static final Logger logger = LogManager.getLogger(CMUDict.class);
@@ -46,14 +47,34 @@ public final class CMUDict {
    * @return the CMUDict Singleton for use
    */
   public static synchronized CMUDict getInstance() {
+    if (INSTANCE == null) {
+      synchronized (CMUDict.class) {
+        if (INSTANCE == null) {
+          INSTANCE = new CMUDict();
+        }
+      }
+    }
     return INSTANCE;
   }
 
-  /** Private constructor to enforce Singleton. **/
+  /**
+   * Private constructor for CMUDict. 
+   */
   private CMUDict() {
     phonemeStringMap = new ConcurrentHashMap<String, String>();
-    try{ 
-      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
+    Config config = ConfigFactory.load();
+    config.checkValid(ConfigFactory.defaultReference(), "com.prosegrinder.bookworm.util.cmudict");
+    cmudictSyllablePattern = Pattern.compile(config.getString("com.prosegrinder.bookworm.util.cmudict.syllablePattern"));
+    loadCmudictFile(config.getString("com.prosegrinder.bookworm.util.cmudict.file"));
+  }
+
+  /**
+   * Private method for loading the file and parsing based on syllablePattern 
+   */
+  private void loadCmudictFile(String cmudictfile) {
+    logger.info("Loading " + cmudictfile);
+    try {
+      InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(cmudictfile);
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       Stream<String> stream = reader.lines();
       stream.filter(line -> !line.startsWith(";;;")).forEach(line -> {
@@ -113,7 +134,7 @@ public final class CMUDict {
       this.getPhonemeString(wordString);
       return true;
     } catch (IllegalArgumentException iae) {
-//      logger.warn(iae.getMessage());
+      // logger.warn(iae.getMessage());
       return false;
     }
   }
@@ -130,30 +151,8 @@ public final class CMUDict {
     if (phonemeStringMap.containsKey(wordString)) {
       return phonemeStringMap.get(wordString);
     } else {
-      // This is all bypassed for now since the whole file is parsed and cached on instantiation.
-      // Will revisit performance vs. memory trade-off later.
-      String phoneme = "";
-      try {
-        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(CMUDictFile);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        Stream<String> stream = reader.lines();
-        List<String> phonemeStrings = stream.filter(line -> line.startsWith(wordString + " "))
-            .collect(Collectors.toList());
-        in.close();
-        if (phonemeStrings.size() == 1) {
-          String[] parts = phonemeStrings.get(0).split("\\s+", 2);
-          phoneme = parts[1];
-        } else if (phonemeStrings.size() < 1){
-          String msg = "cmudict does not contain an entry for " + wordString + ".";
-          throw new IllegalArgumentException(msg);
-        } else {
-          String msg = "cmudict contains multiple entries for " + wordString + ".";
-          throw new IllegalArgumentException(msg);
-        }
-      } catch (IOException ioe) {
-        logger.error(ioe.getMessage());
-      }
-      return phoneme;
+      String msg = "cmudict does not contain an entry for " + wordString + ".";
+      throw new IllegalArgumentException(msg);
     }
   }
 

@@ -6,7 +6,7 @@
     <groupId>com.prosegrinder</groupId>
     <artifactId>bookworm</artifactId>
     <packaging>jar</packaging>
-    <version>0.6</version>
+    <version>0.6.1</version>
 
     <name>bookworm</name>
     <url>http://prosegrinder.com</url>
@@ -19,6 +19,8 @@
         <checkstyle.version>2.17</checkstyle.version>
         <junit.version>4.12</junit.version>
         <log4j.version>2.8.2</log4j.version>
+        <guava.version>22.0</guava.version>
+        <typesafeconfig.version>1.3.1</typesafeconfig.version>
     </properties>
 
     <dependencies>
@@ -44,6 +46,16 @@
             <version>${log4j.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.google.guava</groupId>
+        	<artifactId>guava</artifactId>
+        	<version>${guava.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.typesafe</groupId>
+        	<artifactId>config</artifactId>
+        	<version>${typesafeconfig.version}</version>
         </dependency>
     </dependencies>
 

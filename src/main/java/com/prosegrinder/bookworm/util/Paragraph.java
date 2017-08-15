@@ -32,6 +32,7 @@ public final class Paragraph extends WordContainer {
    * 
    * @param text    a string of text representing a complete paragraph
    */
+  @Deprecated
   public Paragraph(final String text) {
     super(text);
     Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
@@ -79,8 +80,64 @@ public final class Paragraph extends WordContainer {
 
   }
 
+  /**
+   * Returns a new Paragraph from a string.
+   *
+   * <p>String is not currently validated since Paragraphs should
+   * only be created by a Prose object using WordContainer.PARAGRAPH_PATTERN.
+   * 
+   * @param text    a string of text representing a complete paragraph
+   * @param dictionary  dictionary used for word reference (cache)
+   */
+  public Paragraph(final String text, Dictionary2 dictionary) {
+    super(text, dictionary);
+    Matcher sentenceMatcher = Sentence.getPattern().matcher(text);
+    while (sentenceMatcher.find()) {
+      this.sentences.add(new Sentence(sentenceMatcher.group(), this.getDictionary()));
+    }
+    this.wordCharacterCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getWordCharacterCount())
+        .sum();
+    this.syllableCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getSyllableCount())
+        .sum();
+    this.wordCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getWordCount())
+        .sum();
+    this.complexWordCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getComplexWordCount())
+        .sum();
+    this.longWordCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getLongWordCount())
+        .sum();
+    this.povWordCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getPovWordCount())
+        .sum();
+    this.firstPersonWordCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonWordCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonWordCount = this.sentences.stream()
+        .mapToInt( sentence -> sentence.getThirdPersonWordCount())
+        .sum();
+    this.sentenceCount = this.sentences.size();
+  
+    this.sentences.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (wordFrequency.containsKey(word))
+            ? wordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        wordFrequency.put(word, count);
+      });
+    });
+  
+  }
+
   public static final Pattern getPattern() {
-    return WordContainer.getParagraphPattern();
+    return Sentence.getParagraphPattern();
   }
 
   public final List<Sentence> getSentences() {
@@ -96,7 +153,7 @@ public final class Paragraph extends WordContainer {
     return this.wordFrequency;
   }
 
- @Override
+  @Override
   public final List<Word> getWords() {
     List<Word> words = new ArrayList<Word>();
     this.getSentences().stream().forEach( sentence -> {

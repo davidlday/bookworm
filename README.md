@@ -19,7 +19,7 @@ A sister project, [bookworm-restserver](https://github.com/davidlday/bookworm-re
 
 ## Download
 
-When ready, binary downloads will be available at: https://github.com/davidlday/bookworm/releases
+Binary downloads available at: https://github.com/davidlday/bookworm/releases
 
 ## Documentation
 
@@ -38,7 +38,7 @@ Issue tracker: https://github.com/davidlday/bookworm/issues
 ```sh
 git clone https://github.com/davidlday/bookworm.git bookworm
 cd bookworm
-mvn install
+mvn clean compile test install
 ```
 This will put the library in your local Maven repository.
 

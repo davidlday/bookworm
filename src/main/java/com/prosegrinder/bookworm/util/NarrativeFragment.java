@@ -40,6 +40,7 @@ public final class NarrativeFragment extends WordContainer {
    * 
    * @param text    a string of text representing a piece of narrative 
    */
+  @Deprecated
   public NarrativeFragment(final String text) {
     super(text);
     Dictionary dictionary = Dictionary.getInstance();
@@ -47,6 +48,55 @@ public final class NarrativeFragment extends WordContainer {
     while (wordMatcher.find()) {
       this.words.add(dictionary.getWord(wordMatcher.group()));
       //this.words.add(new Word(wordMatcher.group()));
+    }
+    this.wordCharacterCount = words.stream()
+        .mapToInt( word -> word.getWordCharacterCount())
+        .sum();
+    this.syllableCount = words.stream()
+        .mapToInt( word -> word.getSyllableCount())
+        .sum();
+    this.wordCount = words.size();
+    this.complexWordCount = words.stream()
+        .mapToInt( word -> word.getComplexWordCount())
+        .sum();
+    this.longWordCount = words.stream()
+        .mapToInt( word -> word.getLongWordCount())
+        .sum();
+    this.povWordCount = words.stream()
+        .mapToInt( word -> word.getPovWordCount())
+        .sum();
+    this.firstPersonWordCount = words.stream()
+        .mapToInt( word -> word.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonWordCount = words.stream()
+        .mapToInt( word -> word.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonWordCount = words.stream()
+        .mapToInt( word -> word.getThirdPersonWordCount())
+        .sum();
+    this.wordFrequency = Word.getWordFrequency(this.words);
+  }
+
+  /**
+   * Returns a new NarrativeFragment from a string.
+   *
+   * <p>As with Dialogue, Narrative slices out independently of sentences and paragraphs. A
+   * single sentence may contain a mix of dialogue and narrative, or a chunk of dialogue
+   * may span multiple paragraphs. The only place narrative can effectively be parsed out
+   * is from the entirety of the original Prose.
+   *
+   * <p>String is not currently validated since NarrativeFragment should
+   * only be created by a Prose object splitting its underlying text
+   * using WordContainer.DIALOGUE_PATTERN.
+   * 
+   * @param text    a string of text representing a piece of narrative 
+   * @param dictionary  dictionary used for word reference (cache)
+   */
+  public NarrativeFragment(final String text, Dictionary2 dictionary) {
+    super(text, dictionary);
+    Matcher wordMatcher = NarrativeFragment.getWordPattern().matcher(this.getNormalizedText());
+    while (wordMatcher.find()) {
+      this.words.add(this.getDictionary().getWord(wordMatcher.group()));
     }
     this.wordCharacterCount = words.stream()
         .mapToInt( word -> word.getWordCharacterCount())
@@ -86,7 +136,7 @@ public final class NarrativeFragment extends WordContainer {
     return this.wordFrequency;
   }
 
- @Override
+  @Override
   public final Integer getWordCharacterCount() {
     return this.wordCharacterCount;
   }

@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,14 +30,13 @@ public class ReadabilityScoresTest {
   private static final int WORD_COUNT = 1528;
   private static final int CHARACTER_COUNT = 7008;
 
-
   @Before
   public void loadProse() throws IOException, URISyntaxException {
     String prose = "shunn/shortstory.txt";
     ClassLoader classLoader = ReadabilityScoresTest.class.getClassLoader();
     Path prosePath = Paths.get(classLoader.getResource(prose).toURI());
     List<String> lines = Files.readAllLines(prosePath);
-    this.prose = new Prose(String.join("\n", lines));
+    this.prose = new Prose(String.join("\n", lines), Dictionary2.getDefaultDictionary());
   }
 
   @Test

@@ -1,7 +1,10 @@
 package com.prosegrinder.bookworm.util;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,10 +21,11 @@ import java.util.regex.Pattern;
  * Singleton implementation based on:
  * http://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples
  */
+@Deprecated
 public final class Dictionary {
 
-  private static Dictionary INSTANCE = new Dictionary();
-  private Map<String, Word> wordMap;
+  private static Dictionary INSTANCE;
+  private LoadingCache<String, Word> wordCache;
 
   /** Regex used to test if a string represents a number. **/
   private static final String RE_NUMERIC = "^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$";
@@ -53,12 +57,26 @@ public final class Dictionary {
    * @return the SyllableDictionary Singleton for use
    */
   public static synchronized Dictionary getInstance() {
+    if (INSTANCE == null) {
+      synchronized (Dictionary.class) {
+        if (INSTANCE == null) {
+          INSTANCE = new Dictionary();
+        }
+      }
+    }
     return INSTANCE;
   }
 
-  /** Private constructor to enforce Singelton. **/
+  /** Private constructor to enforce Singleton. **/
   private Dictionary() {
-    wordMap = new ConcurrentHashMap<String, Word>();
+    wordCache = CacheBuilder.newBuilder()
+        .maximumSize(100000)
+        .build(
+            new CacheLoader<String, Word>() {
+              public Word load(String wordString) {
+                return loadWord(wordString);
+              }
+            });
   }
 
   /**
@@ -154,25 +172,38 @@ public final class Dictionary {
    */
   public final Integer getSyllableCount(final String wordString) {
     CMUDict cmudict = CMUDict.getInstance();
-    if (!this.isNumeric(wordString) && this.inDictionary(wordString)) {
+    if (this.inDictionary(wordString)) {
       return cmudict.getSyllableCount(WordContainer.normalizeText(wordString));
     } else {
       return this.getHeuristicSyllableCount(wordString);
     }
   }
 
-  public final Word getWord(final String wordString) {
-    synchronized (Dictionary.class) {
-      if (wordMap.containsKey(wordString)) {
-        return wordMap.get(wordString);
-      } else {
-        Word word =
-            new Word(wordString, this.getSyllableCount(wordString),
-                this.inDictionary(wordString), this.isNumeric(wordString));
-        wordMap.put(wordString, word);
-        return word;
-      }
+  /**
+   * Public word loader. Pulls from cache first.
+   * 
+   * @param wordString  a single word
+   * @return a Word object represented by wordString
+   */
+  public final Word getWord(final String wordString) throws IllegalArgumentException {
+    try {
+      return wordCache.get(wordString);
+    } catch (ExecutionException e) {
+      throw new IllegalArgumentException(e.getCause());
     }
+  }
+
+  /**
+   * Private word loader used to create a new word if it's not in the cache.
+   * 
+   * @param wordString
+   * @return a Word object represented by wordString
+   */
+  private final Word loadWord(final String wordString) {
+    Word word =
+        new Word(wordString, this.getSyllableCount(wordString),
+            this.inDictionary(wordString), this.isNumeric(wordString));
+    return word;
   }
 
   /**
