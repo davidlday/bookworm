@@ -35,7 +35,7 @@ public final class Word {
 
   /** Words indicating first person point of view. **/
   public static final Set<String> POV_FIRST =
-      new HashSet<String>(Arrays.asList("I", "I'm", "I'll", "I'd", "I've", "me", "mine", "myself",
+      new HashSet<String>(Arrays.asList("i", "i'm", "i'll", "i'd", "i've", "me", "mine", "myself",
           "we", "we're", "we'll", "we'd", "we've", "us", "ours", "ourselves"));
   /** Words indicating second person point of view. **/
   public static final Set<String> POV_SECOND = new HashSet<String>(Arrays.asList("you", "you're",
