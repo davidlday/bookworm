@@ -1,5 +1,6 @@
 package com.prosegrinder.bookworm.util;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -294,6 +295,16 @@ public abstract class WordContainer {
     return (this.getWordFrequency().containsKey(word))
         ? this.getWordFrequency().get(word)
         : 0;
+  }
+
+  // Convenience method for building out word frequency maps.
+  public final Map<Word, Integer> getWordFrequency(Set<String> wordSet) {
+    Map<Word, Integer> wordMap = new HashMap<Word, Integer>();
+    for (String wordString: wordSet) {
+      Word word = this.getDictionary().getWord(wordString);
+      wordMap.put(word, this.getWordFrequency(word));
+    }
+    return wordMap;
   }
 
   /**
