@@ -27,7 +27,13 @@ public final class Prose extends WordContainer {
   private final List<NarrativeFragment> narrativeFragments
       = new ArrayList<NarrativeFragment>();
   private final Map<Word, Integer> narrativeWordFrequency = new HashMap<Word, Integer>();
-
+  private final Map<Word, Integer> povWordFrequency = new HashMap<Word, Integer>();
+  
+  private final Map<Word, Integer> firstPersonIndicatorFrequency = new HashMap<Word, Integer>();
+  private final Map<Word, Integer> secondPersonIndicatorFrequency = new HashMap<Word, Integer>();
+  private final Map<Word, Integer> thirdPersonIndicatorFrequency = new HashMap<Word, Integer>();
+  private final Map<Word, Integer> povIndicatorFrequency = new HashMap<Word, Integer>();
+  
   private final Integer wordCharacterCount;
   private final Integer syllableCount;
   private final Integer wordCount;
@@ -49,6 +55,11 @@ public final class Prose extends WordContainer {
   private final Integer narrativeFirstPersonWordCount;
   private final Integer narrativeSecondPersonWordCount;
   private final Integer narrativeThirdPersonWordCount;
+  
+  private final Integer povIndicatorCount;
+  private final Integer firstPersonIndicatorCount;
+  private final Integer secondPersonIndicatorCount;
+  private final Integer thirdPersonIndicatorCount;
 
   /**
    * Returns a new Prose object from a string.
@@ -60,116 +71,7 @@ public final class Prose extends WordContainer {
    */
   @Deprecated
   public Prose(final String text) {
-    super(text);
-    Matcher paragraphMatcher = Prose.getParagraphPattern().matcher(text);
-    while (paragraphMatcher.find()) {
-      Paragraph paragraph = new Paragraph(paragraphMatcher.group());
-      this.paragraphs.add(paragraph);
-    }
-    final Pattern dialoguePattern = Prose.getDialoguePattern();
-    Matcher dialogueMatcher = dialoguePattern.matcher(
-        Prose.convertSmartQuotes(this.getInitialText())
-    );
-    while (dialogueMatcher.find()) {
-      this.dialogueFragments.add(
-          new DialogueFragment(dialogueMatcher.group())
-      );
-    }
-    for (String narrative: dialoguePattern.split(
-        Prose.convertSmartQuotes(this.getInitialText()))) {
-      this.narrativeFragments.add(
-          new NarrativeFragment(narrative)
-      );
-    }
-    this.dialogueSyllableCount = this.dialogueFragments.stream()
-        .mapToInt( fragment -> fragment.getSyllableCount())
-        .sum();
-    this.dialogueWordCount = this.dialogueFragments.stream()
-        .mapToInt( fragment -> fragment.getWordCount())
-        .sum();
-    this.dialogueFirstPersonWordCount = this.dialogueFragments.stream()
-        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
-        .sum();
-    this.dialogueSecondPersonWordCount = this.dialogueFragments.stream()
-        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
-        .sum();
-    this.dialogueThirdPersonWordCount = this.dialogueFragments.stream()
-        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
-        .sum();
-    this.narrativeSyllableCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getSyllableCount())
-        .sum();
-    this.narrativeWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getWordCount())
-        .sum();
-    this.narrativeFirstPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
-        .sum();
-    this.narrativeSecondPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
-        .sum();
-    this.narrativeThirdPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
-        .sum();
-    this.wordCharacterCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getWordCharacterCount())
-        .sum();
-    this.syllableCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getSyllableCount())
-        .sum();
-    this.wordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getWordCount())
-        .sum();
-    this.complexWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getComplexWordCount())
-        .sum();
-    this.longWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getLongWordCount())
-        .sum();
-    this.povWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getPovWordCount())
-        .sum();
-    this.sentenceCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getSentenceCount())
-        .sum();
-    this.paragraphCount = this.paragraphs.size();
-    /** We only consider POV words found in narrative since dialogue is always first person. **/
-    this.firstPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
-        .sum();
-    this.secondPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
-        .sum();
-    this.thirdPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
-        .sum();
-    this.paragraphs.stream().forEach( paragraph -> {
-      Set<Word> uniqueWords = paragraph.getUniqueWords();
-      uniqueWords.stream().forEach( word -> {
-        int count = (this.wordFrequency.containsKey(word))
-            ? this.wordFrequency.get(word) : 0;
-        count += paragraph.getWordFrequency(word);
-        this.wordFrequency.put(word, count);
-      });
-    });
-    this.dialogueFragments.stream().forEach( fragment -> {
-      Set<Word> uniqueWords = fragment.getUniqueWords();
-      uniqueWords.stream().forEach( word -> {
-        int count = (this.dialogueWordFrequency.containsKey(word))
-            ? this.dialogueWordFrequency.get(word) : 0;
-        count += fragment.getWordFrequency(word);
-        this.dialogueWordFrequency.put(word, count);
-      });
-    });
-    this.narrativeFragments.stream().forEach( fragment -> {
-      Set<Word> uniqueWords = fragment.getUniqueWords();
-      uniqueWords.stream().forEach( word -> {
-        int count = (this.narrativeWordFrequency.containsKey(word))
-            ? this.narrativeWordFrequency.get(word) : 0;
-        count += fragment.getWordFrequency(word);
-        this.narrativeWordFrequency.put(word, count);
-      });
-    });
+    this(text, Dictionary2.getDefaultDictionary());
   }
 
   /**
@@ -255,15 +157,14 @@ public final class Prose extends WordContainer {
         .mapToInt( paragraph -> paragraph.getSentenceCount())
         .sum();
     this.paragraphCount = this.paragraphs.size();
-    /** We only consider POV words found in narrative since dialogue is always first person. **/
-    this.firstPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+    this.firstPersonWordCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getFirstPersonWordCount())
         .sum();
-    this.secondPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+    this.secondPersonWordCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getSecondPersonWordCount())
         .sum();
-    this.thirdPersonWordCount = this.narrativeFragments.stream()
-        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
+    this.thirdPersonWordCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getThirdPersonWordCount())
         .sum();
     this.paragraphs.stream().forEach( paragraph -> {
       Set<Word> uniqueWords = paragraph.getUniqueWords();
@@ -290,32 +191,175 @@ public final class Prose extends WordContainer {
             ? this.narrativeWordFrequency.get(word) : 0;
         count += fragment.getWordFrequency(word);
         this.narrativeWordFrequency.put(word, count);
+        // Populate povIndicatorFrequency as well.
+        if (word.isPovWord()) {
+          this.povIndicatorFrequency.put(word, count);
+          if (word.isFirstPersonWord() ) {
+            this.firstPersonIndicatorFrequency.put(word, count);
+          } else if (word.isSecondPersonWord()) {
+            this.secondPersonIndicatorFrequency.put(word, count);
+          } else if (word.isThirdPersonWord()) {
+            this.thirdPersonIndicatorFrequency.put(word, count);
+          }
+        }
       });
     });
+    // PoV Indicators are PoV Words fount in Narrative.
+    this.firstPersonIndicatorCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getFirstPersonWordCount())
+        .sum();
+    this.secondPersonIndicatorCount = this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getSecondPersonWordCount())
+        .sum();
+    this.thirdPersonIndicatorCount= this.narrativeFragments.stream()
+        .mapToInt( fragment -> fragment.getThirdPersonWordCount())
+        .sum();
+    this.povIndicatorCount = this.firstPersonIndicatorCount 
+        + this.secondPersonIndicatorCount 
+        + this.thirdPersonIndicatorCount;
+  }
+
+  public final Double getAverageSentencesPerParagraph() {
+    return (double) this.getSentenceCount() / (double) this.getParagraphCount();
+  }
+
+  public final Double getAverageSyllablesPerParagraph() {
+    return (double) this.getSyllableCount() / (double) this.getParagraphCount();
+  }
+
+  public final Double getAverageSyllablesPerSentence() {
+    return (double) this.getSyllableCount() / (double) this.getSentenceCount();
+  }
+
+  public final Double getAverageSyllablesPerWord() {
+    return (double) this.getSyllableCount() / (double) this.getWordCount();
+  }
+
+  public final Double getAverageWordsPerParagraph() {
+    return (double) this.getWordCount() / (double) this.getParagraphCount();
+  }
+
+  public final Double getAverageWordsPerSentence() {
+    return (double) this.getWordCount() / (double) this.getSentenceCount();
+  }
+
+  @Override
+  public final Integer getComplexWordCount() {
+    return this.complexWordCount;
+  }
+
+  public final Integer getDialogueFirstPersonWordCount() {
+    return this.dialogueFirstPersonWordCount;
   }
 
   public final List<DialogueFragment> getDialogueFragments() {
     return this.dialogueFragments;
+  }
+  
+  public final Integer getDialogueSecondPersonWordCount() {
+    return this.dialogueSecondPersonWordCount;
+  }
+  
+  public final Integer getDialogueSyllableCount() {
+    return this.dialogueSyllableCount;
+  }
+
+  public final Integer getDialogueThirdPersonWordCount() {
+    return this.dialogueThirdPersonWordCount;
   }
 
   public final Integer getDialogueWordCount() {
     return this.dialogueWordCount;
   }
 
-  public final Integer getDialogueSyllableCount() {
-    return this.dialogueSyllableCount;
+  public final Map<Word, Integer> getDialogueWordFrequency() {
+    return this.dialogueWordFrequency;
+  }
+  
+  /**
+   * Get the number of times a word appears in dialogue.
+   * 
+   * @param word word to check
+   * @return the number of times word appears in text's dialogue
+   */
+  public final Integer getDialogueWordFrequency(Word word) {
+    if (this.dialogueWordFrequency.containsKey(word)) {
+      return this.dialogueWordFrequency.get(word);
+    } else {
+      return 0;
+    }
+  }
+  
+  public final Integer getFirstPersonIndicatorCount() {
+    return this.firstPersonIndicatorCount;
+  }
+
+  public final Map<Word, Integer> getFirstPersonIndicatorFrequency() {
+    return this.firstPersonIndicatorFrequency;
+  }
+  
+  @Override
+  public final Integer getFirstPersonWordCount() {
+    return this.firstPersonWordCount;
+  }
+  
+  public final Map<Word, Integer> getFirstPersonWordFrequency() {
+    return this.getWordFrequency(Word.POV_FIRST);
+  }
+
+  @Override
+  public final Integer getLongWordCount() {
+    return this.longWordCount;
+  }
+
+  public final Integer getNarrativeFirstPersonWordCount() {
+    return this.narrativeFirstPersonWordCount;
   }
 
   public final List<NarrativeFragment> getNarrativeFragments() {
     return this.narrativeFragments;
   }
 
-  public final Integer getNarrativeWordCount() {
-    return this.narrativeWordCount;
+  public final Integer getNarrativeSecondPersonWordCount() {
+    return this.narrativeSecondPersonWordCount;
   }
 
   public final Integer getNarrativeSyllableCount() {
     return this.narrativeSyllableCount;
+  }
+
+  public final Integer getNarrativeThirdPersonWordCount() {
+    return this.narrativeThirdPersonWordCount;
+  }
+
+  public final Integer getNarrativeWordCount() {
+    return this.narrativeWordCount;
+  }
+  
+  public final Map<Word, Integer> getNarrativeWordFrequency() {
+    return this.narrativeWordFrequency;
+  }
+  
+  /**
+   * Get the number of times a word appears in narrative.
+   * 
+   * @param word word to check
+   * @return the number of times word appears in text's narrative
+   */
+  public final Integer getNarrativeWordFrequency(Word word) {
+    if (this.narrativeWordFrequency.containsKey(word)) {
+      return this.narrativeWordFrequency.get(word);
+    } else {
+      return 0;
+    }
+  }
+  
+  public final Integer getParagraphCount() {
+    return this.paragraphCount;
+  }
+
+  public final List<Paragraph> getParagraphs() {
+    return this.paragraphs;
   }
 
   /**
@@ -339,13 +383,47 @@ public final class Prose extends WordContainer {
       return PovType.UNKNOWN;
     }
   }
-
-  public final List<Paragraph> getParagraphs() {
-    return this.paragraphs;
+  
+  public final Integer getPovIndicatorCount() {
+    return this.povIndicatorCount;
+  }
+  
+  @Override
+  public final Integer getPovWordCount() {
+    return this.povWordCount;
+  }
+  
+  public final Map<Word, Integer> getPovWordFrequency() {
+    return this.povWordFrequency;
   }
 
-  public final Integer getParagraphCount() {
-    return this.paragraphCount;
+  public final Integer getPovWordFrequency(Word word) {
+    if (word.isPovWord() && this.povWordFrequency.containsKey(word)) {
+      return this.povWordFrequency.get(word);
+    } else {
+      return 0;
+    }
+  }
+
+  public final Integer getSecondPersonIndicatorCount() {
+    return this.secondPersonIndicatorCount;
+  }
+
+  public final Map<Word, Integer> getSecondPersonIndicatorFrequency() {
+    return this.secondPersonIndicatorFrequency;
+  }
+  
+  @Override
+  public final Integer getSecondPersonWordCount() {
+    return this.secondPersonWordCount;
+  }
+
+  public final Map<Word, Integer> getSecondPersonWordFrequency() {
+    return this.getWordFrequency(Word.POV_SECOND);
+  }
+
+  public final Integer getSentenceCount() {
+    return this.sentenceCount;
   }
 
   /**
@@ -362,8 +440,41 @@ public final class Prose extends WordContainer {
     return sentences;
   }
 
-  public final Integer getSentenceCount() {
-    return this.sentenceCount;
+  @Override
+  public final Integer getSyllableCount() {
+    return this.syllableCount;
+  }
+
+  public final Integer getThirdPersonIndicatorCount() {
+    return this.thirdPersonIndicatorCount;
+  }
+
+  public final Map<Word, Integer> getThirdPersonIndicatorFrequency() {
+    return this.thirdPersonIndicatorFrequency;
+  }
+  
+  @Override
+  public final Integer getThirdPersonWordCount() {
+    return this.thirdPersonWordCount;
+  }
+
+  public final Map<Word, Integer> getThirdPersonWordFrequency() {
+    return this.getWordFrequency(Word.POV_THIRD);
+  }
+
+  @Override
+  public final Integer getWordCharacterCount() {
+    return this.wordCharacterCount;
+  }
+
+  @Override
+  public final Integer getWordCount() {
+    return this.wordCount;
+  }
+
+  @Override
+  public final Map<Word, Integer> getWordFrequency() {
+    return this.wordFrequency;
   }
 
   @Override
@@ -373,140 +484,6 @@ public final class Prose extends WordContainer {
       words.addAll(sentence.getWords());
     });
     return words;
-  }
-
-  @Override
-  public final Map<Word, Integer> getWordFrequency() {
-    return this.wordFrequency;
-  }
-
-  public final Map<Word, Integer> getDialogueWordFrequency() {
-    return this.dialogueWordFrequency;
-  }
-
-  /**
-   * Get the number of times a word appears in dialogue.
-   * 
-   * @param word word to check
-   * @return the number of times word appears in text's dialogue
-   */
-  public final Integer getDialogueWordFrequency(Word word) {
-    if (this.dialogueWordFrequency.containsKey(word)) {
-      return this.dialogueWordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-  
-  public final Integer getDialogueFirstPersonWordCount() {
-    return this.dialogueFirstPersonWordCount;
-  }
-  
-  public final Integer getDialogueSecondPersonWordCount() {
-    return this.dialogueSecondPersonWordCount;
-  }
-  
-  public final Integer getDialogueThirdPersonWordCount() {
-    return this.dialogueThirdPersonWordCount;
-  }
-
-  public final Map<Word, Integer> getNarrativeWordFrequency() {
-    return this.narrativeWordFrequency;
-  }
-
-  /**
-   * Get the number of times a word appears in narrative.
-   * 
-   * @param word word to check
-   * @return the number of times word appears in text's narrative
-   */
-  public final Integer getNarrativeWordFrequency(Word word) {
-    if (this.narrativeWordFrequency.containsKey(word)) {
-      return this.narrativeWordFrequency.get(word);
-    } else {
-      return 0;
-    }
-  }
-  
-  public final Integer getNarrativeFirstPersonWordCount() {
-    return this.narrativeFirstPersonWordCount;
-  }
-  
-  public final Integer getNarrativeSecondPersonWordCount() {
-    return this.narrativeSecondPersonWordCount;
-  }
-  
-  public final Integer getNarrativeThirdPersonWordCount() {
-    return this.narrativeThirdPersonWordCount;
-  }
-
-  public final Double getAverageSyllablesPerWord() {
-    return (double) this.getSyllableCount() / (double) this.getWordCount();
-  }
-
-  public final Double getAverageSyllablesPerSentence() {
-    return (double) this.getSyllableCount() / (double) this.getSentenceCount();
-  }
-
-  public final Double getAverageSyllablesPerParagraph() {
-    return (double) this.getSyllableCount() / (double) this.getParagraphCount();
-  }
-
-  public final Double getAverageWordsPerSentence() {
-    return (double) this.getWordCount() / (double) this.getSentenceCount();
-  }
-
-  public final Double getAverageWordsPerParagraph() {
-    return (double) this.getWordCount() / (double) this.getParagraphCount();
-  }
-
-  public final Double getAverageSentencesPerParagraph() {
-    return (double) this.getSentenceCount() / (double) this.getParagraphCount();
-  }
-
-  @Override
-  public final Integer getWordCharacterCount() {
-    return this.wordCharacterCount;
-  }
-
-  @Override
-  public final Integer getSyllableCount() {
-    return this.syllableCount;
-  }
-
-  @Override
-  public final Integer getWordCount() {
-    return this.wordCount;
-  }
-
-  @Override
-  public final Integer getComplexWordCount() {
-    return this.complexWordCount;
-  }
-
-  @Override
-  public final Integer getLongWordCount() {
-    return this.longWordCount;
-  }
-
-  @Override
-  public final Integer getFirstPersonWordCount() {
-    return this.firstPersonWordCount;
-  }
-
-  @Override
-  public final Integer getSecondPersonWordCount() {
-    return this.secondPersonWordCount;
-  }
-
-  @Override
-  public final Integer getThirdPersonWordCount() {
-    return this.thirdPersonWordCount;
-  }
-
-  @Override
-  public final Integer getPovWordCount() {
-    return this.povWordCount;
   }
 
 }
