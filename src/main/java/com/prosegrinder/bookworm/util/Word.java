@@ -39,7 +39,7 @@ public final class Word {
           "we", "we're", "we'll", "we'd", "we've", "us", "ours", "ourselves"));
   /** Words indicating second person point of view. **/
   public static final Set<String> POV_SECOND = new HashSet<String>(Arrays.asList("you", "you're",
-      "you'll", "you'd", "you've", "yours", "yourself", "yourselves"));
+      "you'll", "you'd", "you've", "your", "yours", "yourself", "yourselves"));
   /** Words indicating third person point of view. **/
   public static final Set<String> POV_THIRD = new HashSet<String>(
       Arrays.asList("he", "he's", "he'll", "he'd", "him", "his", "himself", "she", "she's",
