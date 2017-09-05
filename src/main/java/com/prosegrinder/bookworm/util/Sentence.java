@@ -38,42 +38,7 @@ public final class Sentence extends WordContainer {
    */
   @Deprecated
   public Sentence(final String text) {
-    super(text);
-    Dictionary dictionary = Dictionary.getInstance();
-    Matcher wordMatcher = Sentence.getWordPattern().matcher(this.getNormalizedText());
-    while (wordMatcher.find()) {
-      this.words.add(dictionary.getWord(wordMatcher.group()));
-      //this.words.add(new Word(wordMatcher.group()));
-    }
-    this.wordCharacterCount = this.words.stream()
-        .mapToInt( word -> word.getWordCharacterCount())
-        .sum();
-    this.syllableCount = this.words.stream()
-        .mapToInt( word -> word.getSyllableCount())
-        .sum();
-    this.wordCount = words.size();
-    this.complexWordCount = this.words.stream()
-        .mapToInt( word -> word.getComplexWordCount())
-        .sum();
-    this.longWordCount = this.words.stream()
-        .mapToInt( word -> word.getLongWordCount())
-        .sum();
-    this.povWordCount = this.words.stream()
-        .mapToInt( word -> word.getPovWordCount())
-        .sum();
-    this.firstPersonWordCount = this.words.stream()
-        .mapToInt( word -> word.getFirstPersonWordCount())
-        .sum();
-    this.secondPersonWordCount = this.words.stream()
-        .mapToInt( word -> word.getSecondPersonWordCount())
-        .sum();
-    this.thirdPersonWordCount = this.words.stream()
-        .mapToInt( word -> word.getThirdPersonWordCount())
-        .sum();
-    Set<Word> uniqueWords = new HashSet<Word>(this.words);
-    uniqueWords.stream().forEach(word -> {
-      wordFrequency.put(word, Collections.frequency(this.words, word));
-    });
+    this(text, Dictionary2.getDefaultDictionary());
   }
 
   /**

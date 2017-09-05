@@ -57,9 +57,7 @@ public abstract class WordContainer {
    */
   @Deprecated
   public WordContainer(final String text) {
-    this.initialText = text;
-    this.normalizedText = WordContainer.normalizeText(this.initialText);
-    this.dictionary = null;
+    this(text, Dictionary2.getDefaultDictionary());
   }
 
   /**

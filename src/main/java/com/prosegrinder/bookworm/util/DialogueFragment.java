@@ -42,39 +42,7 @@ public final class DialogueFragment extends WordContainer {
    */
   @Deprecated
   public DialogueFragment(final String text) {
-    super(text);
-    Dictionary dictionary = Dictionary.getInstance();
-    Matcher wordMatcher = WordContainer.getWordPattern().matcher(this.getNormalizedText());
-    while (wordMatcher.find()) {
-      this.words.add(dictionary.getWord(wordMatcher.group()));
-      //this.words.add(new Word(wordMatcher.group()));
-    }
-    this.wordCharacterCount = words.stream()
-        .mapToInt( word -> word.getWordCharacterCount())
-        .sum();
-    this.syllableCount = words.stream()
-        .mapToInt( word -> word.getSyllableCount())
-        .sum();
-    this.wordCount = words.size();
-    this.complexWordCount = words.stream()
-        .mapToInt( word -> word.getComplexWordCount())
-        .sum();
-    this.longWordCount = words.stream()
-        .mapToInt( word -> word.getLongWordCount())
-        .sum();
-    this.povWordCount = words.stream()
-        .mapToInt( word -> word.getPovWordCount())
-        .sum();
-    this.firstPersonWordCount = words.stream()
-        .mapToInt( word -> word.getFirstPersonWordCount())
-        .sum();
-    this.secondPersonWordCount = words.stream()
-        .mapToInt( word -> word.getSecondPersonWordCount())
-        .sum();
-    this.thirdPersonWordCount = words.stream()
-        .mapToInt( word -> word.getThirdPersonWordCount())
-        .sum();
-    this.wordFrequency = Word.getWordFrequency(this.words);
+    this(text, Dictionary2.getDefaultDictionary());
   }
 
   /**

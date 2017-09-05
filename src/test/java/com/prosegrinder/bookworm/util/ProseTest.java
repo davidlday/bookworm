@@ -4,7 +4,6 @@ import com.prosegrinder.bookworm.enums.PovType;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -17,7 +16,6 @@ public class ProseTest {
 
   private Prose prose;
   private Prose narrativeProse;
-  private Prose dialogueProse;
 
   /** Log4j Logger. **/
   private static final int COMPLEX_WORD_COUNT = 202;
@@ -40,11 +38,6 @@ public class ProseTest {
 
     Path prosePath = Paths.get(classLoader.getResource("shunn/shortstory.txt").toURI());
     this.prose = new Prose(String.join("\n", Files.readAllLines(prosePath)), dictionary);
-
-    Path dialogueProsePath =
-        Paths.get(classLoader.getResource("shunn/shortstory_dialogue.txt").toURI());
-    this.dialogueProse =
-        new Prose(String.join("\n", Files.readAllLines(dialogueProsePath)), dictionary);
 
     Path narrativeProsePath =
         Paths.get(classLoader.getResource("shunn/shortstory_narrative.txt").toURI());
