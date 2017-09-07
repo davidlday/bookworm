@@ -10,16 +10,7 @@ import java.util.regex.Pattern;
 
 public final class Paragraph {
 
-  /** Pattern for slicing text into paragraphs. **/
-  private static final Pattern PARAGRAPH_PATTERN = Pattern.compile(
-      ".*(?=\\n|$)"
-  );
-
-  public static final Pattern getPattern() {
-    return Paragraph.PARAGRAPH_PATTERN;
-  }
   private final List<Sentence> sentences = new ArrayList<Sentence>();
-
   private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
   private final String initialText;
   private final String normalizedText;
@@ -33,8 +24,12 @@ public final class Paragraph {
   private final Integer firstPersonWordCount;
   private final Integer secondPersonWordCount;
   private final Integer thirdPersonWordCount;
-
   private final Integer sentenceCount;
+
+  /** Pattern for slicing text into paragraphs. **/
+  private static final Pattern PARAGRAPH_PATTERN = Pattern.compile(
+      ".*(?=\\n|$)"
+  );
 
   /**
    * Returns a new Paragraph from a string.
@@ -135,6 +130,10 @@ public final class Paragraph {
 
   public final String getNormalizedText() {
     return this.normalizedText;
+  }
+
+  public static final Pattern getPattern() {
+    return Paragraph.PARAGRAPH_PATTERN;
   }
 
   public final Integer getPovWordCount() {

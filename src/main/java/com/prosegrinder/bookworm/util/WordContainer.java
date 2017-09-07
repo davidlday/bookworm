@@ -16,6 +16,21 @@ import java.util.regex.Matcher;
  */
 public abstract class WordContainer {
 
+  private final String initialText;
+  private final String normalizedText;
+  private final Dictionary2 dictionary;
+  private final List<Word> words = new ArrayList<Word>();
+  private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
+  private final Integer wordCharacterCount;
+  private final Integer syllableCount;
+  private final Integer wordCount;
+  private final Integer complexWordCount;
+  private final Integer longWordCount;
+  private final Integer povWordCount;
+  private final Integer firstPersonWordCount;
+  private final Integer secondPersonWordCount;
+  private final Integer thirdPersonWordCount;
+
   /** Patterns used throughout. Will eventually move to a properties file. **/
   private static final String RE_SMART_QUOTES = "[“”]";
 
@@ -54,21 +69,6 @@ public abstract class WordContainer {
     return text.trim().toLowerCase();
   }
   
-  private final String initialText;
-  private final String normalizedText;
-  private final Dictionary2 dictionary;
-  private final List<Word> words = new ArrayList<Word>();
-  private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
-  private final Integer wordCharacterCount;
-  private final Integer syllableCount;
-  private final Integer wordCount;
-  private final Integer complexWordCount;
-  private final Integer longWordCount;
-  private final Integer povWordCount;
-  private final Integer firstPersonWordCount;
-  private final Integer secondPersonWordCount;
-  private final Integer thirdPersonWordCount;
-
   /**
    * Constructs a new WordContainer, ensuring copies of the text in initial and normalized
    * form are available for subsequent processing.
