@@ -85,26 +85,6 @@ public abstract class WordContainer extends Container {
   }
 
   /**
-   * Returns the count of unique Words found in the WordContainer.
-   *
-   * @return the count of unique Words found in the WordContainer.
-   *
-   */
-  public final Integer getUniqueWordCount() {
-    return this.getUniqueWords().size();
-  }
-
-  /**
-   * Returns a set of unique Words found in the WordContainer
-   *
-   * @return a set of unique Words found in the WordContainer.
-   *
-   */
-  public final Set<Word> getUniqueWords() {
-    return this.getWordFrequency().keySet();
-  }
-
-  /**
    * Returns a list of all Words found in the WordContainer.
    *
    * @return a list of all Words found in the WordContainer.

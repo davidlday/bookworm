@@ -167,22 +167,6 @@ public abstract class Container {
   }
 
   /**
-   * Returns the count of unique Words found in the WordContainer.
-   *
-   * @return the count of unique Words found in the WordContainer.
-   *
-   */
-  public abstract Integer getUniqueWordCount();
-
-  /**
-   * Returns a set of unique Words found in the WordContainer
-   *
-   * @return a set of unique Words found in the WordContainer.
-   *
-   */
-  public abstract Set<Word> getUniqueWords();
-
-  /**
    * Returns the number of word characters found in the WordContainer.
    *
    * @return the number of work characters in the WordContainer.
@@ -300,5 +284,25 @@ public abstract class Container {
   public static final String convertSmartQuotes(final String text) {
     return text.replaceAll(Container.RE_SMART_QUOTES, "\"");
   }
-  
+
+  /**
+   * Returns the count of unique Words found in the WordContainer.
+   *
+   * @return the count of unique Words found in the WordContainer.
+   *
+   */
+  public final Integer getUniqueWordCount() {
+    return this.getUniqueWords().size();
+  }
+
+  /**
+   * Returns a set of unique Words found in the WordContainer
+   *
+   * @return a set of unique Words found in the WordContainer.
+   *
+   */
+  public final Set<Word> getUniqueWords() {
+    return this.getWordFrequency().keySet();
+  }
+
 }
