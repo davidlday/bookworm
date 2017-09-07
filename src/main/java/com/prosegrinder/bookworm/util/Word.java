@@ -45,6 +45,11 @@ public final class Word {
       Arrays.asList("he", "he's", "he'll", "he'd", "him", "his", "himself", "she", "she's",
           "she'll", "she'd", "her", "hers", "herself", "it", "it's", "it'll", "it'd", "itself",
           "they", "they're", "they'll", "they'd", "they've", "them", "theirs", "themselves"));
+  
+  /** Pattern used to slice a string of text into words. **/
+  private static final Pattern WORD_PATTERN = Pattern.compile(
+      "[\\w’']+"
+  );
 
   /** Private member variables. **/
   private final String initialWord;
@@ -142,7 +147,7 @@ public final class Word {
   }
 
   public static final Pattern getPattern() {
-    return WordContainer.getWordPattern();
+    return Word.WORD_PATTERN;
   }
 
   /**
