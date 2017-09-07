@@ -74,6 +74,7 @@ public abstract class WordContainer extends Container {
     });   
   }
 
+  // Maybe move this to Dictionary2?
   @Deprecated
   public static final List<Word> getWords(final String text, Dictionary2 dictionary) {
     Matcher wordMatcher = Word.getPattern().matcher(WordContainer.normalizeText(text));
@@ -90,6 +91,7 @@ public abstract class WordContainer extends Container {
    * @return a list of all Words found in the WordContainer.
    *
    */
+  @Override
   public final List<Word> getWords() {
     return this.words;
   }

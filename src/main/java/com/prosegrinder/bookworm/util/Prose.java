@@ -17,10 +17,9 @@ import java.util.regex.Pattern;
  *   2) into a List of DialogueFragments and a List of NarrativeFragments.
  * 
  */
-public final class Prose {
+public final class Prose extends AggregateContainer {
 
   private final List<Paragraph> paragraphs = new ArrayList<Paragraph>();
-  private final Map<Word, Integer> wordFrequency = new HashMap<Word, Integer>();
   private final List<DialogueFragment> dialogueFragments
       = new ArrayList<DialogueFragment>();
   private final Map<Word, Integer> dialogueWordFrequency = new HashMap<Word, Integer>();
@@ -34,18 +33,6 @@ public final class Prose {
   private final Map<Word, Integer> thirdPersonIndicatorFrequency = new HashMap<Word, Integer>();
   private final Map<Word, Integer> povIndicatorFrequency = new HashMap<Word, Integer>();
   
-  private final String initialText;
-  private final String normalizedText;
-  private final Dictionary2 dictionary;
-  private final Integer wordCharacterCount;
-  private final Integer syllableCount;
-  private final Integer wordCount;
-  private final Integer complexWordCount;
-  private final Integer longWordCount;
-  private final Integer povWordCount;
-  private final Integer firstPersonWordCount;
-  private final Integer secondPersonWordCount;
-  private final Integer thirdPersonWordCount;
   private final Integer sentenceCount;
   private final Integer paragraphCount;
   private final Integer dialogueSyllableCount;
@@ -87,14 +74,22 @@ public final class Prose {
    * @param dictionary  dictionary used for word reference (cache)
    */
   public Prose(final String text, final Dictionary2 dictionary) {
-    this.initialText = text;
-    this.normalizedText = WordContainer.normalizeText(text);
-    this.dictionary = dictionary;
+    
+    this.setText(text);
+    this.setDictionary(dictionary);
     Matcher paragraphMatcher = Paragraph.getPattern().matcher(text);
     while (paragraphMatcher.find()) {
       Paragraph paragraph = new Paragraph(paragraphMatcher.group(), this.getDictionary());
       this.paragraphs.add(paragraph);
     }
+    List<Container> containers = new ArrayList<Container>();
+    paragraphs.stream().forEach( paragraph -> {
+      containers.add((Container) paragraph);
+    });
+    this.aggregateContainers(containers);
+    this.paragraphCount = this.paragraphs.size();
+
+    
     final Pattern dialoguePattern = DialogueFragment.getPattern();
     Matcher dialogueMatcher = dialoguePattern.matcher(
         WordContainer.convertSmartQuotes(this.getInitialText())
@@ -110,6 +105,9 @@ public final class Prose {
           new NarrativeFragment(narrative, this.getDictionary())
       );
     }
+    this.sentenceCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getSentenceCount())
+        .sum();
     this.dialogueSyllableCount = this.dialogueFragments.stream()
         .mapToInt( fragment -> fragment.getSyllableCount())
         .sum();
@@ -140,46 +138,7 @@ public final class Prose {
     this.narrativeThirdPersonWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
-    this.wordCharacterCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getWordCharacterCount())
-        .sum();
-    this.syllableCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getSyllableCount())
-        .sum();
-    this.wordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getWordCount())
-        .sum();
-    this.complexWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getComplexWordCount())
-        .sum();
-    this.longWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getLongWordCount())
-        .sum();
-    this.povWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getPovWordCount())
-        .sum();
-    this.sentenceCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getSentenceCount())
-        .sum();
-    this.paragraphCount = this.paragraphs.size();
-    this.firstPersonWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getFirstPersonWordCount())
-        .sum();
-    this.secondPersonWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getSecondPersonWordCount())
-        .sum();
-    this.thirdPersonWordCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getThirdPersonWordCount())
-        .sum();
-    this.paragraphs.stream().forEach( paragraph -> {
-      Set<Word> uniqueWords = paragraph.getUniqueWords();
-      uniqueWords.stream().forEach( word -> {
-        int count = (this.wordFrequency.containsKey(word))
-            ? this.wordFrequency.get(word) : 0;
-        count += paragraph.getWordFrequency(word);
-        this.wordFrequency.put(word, count);
-      });
-    });
+
     this.dialogueFragments.stream().forEach( fragment -> {
       Set<Word> uniqueWords = fragment.getUniqueWords();
       uniqueWords.stream().forEach( word -> {
@@ -224,6 +183,10 @@ public final class Prose {
         + this.thirdPersonIndicatorCount;
   }
 
+  public final Integer getSentenceCount() {
+    return this.sentenceCount;
+  }
+  
   public final Double getAverageSentencesPerParagraph() {
     return (double) this.getSentenceCount() / (double) this.getParagraphCount();
   }
@@ -246,10 +209,6 @@ public final class Prose {
 
   public final Double getAverageWordsPerSentence() {
     return (double) this.getWordCount() / (double) this.getSentenceCount();
-  }
-
-  public final Integer getComplexWordCount() {
-    return this.complexWordCount;
   }
 
   public final Integer getDialogueFirstPersonWordCount() {
@@ -302,16 +261,9 @@ public final class Prose {
     return this.firstPersonIndicatorFrequency;
   }
   
-  public final Integer getFirstPersonWordCount() {
-    return this.firstPersonWordCount;
-  }
   
   public final Map<Word, Integer> getFirstPersonWordFrequency() {
     return this.getWordFrequency(Word.POV_FIRST);
-  }
-
-  public final Integer getLongWordCount() {
-    return this.longWordCount;
   }
 
   public final Integer getNarrativeFirstPersonWordCount() {
@@ -390,10 +342,6 @@ public final class Prose {
     return this.povIndicatorCount;
   }
   
-  public final Integer getPovWordCount() {
-    return this.povWordCount;
-  }
-  
   public final Map<Word, Integer> getPovWordFrequency() {
     return this.povWordFrequency;
   }
@@ -414,16 +362,8 @@ public final class Prose {
     return this.secondPersonIndicatorFrequency;
   }
   
-  public final Integer getSecondPersonWordCount() {
-    return this.secondPersonWordCount;
-  }
-
   public final Map<Word, Integer> getSecondPersonWordFrequency() {
     return this.getWordFrequency(Word.POV_SECOND);
-  }
-
-  public final Integer getSentenceCount() {
-    return this.sentenceCount;
   }
 
   /**
@@ -440,10 +380,6 @@ public final class Prose {
     return sentences;
   }
 
-  public final Integer getSyllableCount() {
-    return this.syllableCount;
-  }
-
   public final Integer getThirdPersonIndicatorCount() {
     return this.thirdPersonIndicatorCount;
   }
@@ -452,47 +388,8 @@ public final class Prose {
     return this.thirdPersonIndicatorFrequency;
   }
   
-  public final Integer getThirdPersonWordCount() {
-    return this.thirdPersonWordCount;
-  }
-
   public final Map<Word, Integer> getThirdPersonWordFrequency() {
     return this.getWordFrequency(Word.POV_THIRD);
-  }
-
-  public final Integer getWordCharacterCount() {
-    return this.wordCharacterCount;
-  }
-
-  public final Integer getWordCount() {
-    return this.wordCount;
-  }
-
-  public final Map<Word, Integer> getWordFrequency() {
-    return this.wordFrequency;
-  }
-
-  // Convenience method for building out word frequency maps.
-  public final Map<Word, Integer> getWordFrequency(Set<String> wordSet) {
-    Map<Word, Integer> wordMap = new HashMap<Word, Integer>();
-    for (String wordString: wordSet) {
-      Word word = this.getDictionary().getWord(wordString);
-      wordMap.put(word, this.getWordFrequency(word));
-    }
-    return wordMap;
-  }
-  
-  /**
-   * Returns the number of times a Word appears in the WordContainer.
-   *
-   * @param word  the word you want the frequency for.
-   * @return the number of times a Word appears in the WordContainer.
-   *
-   */
-  public final Integer getWordFrequency(Word word) {
-    return (this.getWordFrequency().containsKey(word))
-        ? this.getWordFrequency().get(word)
-        : 0;
   }
 
   public final List<Word> getWords() {
@@ -502,43 +399,5 @@ public final class Prose {
     });
     return words;
   }
-
-  /**
-   * Returns the initial text used to create the WordContainer.
-   *
-   * @return the String used to create the WordContainer.
-   *
-   */
-  public final String getInitialText() {
-    return this.initialText;
-  }
-
-  public final Dictionary2 getDictionary() {
-    return this.dictionary;
-  }
-
-  public final String getNormalizedText() {
-    return this.normalizedText;
-  }
-
-  /**
-   * Returns a set of unique Words found in the Prose.
-   *
-   * @return a set of unique Words found in the WordContainer.
-   *
-   */
-  public final Set<Word> getUniqueWords() {
-    return this.getWordFrequency().keySet();
-  }
-
-  /**
-   * Returns the count of unique Words found in the WordContainer.
-   *
-   * @return the count of unique Words found in the WordContainer.
-   *
-   */
-  public final Integer getUniqueWordCount() {
-    return this.getUniqueWords().size();
-  }
-  
+ 
 }
