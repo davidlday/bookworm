@@ -29,19 +29,6 @@ public final class Sentence extends WordContainer {
    * only be created by a Paragraph using WordContainer.SENTENCE_PATTERN.
    * 
    * @param text    a string of text representing a complete sentence
-   */
-  @Deprecated
-  public Sentence(final String text) {
-    this(text, Dictionary2.getDefaultDictionary());
-  }
-
-  /**
-   * Returns a new Sentence from a string.
-   *
-   * <p>String is not currently validates since Sentences should
-   * only be created by a Paragraph using WordContainer.SENTENCE_PATTERN.
-   * 
-   * @param text    a string of text representing a complete sentence
    * @param dictionary  dictionary used for word reference (cache)
    */
   public Sentence(final String text, Dictionary2 dictionary) {

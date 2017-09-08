@@ -58,19 +58,6 @@ public final class Prose extends AggregateContainer {
    * as it is assumed to be an arbitrary block of text representing some kind of story.
    * 
    * @param text    a string of text representing a complete work of prose fiction
-   */
-  @Deprecated
-  public Prose(final String text) {
-    this(text, Dictionary2.getDefaultDictionary());
-  }
-
-  /**
-   * Returns a new Prose object from a string.
-   *
-   * <p>Prose is currently considered the top level WordContainer. The String is not validated
-   * as it is assumed to be an arbitrary block of text representing some kind of story.
-   * 
-   * @param text    a string of text representing a complete work of prose fiction
    * @param dictionary  dictionary used for word reference (cache)
    */
   public Prose(final String text, final Dictionary2 dictionary) {

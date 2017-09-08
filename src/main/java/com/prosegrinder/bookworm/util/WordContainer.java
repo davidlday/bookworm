@@ -17,18 +17,6 @@ public abstract class WordContainer extends Container {
   private final List<Word> words = new ArrayList<Word>();
 
   /**
-   * Constructs a new WordContainer, ensuring copies of the text in initial and normalized form are
-   * available for subsequent processing.
-   *
-   * @param text String representing the fragment.
-   *
-   */
-  @Deprecated
-  public WordContainer(final String text) {
-    this(text, Dictionary2.getDefaultDictionary());
-  }
-
-  /**
    * Constructs a new WordContainer, ensuring copies of the text in initial and normalized
    * form are available for subsequent processing.
    *

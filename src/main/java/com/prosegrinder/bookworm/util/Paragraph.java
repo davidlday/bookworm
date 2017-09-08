@@ -20,19 +20,6 @@ public final class Paragraph extends AggregateContainer {
    * only be created by a Prose object using WordContainer.PARAGRAPH_PATTERN.
    * 
    * @param text    a string of text representing a complete paragraph
-   */
-  @Deprecated
-  public Paragraph(final String text) {
-    this(text, Dictionary2.getDefaultDictionary());
-  }
-
-  /**
-   * Returns a new Paragraph from a string.
-   *
-   * <p>String is not currently validated since Paragraphs should
-   * only be created by a Prose object using WordContainer.PARAGRAPH_PATTERN.
-   * 
-   * @param text    a string of text representing a complete paragraph
    * @param dictionary  dictionary used for word reference (cache)
    */
   public Paragraph(final String text, Dictionary2 dictionary) {
