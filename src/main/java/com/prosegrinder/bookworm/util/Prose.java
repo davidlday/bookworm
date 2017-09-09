@@ -74,9 +74,12 @@ public final class Prose extends AggregateContainer {
       containers.add((Container) paragraph);
     });
     this.aggregateContainers(containers);
+    this.sentenceCount = this.paragraphs.stream()
+        .mapToInt( paragraph -> paragraph.getSentenceCount())
+        .sum();
     this.paragraphCount = this.paragraphs.size();
 
-    
+    // Process Dialogue
     final Pattern dialoguePattern = DialogueFragment.getPattern();
     Matcher dialogueMatcher = dialoguePattern.matcher(
         WordContainer.convertSmartQuotes(this.getInitialText())
@@ -86,15 +89,6 @@ public final class Prose extends AggregateContainer {
           new DialogueFragment(dialogueMatcher.group(), this.getDictionary())
       );
     }
-    for (String narrative: dialoguePattern.split(
-        WordContainer.convertSmartQuotes(this.getInitialText()))) {
-      this.narrativeFragments.add(
-          new NarrativeFragment(narrative, this.getDictionary())
-      );
-    }
-    this.sentenceCount = this.paragraphs.stream()
-        .mapToInt( paragraph -> paragraph.getSentenceCount())
-        .sum();
     this.dialogueSyllableCount = this.dialogueFragments.stream()
         .mapToInt( fragment -> fragment.getSyllableCount())
         .sum();
@@ -110,6 +104,23 @@ public final class Prose extends AggregateContainer {
     this.dialogueThirdPersonWordCount = this.dialogueFragments.stream()
         .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
+    this.dialogueFragments.stream().forEach( fragment -> {
+      Set<Word> uniqueWords = fragment.getUniqueWords();
+      uniqueWords.stream().forEach( word -> {
+        int count = (this.dialogueWordFrequency.containsKey(word))
+            ? this.dialogueWordFrequency.get(word) : 0;
+        count += fragment.getWordFrequency(word);
+        this.dialogueWordFrequency.put(word, count);
+      });
+    });
+
+    // Process Narrative
+    for (String narrative: dialoguePattern.split(
+        WordContainer.convertSmartQuotes(this.getInitialText()))) {
+      this.narrativeFragments.add(
+          new NarrativeFragment(narrative, this.getDictionary())
+      );
+    }
     this.narrativeSyllableCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getSyllableCount())
         .sum();
@@ -125,16 +136,6 @@ public final class Prose extends AggregateContainer {
     this.narrativeThirdPersonWordCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getThirdPersonWordCount())
         .sum();
-
-    this.dialogueFragments.stream().forEach( fragment -> {
-      Set<Word> uniqueWords = fragment.getUniqueWords();
-      uniqueWords.stream().forEach( word -> {
-        int count = (this.dialogueWordFrequency.containsKey(word))
-            ? this.dialogueWordFrequency.get(word) : 0;
-        count += fragment.getWordFrequency(word);
-        this.dialogueWordFrequency.put(word, count);
-      });
-    });
     this.narrativeFragments.stream().forEach( fragment -> {
       Set<Word> uniqueWords = fragment.getUniqueWords();
       uniqueWords.stream().forEach( word -> {
@@ -155,6 +156,7 @@ public final class Prose extends AggregateContainer {
         }
       });
     });
+
     // PoV Indicators are PoV Words fount in Narrative.
     this.firstPersonIndicatorCount = this.narrativeFragments.stream()
         .mapToInt( fragment -> fragment.getFirstPersonWordCount())
