@@ -4,8 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
+
+import org.slf4j.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,8 +20,7 @@ import java.util.List;
 
 public class ReadabilityScoresTest {
 
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(ReadabilityScoresTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReadabilityScoresTest.class);
   private Prose prose;
   private static final NumberFormat formatter = new DecimalFormat("#0.000");
 
