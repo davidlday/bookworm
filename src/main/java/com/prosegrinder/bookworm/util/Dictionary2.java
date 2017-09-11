@@ -7,8 +7,10 @@ import com.google.common.cache.LoadingCache;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
+//
+import org.slf4j.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,8 +57,7 @@ public final class Dictionary2 {
   /** Patterns used to find stressed syllables in cmudict (phonemes that end in a digit). **/
   private static final Pattern cmudictSyllablePattern = Pattern.compile("\\d$");
 
-  /** Log4j Logger. **/
-  private static final Logger logger = LogManager.getLogger(Dictionary2.class);
+  private static final Logger logger = LoggerFactory.getLogger(Dictionary2.class);
 
   /** Regex used to test if a string represents a number. **/
   private static final String RE_NUMERIC = "^[+-]{0,1}\\d{1,3}(?:[,]\\d{3})*(?:[.]\\d*)*$";

@@ -35,16 +35,21 @@ public final class Word {
 
   /** Words indicating first person point of view. **/
   public static final Set<String> POV_FIRST =
-      new HashSet<String>(Arrays.asList("I", "I'm", "I'll", "I'd", "I've", "me", "mine", "myself",
+      new HashSet<String>(Arrays.asList("i", "i'm", "i'll", "i'd", "i've", "me", "mine", "myself",
           "we", "we're", "we'll", "we'd", "we've", "us", "ours", "ourselves"));
   /** Words indicating second person point of view. **/
   public static final Set<String> POV_SECOND = new HashSet<String>(Arrays.asList("you", "you're",
-      "you'll", "you'd", "you've", "yours", "yourself", "yourselves"));
+      "you'll", "you'd", "you've", "your", "yours", "yourself", "yourselves"));
   /** Words indicating third person point of view. **/
   public static final Set<String> POV_THIRD = new HashSet<String>(
       Arrays.asList("he", "he's", "he'll", "he'd", "him", "his", "himself", "she", "she's",
           "she'll", "she'd", "her", "hers", "herself", "it", "it's", "it'll", "it'd", "itself",
           "they", "they're", "they'll", "they'd", "they've", "them", "theirs", "themselves"));
+  
+  /** Pattern used to slice a string of text into words. **/
+  private static final Pattern WORD_PATTERN = Pattern.compile(
+      "[\\w’']+"
+  );
 
   /** Private member variables. **/
   private final String initialWord;
@@ -142,7 +147,7 @@ public final class Word {
   }
 
   public static final Pattern getPattern() {
-    return WordContainer.getWordPattern();
+    return Word.WORD_PATTERN;
   }
 
   /**
