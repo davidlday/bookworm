@@ -1,7 +1,8 @@
-[![Build Status](https://travis-ci.org/davidlday/bookworm.svg?branch=develop)](https://travis-ci.org/davidlday/bookworm)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/094675d4098d41c0a78adaaa87912259)](https://www.codacy.com/app/davidlday/bookworm?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=davidlday/bookworm&amp;utm_campaign=Badge_Grade)
 
-# bookworm
+
+# ARCHIVED - bookworm
+
+2021-01-16 - I'm archiving this project. I may pick it back up at a later date, but if I do so, it'll be under the [ProseGrinder](https://github.com/prosegrinder) org under a new repo and not my personal account.
 
 A free, lightweight text analytics library for prose fiction.
 
